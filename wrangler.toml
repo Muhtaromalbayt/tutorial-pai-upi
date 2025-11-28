@@ -1,0 +1,21 @@
+name = "tutorial-pai-website"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "tutorial-pai-db"
+database_id = "your-database-id-here" # Will be generated after creating D1 database
+
+# Environment variables
+[vars]
+NODE_ENV = "production"
+
+# Development settings
+[env.development]
+name = "tutorial-pai-website-dev"
+
+# KV namespace for sessions (optional)
+# [[kv_namespaces]]
+# binding = "SESSIONS"
+# id = "your-kv-id-here"

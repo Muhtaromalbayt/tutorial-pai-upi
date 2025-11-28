@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Source+Sans+Pro:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --upi-white: #ffffff;
+    --upi-light: #fafafa;
+    --upi-gray: #f5f5f5;
+    --upi-border: #e5e5e5;
+    --upi-text: #171717;
+    --upi-text-secondary: #525252;
+    --upi-primary: #dc2626;
+    --upi-primary-dark: #991b1b;
+    --upi-accent: #eab308;
+  }
+
+  * {
+    @apply border-neutral-200;
+  }
+
+  body {
+    @apply bg-white text-neutral-900 font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+    font-variation-settings: 'opsz' 32;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading font-semibold;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl tracking-tight;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl tracking-tight;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl lg:text-4xl;
+  }
+
+  h4 {
+    @apply text-xl md:text-2xl lg:text-3xl;
+  }
+
+  h5 {
+    @apply text-lg md:text-xl lg:text-2xl;
+  }
+
+  h6 {
+    @apply text-base md:text-lg lg:text-xl;
+  }
+}
+
+@layer components {
+
+  /* UPI-style Container */
+  .container-upi {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Academic Card Style */
+  .card-academic {
+    @apply bg-white border border-neutral-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200;
+  }
+
+  /* UPI Button Styles */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-neutral-300 text-base font-medium rounded-md text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200;
+  }
+
+  .btn-link {
+    @apply inline-flex items-center text-base font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200;
+  }
+
+  /* Academic Section */
+  .section-academic {
+    @apply py-16 md:py-24;
+  }
+
+  /* Hero Overlay */
+  .hero-overlay {
+    @apply absolute inset-0 bg-gradient-to-r from-neutral-900/70 to-neutral-900/40;
+  }
+
+  /* Navbar Shadow */
+  .navbar-shadow {
+    @apply shadow-sm border-b border-neutral-100;
+  }
+
+  /* Footer Divider */
+  .footer-divider {
+    @apply border-t border-neutral-200;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .bg-pattern-academic {
+    background-image:
+      linear-gradient(to right, #f5f5f5 1px, transparent 1px),
+      linear-gradient(to bottom, #f5f5f5 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+}
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection */
+::selection {
+  @apply bg-primary-200 text-primary-900;
+}
+
+/* Focus Visible */
+:focus-visible {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+}
