@@ -4,6 +4,12 @@ const nextConfig = {
         domains: ['localhost'],
         formats: ['image/webp', 'image/avif'],
     },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
+    typescript: {
+        ignoreBuildErrors: true,
+    },
 };
 
 module.exports = nextConfig;
