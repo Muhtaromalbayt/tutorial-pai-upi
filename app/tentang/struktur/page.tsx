@@ -73,7 +73,7 @@ export default function StrukturPage() {
             />
 
             <section className="section-academic bg-white py-20">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
                     {/* Top Leaders */}
                     <div className="flex flex-col items-center mb-24 space-y-12">
                         {/* Ketum */}
@@ -86,7 +86,7 @@ export default function StrukturPage() {
                             />
                         </div>
                         {/* Waketums */}
-                        <div className="flex flex-wrap justify-center gap-12">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-3xl justify-items-center">
                             <PengurusCard
                                 name="Wakil Ketua I"
                                 position="Wakil Ketua Umum I"
@@ -115,7 +115,7 @@ export default function StrukturPage() {
                                     </span>
                                 </div>
 
-                                <div className="flex flex-wrap justify-center gap-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-3xl mx-auto justify-items-center">
                                     {dept.members ? (
                                         dept.members.map((member, idx) => (
                                             <PengurusCard
