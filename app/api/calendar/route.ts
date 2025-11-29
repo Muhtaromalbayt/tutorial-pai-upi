@@ -4,6 +4,8 @@ import { drizzle } from "drizzle-orm/d1";
 import { calendarEvents } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 
+export const runtime = "edge";
+
 // GET all events
 export async function GET() {
     try {
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
         const { env } = getRequestContext();
         const db = drizzle(env.DB);
 
-        const body = await req.json();
+        const body = await req.json() as any;
         const { title, description, category, date, time, location } = body;
 
         const id = `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -68,7 +70,7 @@ export async function PUT(req: NextRequest) {
         const { env } = getRequestContext();
         const db = drizzle(env.DB);
 
-        const body = await req.json();
+        const body = await req.json() as any;
         const { id, title, description, category, date, time, location } = body;
 
         const updated = await db

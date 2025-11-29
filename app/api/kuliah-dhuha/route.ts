@@ -4,6 +4,8 @@ import { drizzle } from "drizzle-orm/d1";
 import { kuliahDhuhaSchedule } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
+export const runtime = "edge";
+
 // GET all schedules
 export async function GET() {
     try {
@@ -28,7 +30,7 @@ export async function POST(req: NextRequest) {
         const { env } = getRequestContext();
         const db = drizzle(env.DB);
 
-        const body = await req.json();
+        const body = await req.json() as any;
         const { weekNumber, date, topic, speaker, materials, location } = body;
 
         // Generate ID
@@ -65,7 +67,7 @@ export async function PUT(req: NextRequest) {
         const { env } = getRequestContext();
         const db = drizzle(env.DB);
 
-        const body = await req.json();
+        const body = await req.json() as any;
         const { id, weekNumber, date, topic, speaker, materials, location } = body;
 
         const updated = await db

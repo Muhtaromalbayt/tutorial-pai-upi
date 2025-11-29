@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
+export const runtime = "edge";
+
 export async function POST(req: NextRequest) {
     try {
-        const body = await req.json();
+        const body = await req.json() as any;
         const { email, password } = body;
 
         // Use Better Auth to sign in
