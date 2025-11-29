@@ -2,27 +2,27 @@ import Hero from "@/components/Hero";
 import Image from "next/image";
 
 const PengurusCard = ({ name, position, division, isLeader = false, image }: { name: string, position: string, division?: string, isLeader?: boolean, image?: string }) => (
-    <div className={`flex flex-col items-center text-center group ${isLeader ? 'transform hover:-translate-y-2 transition-transform duration-300' : ''}`}>
-        <div className={`relative ${isLeader ? 'w-64 h-80' : 'w-48 h-64'} mb-4 rounded-xl overflow-hidden shadow-lg bg-neutral-100`}>
+    <div className={`flex flex-col items-center text-center group w-full max-w-[280px] mx-auto ${isLeader ? 'transform hover:-translate-y-2 transition-transform duration-300' : ''}`}>
+        <div className={`relative w-full aspect-[3/4] mb-4 rounded-2xl overflow-hidden shadow-md bg-neutral-100`}>
             {image ? (
                 <Image
                     src={image}
                     alt={name}
                     fill
+                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                 />
             ) : (
                 <div className="absolute inset-0 flex items-center justify-center bg-neutral-200 text-neutral-400">
-                    <svg className={`${isLeader ? 'w-24 h-24' : 'w-16 h-16'}`} fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                 </div>
             )}
-            {/* Gradient Overlay for better text readability if we were putting text inside, but here it adds depth */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
-        <h3 className={`${isLeader ? 'text-2xl' : 'text-lg'} font-bold text-neutral-900 mt-2`}>{name}</h3>
-        <p className={`${isLeader ? 'text-lg' : 'text-sm'} font-medium text-primary-600`}>{position}</p>
+        <h3 className={`${isLeader ? 'text-xl md:text-2xl' : 'text-lg'} font-bold text-neutral-900 leading-tight`}>{name}</h3>
+        <p className={`${isLeader ? 'text-lg' : 'text-sm'} font-medium text-primary-600 mt-1`}>{position}</p>
         {division && <p className="text-xs text-neutral-500 uppercase tracking-wide mt-1">{division}</p>}
     </div>
 );
@@ -72,11 +72,12 @@ export default function StrukturPage() {
                 backgroundImage="/assets/bg/gedung-isola.svg"
             />
 
-            <section className="section-academic bg-white">
-                <div className="container-upi">
+            <section className="section-academic bg-white py-20">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Top Leaders */}
-                    <div className="flex flex-col items-center mb-24">
-                        <div className="mb-16">
+                    <div className="flex flex-col items-center mb-24 space-y-12">
+                        {/* Ketum */}
+                        <div className="w-full flex justify-center">
                             <PengurusCard
                                 name="Muhtarom Albayt"
                                 position="Ketua Umum"
@@ -84,7 +85,8 @@ export default function StrukturPage() {
                                 image="/assets/pengurus/ketum.jpg"
                             />
                         </div>
-                        <div className="flex flex-col md:flex-row gap-16 md:gap-32 justify-center w-full">
+                        {/* Waketums */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 w-full max-w-4xl justify-items-center">
                             <PengurusCard
                                 name="Wakil Ketua I"
                                 position="Wakil Ketua Umum I"
@@ -107,13 +109,13 @@ export default function StrukturPage() {
                                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
                                     <div className="w-full border-t border-neutral-200"></div>
                                 </div>
-                                <div className="relative flex justify-center">
+                                <div className="relative flex justify-center mb-12">
                                     <span className="px-6 py-2 bg-white text-xl font-bold text-neutral-900 uppercase tracking-wider border-2 border-neutral-100 rounded-full shadow-sm">
                                         {dept.name}
                                     </span>
                                 </div>
 
-                                <div className="mt-12 flex flex-col md:flex-row justify-center gap-12 md:gap-24 flex-wrap">
+                                <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-items-center ${dept.members && dept.members.length < 3 ? 'md:flex md:justify-center md:gap-12' : ''}`}>
                                     {dept.members ? (
                                         dept.members.map((member, idx) => (
                                             <PengurusCard
