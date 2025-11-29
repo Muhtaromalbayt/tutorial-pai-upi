@@ -89,16 +89,16 @@ const Header = () => {
                             {/* Logo Section - No Frame, Bigger */}
                             <Link href="/" className="flex items-center space-x-4 group py-2">
                                 {/* UPI Logo */}
-                                <div className="relative w-16 h-16 md:w-20 md:h-20 transition-transform hover:scale-105">
+                                <div className="relative w-20 h-20 md:w-24 md:h-24 transition-transform hover:scale-105">
                                     <Image
                                         src="/assets/logo-upi.png"
                                         alt="Logo UPI"
                                         fill
-                                        className="object-contain drop-shadow-lg"
+                                        className="object-contain drop-shadow-lg brightness-0 invert"
                                     />
                                 </div>
                                 {/* Tutorial Logo */}
-                                <div className="relative w-16 h-16 md:w-20 md:h-20 transition-transform hover:scale-105">
+                                <div className="relative w-20 h-20 md:w-24 md:h-24 transition-transform hover:scale-105">
                                     <Image
                                         src="/assets/logo/tutorial-logo.png"
                                         alt="Logo Tutorial PAI"
