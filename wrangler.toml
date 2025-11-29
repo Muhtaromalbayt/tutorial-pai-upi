@@ -1,5 +1,6 @@
 name = "tutorial-pai-website"
 compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
 
 # D1 Database binding
 [[d1_databases]]
