@@ -91,7 +91,7 @@ const Header = () => {
                                 {/* UPI Logo */}
                                 <div className="relative w-16 h-16 md:w-20 md:h-20 transition-transform hover:scale-105">
                                     <Image
-                                        src="/assets/logo/upi-logo.jpg"
+                                        src="/assets/logo-upi.png"
                                         alt="Logo UPI"
                                         fill
                                         className="object-contain drop-shadow-lg"

@@ -9,9 +9,9 @@ const HeroActivities = () => {
 
     // Placeholder images for activities
     const activityImages = [
-        "/assets/kegiatan/placeholder-1.svg",
-        "/assets/kegiatan/placeholder-2.svg",
-        "/assets/kegiatan/placeholder-3.svg",
+        "/assets/isola.jpg",
+        "/assets/alfurqan.jpg",
+        "/assets/kegiatan/kuliah-dhuha.png",
     ];
 
     useEffect(() => {
