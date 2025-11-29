@@ -26,7 +26,7 @@ export default function Home() {
               description="Ribuan mahasiswa antusias mengikuti Kuliah Dhuha perdana semester genap di Masjid Al-Furqan."
               date="18 Februari 2025"
               category="Kegiatan"
-              imageUrl="/assets/kegiatan/placeholder-1.svg"
+              imageUrl="/assets/kegiatan/kuliah-dhuha.png"
               href="/news/kuliah-dhuha-perdana"
             />
             <Card
@@ -34,7 +34,7 @@ export default function Home() {
               description="Seminar nasional menghadirkan pembicara inspiratif membahas tantangan pemuda masa kini."
               date="25 Februari 2025"
               category="Seminar"
-              imageUrl="/assets/kegiatan/placeholder-2.svg"
+              imageUrl="/assets/kegiatan/seminar-pai.png"
               href="/news/seminar-pai"
             />
             <Card
@@ -42,7 +42,7 @@ export default function Home() {
               description="Mari bergabung menjadi bagian dari kebaikan. Pendaftaran mentor Tutorial PAI kini dibuka."
               date="1 Maret 2025"
               category="Pengumuman"
-              imageUrl="/assets/kegiatan/placeholder-3.svg"
+              imageUrl="/assets/kegiatan/oprec-mentor.png"
               href="/news/oprec-mentor"
             />
           </div>
@@ -68,7 +68,7 @@ export default function Home() {
             <div className="w-full md:w-1/2">
               <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/assets/kegiatan/placeholder-2.svg"
+                  src="/assets/kegiatan/program-unggulan.png"
                   alt="Program Tutorial"
                   fill
                   className="object-cover"
