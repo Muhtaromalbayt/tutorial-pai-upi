@@ -85,20 +85,20 @@ const Header = () => {
                 {/* Main Header - Red Background */}
                 <nav className="bg-[#dc2626] text-white relative">
                     <div className="container-upi">
-                        <div className="flex items-center justify-between h-24">
+                        <div className="flex items-center justify-between h-32">
                             {/* Logo Section - No Frame, Bigger */}
                             <Link href="/" className="flex items-center space-x-4 group py-2">
                                 {/* UPI Logo */}
-                                <div className="relative w-20 h-20 md:w-24 md:h-24 transition-transform hover:scale-105">
+                                <div className="relative w-28 h-28 md:w-40 md:h-32 transition-transform hover:scale-105">
                                     <Image
                                         src="/assets/logo-upi.png"
                                         alt="Logo UPI"
                                         fill
-                                        className="object-contain drop-shadow-lg brightness-0 invert"
+                                        className="object-contain drop-shadow-lg"
                                     />
                                 </div>
                                 {/* Tutorial Logo */}
-                                <div className="relative w-20 h-20 md:w-24 md:h-24 transition-transform hover:scale-105">
+                                <div className="relative w-24 h-24 md:w-28 md:h-28 transition-transform hover:scale-105">
                                     <Image
                                         src="/assets/logo/tutorial-logo.png"
                                         alt="Logo Tutorial PAI"
