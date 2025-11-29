@@ -2,14 +2,14 @@ import Hero from "@/components/Hero";
 import Image from "next/image";
 
 const PengurusCard = ({ name, position, division, isLeader = false, image }: { name: string, position: string, division?: string, isLeader?: boolean, image?: string }) => (
-    <div className={`flex flex-col items-center text-center group w-full max-w-[280px] mx-auto ${isLeader ? 'transform hover:-translate-y-2 transition-transform duration-300' : ''}`}>
-        <div className={`relative w-full aspect-[3/4] mb-4 rounded-2xl overflow-hidden shadow-md bg-neutral-100`}>
+    <div className="flex flex-col items-center text-center group w-full max-w-[240px] mx-auto transform hover:-translate-y-2 transition-transform duration-300">
+        <div className="relative w-full aspect-[3/4] mb-4 rounded-2xl overflow-hidden shadow-md bg-neutral-100">
             {image ? (
                 <Image
                     src={image}
                     alt={name}
                     fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                    sizes="240px"
                     className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                 />
             ) : (
@@ -21,8 +21,8 @@ const PengurusCard = ({ name, position, division, isLeader = false, image }: { n
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
-        <h3 className={`${isLeader ? 'text-xl md:text-2xl' : 'text-lg'} font-bold text-neutral-900 leading-tight`}>{name}</h3>
-        <p className={`${isLeader ? 'text-lg' : 'text-sm'} font-medium text-primary-600 mt-1`}>{position}</p>
+        <h3 className={`${isLeader ? 'text-xl font-extrabold' : 'text-lg font-bold'} text-neutral-900 leading-tight`}>{name}</h3>
+        <p className={`${isLeader ? 'text-base font-semibold' : 'text-sm font-medium'} text-primary-600 mt-1`}>{position}</p>
         {division && <p className="text-xs text-neutral-500 uppercase tracking-wide mt-1">{division}</p>}
     </div>
 );
