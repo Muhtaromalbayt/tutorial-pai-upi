@@ -77,13 +77,13 @@ export default function StrukturPage() {
             ]
         },
         {
-            name: "Bidang Pelaksana SPAI" members: [
+            name: "Bidang Pelaksana SPAI", members: [
                 { name: "Ahmad Sholihin", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
                 { name: "Nabila Hakim Azzahra", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" }
             ]
         },
         {
-            name: "Media Kreatif dan Informasi" members: [
+            name: "Media Kreatif dan Informasi", members: [
                 { name: "Rafli Permana", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
                 { name: "Najwa Futhana Ramadhani", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" }
             ]
