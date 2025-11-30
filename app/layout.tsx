@@ -35,6 +35,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${inter.variable} ${sourceSans.variable}`}>
+      <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
+      <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" />
+      <link rel="apple-touch-icon" href="/favicon.png?v=2" />
+      <link rel="shortcut icon" href="/favicon.ico?v=2" />
       <body className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1">

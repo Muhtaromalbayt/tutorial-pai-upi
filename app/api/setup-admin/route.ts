@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAuth } from "@/lib/auth";
 import { getRequestContext } from "@cloudflare/next-on-pages";
+import { drizzle } from "drizzle-orm/d1";
+import { users } from "@/lib/db/schema";
+import { simpleAuth } from "@/lib/simple-auth";
+import { eq } from "drizzle-orm";
 
 export const runtime = "edge";
 
@@ -16,28 +19,30 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Get DB from context
-        const db = getRequestContext().env.DB;
-        const auth = createAuth(db);
+        const db = drizzle(getRequestContext().env.DB);
 
-        // Create user using Better Auth
-        const result = await auth.api.signUpEmail({
-            body: {
-                email,
-                password,
-                name,
-            },
-            headers: req.headers,
-        });
-
-        if (!result) {
-            return NextResponse.json(
-                { error: "Gagal membuat user admin" },
-                { status: 500 }
-            );
+        // Check if user exists
+        const existingUser = await db.select().from(users).where(eq(users.email, email)).get();
+        if (existingUser) {
+            // Update existing user password
+            const hashedPassword = await simpleAuth.hashPassword(password);
+            await db.update(users).set({ password: hashedPassword, name, role: 'admin' }).where(eq(users.email, email));
+            return NextResponse.json({ success: true, message: "Admin updated" });
         }
 
-        return NextResponse.json({ success: true, user: result.user });
+        // Create new user
+        const hashedPassword = await simpleAuth.hashPassword(password);
+        const userId = crypto.randomUUID();
+
+        await db.insert(users).values({
+            id: userId,
+            name,
+            email,
+            password: hashedPassword,
+            role: 'admin'
+        });
+
+        return NextResponse.json({ success: true, user: { id: userId, name, email } });
     } catch (error: any) {
         console.error("Setup admin error:", error);
         return NextResponse.json(
