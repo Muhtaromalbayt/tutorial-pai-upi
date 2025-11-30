@@ -104,6 +104,22 @@ export const binderSchedule = sqliteTable('binder_schedule', {
     updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
 });
 
+// Feedback
+export const feedback = sqliteTable('feedback', {
+    id: text('id').primaryKey(),
+    name: text('name'),
+    email: text('email'),
+    isAnonymous: integer('is_anonymous', { mode: 'boolean' }).default(false),
+    category: text('category').notNull(),
+    subject: text('subject').notNull(),
+    message: text('message').notNull(),
+    attachments: text('attachments'), // JSON string
+    status: text('status').default('pending'),
+    adminNotes: text('admin_notes'),
+    createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+    updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
 // News
 export const news = sqliteTable('news', {
     id: text('id').primaryKey(),
@@ -146,3 +162,4 @@ export type BinaMentorSchedule = typeof binaMentorSchedule.$inferSelect;
 export type BinderSchedule = typeof binderSchedule.$inferSelect;
 export type News = typeof news.$inferSelect;
 export type CabinetMember = typeof cabinetMembers.$inferSelect;
+export type Feedback = typeof feedback.$inferSelect;

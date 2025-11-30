@@ -132,8 +132,25 @@ CREATE TABLE IF NOT EXISTS cabinet_members (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Feedback/Kritik & Saran
+CREATE TABLE IF NOT EXISTS feedback (
+  id TEXT PRIMARY KEY,
+  name TEXT,
+  email TEXT,
+  is_anonymous BOOLEAN DEFAULT 0,
+  category TEXT NOT NULL, -- 'suggestion', 'complaint', 'praise', 'question', 'other'
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+  attachments TEXT, -- JSON array of {type, name, data (base64), mimeType, size}
+  status TEXT DEFAULT 'pending', -- 'pending', 'reviewed', 'resolved'
+  admin_notes TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_calendar_date ON calendar_events(date);
 CREATE INDEX IF NOT EXISTS idx_calendar_category ON calendar_events(category);
 CREATE INDEX IF NOT EXISTS idx_news_published ON news(is_published, published_date);
 CREATE INDEX IF NOT EXISTS idx_kuliah_week ON kuliah_dhuha_schedule(week_number);
+CREATE INDEX IF NOT EXISTS idx_feedback_status ON feedback(status, created_at);

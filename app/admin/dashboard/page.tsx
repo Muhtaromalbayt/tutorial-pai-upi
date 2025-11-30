@@ -96,6 +96,13 @@ export default function AdminDashboard() {
             icon: "👤",
             color: "bg-indigo-50 text-indigo-600 border-indigo-200"
         },
+        {
+            title: "Kritik & Saran",
+            description: "Kelola feedback dari pengguna",
+            href: "/admin/feedback",
+            icon: "💬",
+            color: "bg-teal-50 text-teal-600 border-teal-200"
+        },
     ];
 
     return (

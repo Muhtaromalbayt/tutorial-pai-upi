@@ -201,52 +201,131 @@ const Header = () => {
 
             {/* Drawer */}
             <div
-                className={`fixed top-0 left-0 h-full w-[300px] bg-white z-[70] shadow-2xl transform transition-transform duration-300 ease-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+                className={`fixed top-0 left-0 h-full w-[320px] bg-white z-[70] shadow-2xl transform transition-transform duration-300 ease-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
                     }`}
             >
                 <div className="flex flex-col h-full">
-                    {/* Drawer Header */}
-                    <div className="p-5 bg-[#dc2626] text-white flex justify-between items-center">
-                        <div className="font-bold text-lg">Menu</div>
-                        <button
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="p-1 hover:bg-white/20 rounded-full transition-colors"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
+                    {/* Drawer Header with Gradient */}
+                    <div className="p-6 bg-gradient-to-r from-primary-600 to-primary-700 text-white">
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="font-bold text-xl">Menu</div>
+                            <button
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="text-sm opacity-90">Tutorial PAI–SPAI UPI</div>
+                        <div className="text-xs opacity-75 mt-1">Kabinet AL-FATH</div>
                     </div>
 
                     {/* Drawer Content */}
-                    <div className="flex-1 overflow-y-auto py-4">
-                        <Link href="/" className="block px-6 py-3 text-neutral-800 hover:bg-neutral-50 font-medium border-l-4 border-transparent hover:border-primary-600">
-                            Home
+                    <div className="flex-1 overflow-y-auto py-2">
+                        <Link
+                            href="/"
+                            className={`flex items-center gap-3 px-6 py-3 text-neutral-800 hover:bg-primary-50 hover:text-primary-600 transition-colors border-l-4 ${pathname === '/' ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-transparent'
+                                }`}
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                            <span className="font-medium">Home</span>
                         </Link>
 
-                        <div className="px-6 py-2 mt-2 text-xs font-bold text-neutral-400 uppercase tracking-wider">Tentang</div>
-                        <Link href="/tentang/visi" className="block px-6 py-2 text-neutral-600 hover:bg-neutral-50 hover:text-primary-600">Visi & Misi</Link>
-                        <Link href="/tentang/struktur" className="block px-6 py-2 text-neutral-600 hover:bg-neutral-50 hover:text-primary-600">Struktur Kepengurusan</Link>
-                        <Link href="/tentang/kabinet" className="block px-6 py-2 text-neutral-600 hover:bg-neutral-50 hover:text-primary-600">Kabinet AL-FATH</Link>
-                        <Link href="/tentang/sejarah" className="block px-6 py-2 text-neutral-600 hover:bg-neutral-50 hover:text-primary-600">Sejarah</Link>
+                        <div className="px-6 py-3 mt-2 text-xs font-bold text-neutral-400 uppercase tracking-wider">Tentang</div>
+                        <Link href="/tentang/visi" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <span>Visi & Misi</span>
+                        </Link>
+                        <Link href="/tentang/struktur" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span>Struktur Kepengurusan</span>
+                        </Link>
+                        <Link href="/tentang/kabinet" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            <span>Kabinet AL-FATH</span>
+                        </Link>
+                        <Link href="/tentang/sejarah" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            <span>Sejarah</span>
+                        </Link>
 
-                        <div className="px-6 py-2 mt-4 text-xs font-bold text-neutral-400 uppercase tracking-wider">Program</div>
-                        <Link href="/program/kuliah-dhuha" className="block px-6 py-2 text-neutral-600 hover:bg-neutral-50 hover:text-primary-600">Kuliah Dhuha</Link>
-                        <Link href="/program/seminar-pai" className="block px-6 py-2 text-neutral-600 hover:bg-neutral-50 hover:text-primary-600">Seminar PAI</Link>
-                        <Link href="/program/mentoring" className="block px-6 py-2 text-neutral-600 hover:bg-neutral-50 hover:text-primary-600">Mentoring</Link>
-                        <Link href="/program/bina-kader" className="block px-6 py-2 text-neutral-600 hover:bg-neutral-50 hover:text-primary-600">Bina Kader</Link>
+                        <div className="px-6 py-3 mt-4 text-xs font-bold text-neutral-400 uppercase tracking-wider">Program</div>
+                        <Link href="/program/kuliah-dhuha" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            <span>Kuliah Dhuha</span>
+                        </Link>
+                        <Link href="/program/seminar-pai" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                            </svg>
+                            <span>Seminar PAI</span>
+                        </Link>
+                        <Link href="/program/mentoring" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <span>Mentoring</span>
+                        </Link>
+                        <Link href="/program/bina-kader" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                            </svg>
+                            <span>Bina Kader</span>
+                        </Link>
 
-                        <div className="border-t border-neutral-100 my-4"></div>
-                        <Link href="/kalender" className="block px-6 py-3 text-neutral-800 hover:bg-neutral-50 font-medium border-l-4 border-transparent hover:border-primary-600">
-                            Kalender Kegiatan
+                        <div className="border-t border-neutral-200 my-4"></div>
+
+                        <Link
+                            href="/kalender"
+                            className={`flex items-center gap-3 px-6 py-3 text-neutral-800 hover:bg-primary-50 hover:text-primary-600 transition-colors border-l-4 ${pathname === '/kalender' ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-transparent'
+                                }`}
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span className="font-medium">Kalender Kegiatan</span>
+                        </Link>
+
+                        <Link
+                            href="/kritik-saran"
+                            className={`flex items-center gap-3 px-6 py-3 text-neutral-800 hover:bg-primary-50 hover:text-primary-600 transition-colors border-l-4 ${pathname === '/kritik-saran' ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-transparent'
+                                }`}
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                            </svg>
+                            <span className="font-medium">Kritik & Saran</span>
                         </Link>
                     </div>
 
                     {/* Drawer Footer */}
-                    <div className="p-6 bg-neutral-50 border-t border-neutral-200">
-                        <div className="flex justify-center space-x-4 text-neutral-500">
-                            <a href="#" className="hover:text-primary-600"><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.949-.073z" /></svg></a>
-                            <a href="#" className="hover:text-primary-600"><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg></a>
+                    <div className="p-6 bg-gradient-to-r from-neutral-50 to-neutral-100 border-t border-neutral-200">
+                        <div className="text-xs text-neutral-600 mb-3 text-center">Ikuti Kami</div>
+                        <div className="flex justify-center space-x-4 text-neutral-600">
+                            <a href="https://www.instagram.com/tutorialupi" target="_blank" className="hover:text-primary-600 transition-colors">
+                                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" /></svg>
+                            </a>
+                            <a href="https://www.youtube.com/@tutorialupi7633" target="_blank" className="hover:text-primary-600 transition-colors">
+                                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>
+                            </a>
+                            <a href="https://www.tiktok.com/@tutorialupi" target="_blank" className="hover:text-primary-600 transition-colors">
+                                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" /></svg>
+                            </a>
                         </div>
                     </div>
                 </div>
