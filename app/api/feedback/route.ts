@@ -3,14 +3,29 @@ import { drizzle } from "drizzle-orm/d1";
 import { feedback } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getRequestContext } from "@cloudflare/next-on-pages";
+import { createAuth } from "@/lib/auth";
 
 export const runtime = "edge";
+
+// Helper to check admin auth
+async function checkAdminAuth(req: NextRequest, db: any) {
+    const auth = createAuth(db);
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return false;
+    return true; // Assuming all authenticated users are admins for now
+}
 
 // GET - Fetch all feedback (admin only)
 export async function GET(req: NextRequest) {
     try {
-        const db = drizzle(getRequestContext().env.DB);
+        const dbBinding = getRequestContext().env.DB;
+        const isAdmin = await checkAdminAuth(req, dbBinding);
 
+        if (!isAdmin) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const db = drizzle(dbBinding);
         const allFeedback = await db.select().from(feedback).all();
 
         return NextResponse.json({ feedback: allFeedback });
@@ -73,6 +88,13 @@ export async function POST(req: NextRequest) {
 // PUT - Update feedback status/notes (admin only)
 export async function PUT(req: NextRequest) {
     try {
+        const dbBinding = getRequestContext().env.DB;
+        const isAdmin = await checkAdminAuth(req, dbBinding);
+
+        if (!isAdmin) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const body = await req.json() as any;
         const { id, status, adminNotes } = body;
 
@@ -83,7 +105,7 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        const db = drizzle(getRequestContext().env.DB);
+        const db = drizzle(dbBinding);
 
         const updates: any = {
             updatedAt: new Date().toISOString(),
@@ -112,6 +134,13 @@ export async function PUT(req: NextRequest) {
 // DELETE - Delete feedback (admin only)
 export async function DELETE(req: NextRequest) {
     try {
+        const dbBinding = getRequestContext().env.DB;
+        const isAdmin = await checkAdminAuth(req, dbBinding);
+
+        if (!isAdmin) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
 
@@ -122,7 +151,7 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        const db = drizzle(getRequestContext().env.DB);
+        const db = drizzle(dbBinding);
 
         await db.delete(feedback).where(eq(feedback.id, id));
 

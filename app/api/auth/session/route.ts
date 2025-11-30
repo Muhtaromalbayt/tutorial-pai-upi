@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { createAuth } from "@/lib/auth";
+import { getRequestContext } from "@cloudflare/next-on-pages";
 
 export const runtime = "edge";
 
 export async function GET(req: NextRequest) {
     try {
+        const db = getRequestContext().env.DB;
+        const auth = createAuth(db);
+
         const session = await auth.api.getSession({
             headers: req.headers,
         });

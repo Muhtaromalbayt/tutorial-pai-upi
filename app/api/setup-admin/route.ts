@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { createAuth } from "@/lib/auth";
+import { getRequestContext } from "@cloudflare/next-on-pages";
 
 export const runtime = "edge";
 
@@ -14,6 +15,10 @@ export async function POST(req: NextRequest) {
                 { status: 400 }
             );
         }
+
+        // Get DB from context
+        const db = getRequestContext().env.DB;
+        const auth = createAuth(db);
 
         // Create user using Better Auth
         const result = await auth.api.signUpEmail({

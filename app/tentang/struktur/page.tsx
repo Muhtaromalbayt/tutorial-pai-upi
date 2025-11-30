@@ -33,6 +33,10 @@ const PengurusCard = ({ name, position, division, isLeader = false, image }: { n
 const DepartmentAccordion = ({ dept, index }: { dept: any, index: number }) => {
     const [isOpen, setIsOpen] = useState(false);
 
+    // Pisahkan pimpinan (2 orang pertama) dan staf (sisanya)
+    const leaders = dept.members ? dept.members.slice(0, 2) : [];
+    const staff = dept.members ? dept.members.slice(2) : [];
+
     return (
         <div className="relative">
             <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -58,22 +62,42 @@ const DepartmentAccordion = ({ dept, index }: { dept: any, index: number }) => {
 
             <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100 mb-12' : 'max-h-0 opacity-0'
                 }`}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl mx-auto justify-items-center pt-4">
-                    {dept.members ? (
-                        dept.members.map((member: any, idx: number) => (
-                            <PengurusCard
-                                key={idx}
-                                name={member.name}
-                                position={member.position}
-                                division={dept.name}
-                                image={member.image}
-                            />
-                        ))
-                    ) : (
-                        <>
-                            <PengurusCard name={`Ketua ${dept.name}`} position="Ketua Bidang" division={dept.name} />
-                            <PengurusCard name={`Wakil ${dept.name}`} position="Wakil Ketua Bidang" division={dept.name} />
-                        </>
+                <div className="pt-8 pb-4">
+                    {/* Leaders - Tetap pakai Foto */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-3xl mx-auto justify-items-center mb-12">
+                        {leaders.length > 0 ? (
+                            leaders.map((member: any, idx: number) => (
+                                <PengurusCard
+                                    key={idx}
+                                    name={member.name}
+                                    position={member.position}
+                                    division={dept.name}
+                                    image={member.image}
+                                />
+                            ))
+                        ) : (
+                            <>
+                                <PengurusCard name={`Ketua ${dept.name}`} position="Ketua Bidang" division={dept.name} />
+                                <PengurusCard name={`Wakil ${dept.name}`} position="Wakil Ketua Bidang" division={dept.name} />
+                            </>
+                        )}
+                    </div>
+
+                    {/* Staff Members - Hanya Nama */}
+                    {staff.length > 0 && (
+                        <div className="max-w-5xl mx-auto px-4">
+                            <h4 className="text-center text-lg font-semibold text-neutral-500 mb-6 uppercase tracking-wide">Anggota Bidang</h4>
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                {staff.map((member: any, idx: number) => (
+                                    <div key={idx} className="bg-neutral-50 p-4 rounded-xl text-center hover:bg-white hover:shadow-sm transition-all border border-neutral-100">
+                                        <div className="font-medium text-neutral-800">{member.name}</div>
+                                        {member.position && member.position !== "Anggota" && (
+                                            <div className="text-xs text-primary-600 mt-1">{member.position}</div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>
