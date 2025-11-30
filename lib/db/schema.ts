@@ -1,7 +1,37 @@
 import { drizzle } from 'drizzle-orm/d1';
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
-// Users table
+// Better Auth tables
+export const user = sqliteTable('user', {
+    id: text('id').primaryKey(),
+    email: text('email').notNull().unique(),
+    emailVerified: integer('emailVerified', { mode: 'boolean' }).default(false),
+    name: text('name').notNull(),
+    createdAt: text('createdAt').default('CURRENT_TIMESTAMP'),
+    updatedAt: text('updatedAt').default('CURRENT_TIMESTAMP'),
+});
+
+export const account = sqliteTable('account', {
+    id: text('id').primaryKey(),
+    accountId: text('accountId').notNull(),
+    providerId: text('providerId').notNull(),
+    userId: text('userId').notNull(),
+    accessToken: text('accessToken'),
+    refreshToken: text('refreshToken'),
+    idToken: text('idToken'),
+    expiresAt: integer('expiresAt'),
+    password: text('password'),
+});
+
+export const session = sqliteTable('session', {
+    id: text('id').primaryKey(),
+    expiresAt: integer('expiresAt').notNull(),
+    ipAddress: text('ipAddress'),
+    userAgent: text('userAgent'),
+    userId: text('userId').notNull(),
+});
+
+// Keep old users table for backward compatibility
 export const users = sqliteTable('users', {
     id: text('id').primaryKey(),
     email: text('email').notNull().unique(),
