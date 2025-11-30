@@ -7,7 +7,7 @@ import Image from "next/image";
 export default function AdminSetupPage() {
     const router = useRouter();
     const [formData, setFormData] = useState({
-        name: "alfath",
+        name: "Admin Al-Fath",
         email: "alfath@upi.edu",
         password: "alfath2025",
         confirmPassword: "alfath2025",
