@@ -1,13 +1,173 @@
+import { drizzle } from 'drizzle-orm/d1';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
+
+// Users table with password for Simple Auth
+export const users = sqliteTable('users', {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    email: text('email').notNull().unique(),
+    password: text('password').notNull(),
+    role: text('role').default('user'),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Simple Sessions table
+export const simple_sessions = sqliteTable('simple_sessions', {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(), // Removed references to avoid circular dependency issues
+    expiresAt: integer('expires_at').notNull(),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Calendar events
+export const calendarEvents = sqliteTable('calendar_events', {
+    id: text('id').primaryKey(),
+    title: text('title').notNull(),
+    description: text('description'),
+    category: text('category').notNull(),
+    date: text('date').notNull(),
+    time: text('time'),
+    location: text('location'),
+    imageUrl: text('image_url'),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Kuliah Dhuha schedules
+export const kuliahDhuhaSchedule = sqliteTable('kuliah_dhuha_schedule', {
+    id: text('id').primaryKey(),
+    weekNumber: integer('week_number').notNull(),
+    date: text('date').notNull(),
+    topic: text('topic').notNull(),
+    speaker: text('speaker'),
+    materials: text('materials'), // JSON string
+    location: text('location').default('Masjid Kampus UPI'),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Seminar schedule
+export const seminarSchedule = sqliteTable('seminar_schedule', {
+    id: text('id').primaryKey(),
+    weekNumber: integer('week_number').notNull(),
+    date: text('date').notNull(),
+    topic: text('topic').notNull(),
+    speaker: text('speaker'),
+    materials: text('materials'),
+    location: text('location'),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Mentoring schedule
+export const mentoringSchedule = sqliteTable('mentoring_schedule', {
+    id: text('id').primaryKey(),
+    weekNumber: integer('week_number').notNull(),
+    date: text('date').notNull(),
+    topic: text('topic').notNull(),
+    mentor: text('mentor'),
+    groupNumber: integer('group_number'),
+    materials: text('materials'),
+    location: text('location'),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Bina Kader schedule
+export const binaKaderSchedule = sqliteTable('bina_kader_schedule', {
+    id: text('id').primaryKey(),
+    weekNumber: integer('week_number').notNull(),
+    date: text('date').notNull(),
+    topic: text('topic').notNull(),
+    facilitator: text('facilitator'),
+    materials: text('materials'),
+    location: text('location'),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Bina Mentor schedule
+export const binaMentorSchedule = sqliteTable('bina_mentor_schedule', {
+    id: text('id').primaryKey(),
+    weekNumber: integer('week_number').notNull(),
+    date: text('date').notNull(),
+    topic: text('topic').notNull(),
+    facilitator: text('facilitator'),
+    materials: text('materials'),
+    location: text('location'),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Binder schedule
+export const binderSchedule = sqliteTable('binder_schedule', {
+    id: text('id').primaryKey(),
+    weekNumber: integer('week_number').notNull(),
+    date: text('date').notNull(),
+    topic: text('topic').notNull(),
+    facilitator: text('facilitator'),
+    materials: text('materials'),
+    location: text('location'),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Feedback
+export const feedback = sqliteTable('feedback', {
+    id: text('id').primaryKey(),
+    name: text('name'),
+    email: text('email'),
+    isAnonymous: integer('is_anonymous', { mode: 'boolean' }).default(false),
+    category: text('category').notNull(),
+    subject: text('subject').notNull(),
+    message: text('message').notNull(),
+    attachments: text('attachments'), // JSON string
+    status: text('status').default('pending'),
+    adminNotes: text('admin_notes'),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// News
+export const news = sqliteTable('news', {
+    id: text('id').primaryKey(),
+    title: text('title').notNull(),
+    content: text('content').notNull(),
+    category: text('category').default('announcement'),
+    imageUrl: text('image_url'),
+    author: text('author'),
+    publishedDate: text('published_date'),
+    isPublished: integer('is_published', { mode: 'boolean' }).default(false),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Cabinet members
+export const cabinetMembers = sqliteTable('cabinet_members', {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    position: text('position').notNull(),
+    division: text('division'),
+    photoUrl: text('photo_url'),
+    email: text('email'),
+    phone: text('phone'),
+    bio: text('bio'),
+    orderIndex: integer('order_index').default(0),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Types
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+export type SimpleSession = typeof simple_sessions.$inferSelect;
 export type CalendarEvent = typeof calendarEvents.$inferSelect;
 export type NewCalendarEvent = typeof calendarEvents.$inferInsert;
 export type KuliahDhuhaSchedule = typeof kuliahDhuhaSchedule.$inferSelect;
-export// Simple Sessions table
-    export const simple_sessions = sqliteTable('simple_sessions', {
-        id: text('id').primaryKey(),
-        userId: text('user_id').notNull(), // Removed references to avoid circular dependency issues
-        expiresAt: integer('expires_at').notNull(),
-        createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
-    });
+export type SeminarSchedule = typeof seminarSchedule.$inferSelect;
+export type MentoringSchedule = typeof mentoringSchedule.$inferSelect;
+export type BinaKaderSchedule = typeof binaKaderSchedule.$inferSelect;
 export type BinaMentorSchedule = typeof binaMentorSchedule.$inferSelect;
 export type BinderSchedule = typeof binderSchedule.$inferSelect;
 export type News = typeof news.$inferSelect;
