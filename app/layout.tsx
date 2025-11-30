@@ -21,6 +21,11 @@ export const metadata: Metadata = {
   title: "Tutorial PAI–SPAI UPI | Semester Genap 2025/2026",
   description: "Tutorial PAI–SPAI UPI — Kabinet AL-FATH. Menumbuhkan Adab, Menggerakkan Peradaban.",
   keywords: ["Tutorial PAI", "SPAI UPI", "Kabinet AL-FATH", "UPI", "Pendidikan Agama Islam"],
+  icons: {
+    icon: "/assets/logo/tutorial-logo.png",
+    shortcut: "/assets/logo/tutorial-logo.png",
+    apple: "/assets/logo/tutorial-logo.png",
+  },
 };
 
 export default function RootLayout({

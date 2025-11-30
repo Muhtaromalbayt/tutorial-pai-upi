@@ -18,7 +18,7 @@ export default function AdminDashboard() {
         try {
             const response = await fetch("/api/auth/session");
             if (response.ok) {
-                const data = await response.json();
+                const data = await response.json() as any;
                 setUser(data.user);
             } else {
                 router.push("/admin/login");
@@ -69,17 +69,17 @@ export default function AdminDashboard() {
             color: "bg-purple-50 text-purple-600 border-purple-200"
         },
         {
-            title: "Mentoring",
-            description: "Atur jadwal mentoring",
-            href: "/admin/mentoring",
-            icon: "👥",
-            color: "bg-yellow-50 text-yellow-600 border-yellow-200"
+            title: "Binder",
+            description: "Kelola jadwal Binder",
+            href: "/admin/binder",
+            icon: "📘",
+            color: "bg-blue-50 text-blue-600 border-blue-200"
         },
         {
-            title: "Bina Kader",
-            description: "Kelola jadwal Bina Kader",
-            href: "/admin/bina-kader",
-            icon: "🎯",
+            title: "Bintor",
+            description: "Kelola jadwal Bintor",
+            href: "/admin/bintor",
+            icon: "👥",
             color: "bg-orange-50 text-orange-600 border-orange-200"
         },
         {

@@ -65,6 +65,45 @@ export const mentoringSchedule = sqliteTable('mentoring_schedule', {
     updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
 });
 
+// Bina Kader schedule
+export const binaKaderSchedule = sqliteTable('bina_kader_schedule', {
+    id: text('id').primaryKey(),
+    weekNumber: integer('week_number').notNull(),
+    date: text('date').notNull(),
+    topic: text('topic').notNull(),
+    facilitator: text('facilitator'),
+    materials: text('materials'),
+    location: text('location'),
+    createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+    updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
+// Bina Mentor schedule
+export const binaMentorSchedule = sqliteTable('bina_mentor_schedule', {
+    id: text('id').primaryKey(),
+    weekNumber: integer('week_number').notNull(),
+    date: text('date').notNull(),
+    topic: text('topic').notNull(),
+    facilitator: text('facilitator'),
+    materials: text('materials'),
+    location: text('location'),
+    createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+    updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
+// Binder schedule
+export const binderSchedule = sqliteTable('binder_schedule', {
+    id: text('id').primaryKey(),
+    weekNumber: integer('week_number').notNull(),
+    date: text('date').notNull(),
+    topic: text('topic').notNull(),
+    facilitator: text('facilitator'),
+    materials: text('materials'),
+    location: text('location'),
+    createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+    updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
 // News
 export const news = sqliteTable('news', {
     id: text('id').primaryKey(),
@@ -100,5 +139,10 @@ export type NewUser = typeof users.$inferInsert;
 export type CalendarEvent = typeof calendarEvents.$inferSelect;
 export type NewCalendarEvent = typeof calendarEvents.$inferInsert;
 export type KuliahDhuhaSchedule = typeof kuliahDhuhaSchedule.$inferSelect;
+export type SeminarSchedule = typeof seminarSchedule.$inferSelect;
+export type MentoringSchedule = typeof mentoringSchedule.$inferSelect;
+export type BinaKaderSchedule = typeof binaKaderSchedule.$inferSelect;
+export type BinaMentorSchedule = typeof binaMentorSchedule.$inferSelect;
+export type BinderSchedule = typeof binderSchedule.$inferSelect;
 export type News = typeof news.$inferSelect;
 export type CabinetMember = typeof cabinetMembers.$inferSelect;

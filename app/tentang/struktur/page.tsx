@@ -32,36 +32,62 @@ export default function StrukturPage() {
         {
             name: "Sekretaris Umum",
             members: [
-                { name: "Dini Fatia N.H.", position: "Sekretaris Umum", image: "/assets/pengurus/dini-fatia.jpg" },
-                { name: "M. Zalfa Izdihar", position: "Wakil Sekretaris Umum", image: "/assets/pengurus/m-zalfa.jpg" }
+                { name: "Nina Wulandari", position: "Sekretaris Umum", image: "/assets/pengurus/dini-fatia.jpg" },
+                { name: "Frans Fernando Aji Soko", position: "Wakil Sekretaris Umum", image: "/assets/pengurus/m-zalfa.jpg" }
             ]
         },
         {
             name: "Bendahara Umum",
             members: [
                 { name: "Rachma Cantika D.", position: "Bendahara Umum", image: "/assets/pengurus/rachma-cantika.jpg" },
-                { name: "Alifia S.", position: "Wakil Bendahara Umum", image: "/assets/pengurus/alifia-s.jpg" }
+                { name: "Dela Sari", position: "Wakil Bendahara Umum", image: "/assets/pengurus/alifia-s.jpg" }
             ]
         },
-        { name: "Kepesertaan" },
+        {
+            name: "Kepesertaan", members: [
+                { name: "Adnan Azizi.", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
+                { name: "I'zaz Dzul Fahmi", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" }
+            ]
+        },
+
         {
             name: "Penjaminan dan Peningkatan Mutu Tutorial",
             members: [
-                { name: "Wisnu Atmojo", position: "Ketua Bidang", image: "/assets/pengurus/wisnu-atmojo.jpg" },
-                { name: "Arwyn M. Sya'bani", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" }
+                { name: "Muhammad Fathan Mubina", position: "Ketua Bidang", image: "/assets/pengurus/wisnu-atmojo.jpg" },
+                { name: "Muhammad Nashruddin A.", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" }
             ]
         },
-        { name: "Pengembangan Sumber Daya Insani" },
-        { name: "Ketutoran" },
+        {
+            name: "Pengembangan Sumber Daya Insani", members: [
+                { name: "Fatimah Amir", position: "Ketua Bidang", image: "/assets/pengurus/wisnu-atmojo.jpg" },
+                { name: "Ilfa Hanna M.", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" }
+            ]
+        },
+        {
+            name: "Ketutoran", members: [
+                { name: "Nelsya Winanda", position: "Ketua Bidang", image: "/assets/pengurus/wisnu-atmojo.jpg" },
+                { name: "Dika Fihara", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" }
+            ]
+        },
         {
             name: "Bidang Pelaksana PAI",
             members: [
-                { name: "Dea Apriliyani", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                { name: "Wakil BPPAI", position: "Wakil Ketua Bidang" }
+                { name: "Nabila Nailah N.", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
+                { name: "Nabila Nailah N", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" }
             ]
         },
-        { name: "Bidang Pelaksana SPAI" },
-        { name: "Media Kreatif dan Informasi" }
+        {
+            name: "Bidang Pelaksana SPAI" members: [
+                { name: "Ahmad Sholihin", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
+                { name: "Nabila Hakim Azzahra", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" }
+            ]
+        },
+        {
+            name: "Media Kreatif dan Informasi" members: [
+                { name: "Rafli Permana", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
+                { name: "Najwa Futhana Ramadhani", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" }
+            ]
+        }
     ];
 
     return (
@@ -79,8 +105,8 @@ export default function StrukturPage() {
                         {/* Ketum */}
                         <div className="w-full flex justify-center">
                             <PengurusCard
-                                name="Muhtarom Albayt"
-                                position="Ketua Umum"
+                                name="Muhtarom Nur Rasyid"
+                                position="Ketua Umum Tutorial PAI SPAI"
                                 isLeader={true}
                                 image="/assets/pengurus/ketum.jpg"
                             />
@@ -88,13 +114,13 @@ export default function StrukturPage() {
                         {/* Waketums */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-3xl justify-items-center">
                             <PengurusCard
-                                name="Wakil Ketua I"
+                                name="Dika Rahman Firmansah"
                                 position="Wakil Ketua Umum I"
                                 isLeader={true}
                                 image="/assets/pengurus/waketum1.jpg"
                             />
                             <PengurusCard
-                                name="Wakil Ketua II"
+                                name="Adinda Zakiyah Ramadhanti"
                                 position="Wakil Ketua Umum II"
                                 isLeader={true}
                                 image="/assets/pengurus/waketum2.jpg"

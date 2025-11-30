@@ -90,6 +90,19 @@ CREATE TABLE IF NOT EXISTS bina_mentor_schedule (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Binder schedules
+CREATE TABLE IF NOT EXISTS binder_schedule (
+  id TEXT PRIMARY KEY,
+  week_number INTEGER NOT NULL,
+  date DATE NOT NULL,
+  topic TEXT NOT NULL,
+  facilitator TEXT,
+  materials TEXT, -- JSON array
+  location TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- News/Announcements
 CREATE TABLE IF NOT EXISTS news (
   id TEXT PRIMARY KEY,
