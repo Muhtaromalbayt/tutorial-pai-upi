@@ -22,8 +22,11 @@ export const metadata: Metadata = {
   description: "Tutorial PAI–SPAI UPI — Kabinet AL-FATH. Menumbuhkan Adab, Menggerakkan Peradaban.",
   keywords: ["Tutorial PAI", "SPAI UPI", "Kabinet AL-FATH", "UPI", "Pendidikan Agama Islam"],
   icons: {
-    icon: "/assets/logo/tutorial-logo.png",
-    shortcut: "/assets/logo/tutorial-logo.png",
+    icon: [
+      { url: "/favicon.png", sizes: "any" },
+      { url: "/assets/logo/tutorial-logo.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.png",
     apple: "/assets/logo/tutorial-logo.png",
   },
 };

@@ -1,5 +1,8 @@
+"use client";
+
 import Hero from "@/components/Hero";
 import Image from "next/image";
+import { useState } from "react";
 
 const PengurusCard = ({ name, position, division, isLeader = false, image }: { name: string, position: string, division?: string, isLeader?: boolean, image?: string }) => (
     <div className="flex flex-col items-center text-center group w-[240px] mx-auto transform hover:-translate-y-2 transition-transform duration-300">
@@ -27,65 +30,129 @@ const PengurusCard = ({ name, position, division, isLeader = false, image }: { n
     </div>
 );
 
+const DepartmentAccordion = ({ dept, index }: { dept: any, index: number }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div className="relative">
+            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-neutral-200"></div>
+            </div>
+
+            <div className="relative flex justify-center mb-4">
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="group px-6 py-3 bg-white text-lg font-bold text-neutral-900 uppercase tracking-wider border-2 border-neutral-100 rounded-full shadow-sm hover:shadow-md hover:border-primary-200 transition-all duration-300 flex items-center gap-3"
+                >
+                    <span>{dept.name}</span>
+                    <svg
+                        className={`w-5 h-5 text-primary-600 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+            </div>
+
+            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100 mb-12' : 'max-h-0 opacity-0'
+                }`}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl mx-auto justify-items-center pt-4">
+                    {dept.members ? (
+                        dept.members.map((member: any, idx: number) => (
+                            <PengurusCard
+                                key={idx}
+                                name={member.name}
+                                position={member.position}
+                                division={dept.name}
+                                image={member.image}
+                            />
+                        ))
+                    ) : (
+                        <>
+                            <PengurusCard name={`Ketua ${dept.name}`} position="Ketua Bidang" division={dept.name} />
+                            <PengurusCard name={`Wakil ${dept.name}`} position="Wakil Ketua Bidang" division={dept.name} />
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 export default function StrukturPage() {
     const departments = [
         {
             name: "Sekretaris Umum",
             members: [
                 { name: "Nina Wulandari", position: "Sekretaris Umum", image: "/assets/pengurus/dini-fatia.jpg" },
-                { name: "Frans Fernando Aji Soko", position: "Wakil Sekretaris Umum", image: "/assets/pengurus/m-zalfa.jpg" }
+                { name: "Frans Fernando Aji Soko", position: "Wakil Sekretaris Umum", image: "/assets/pengurus/m-zalfa.jpg" },
+                // Tambahkan anggota lainnya di sini
             ]
         },
         {
             name: "Bendahara Umum",
             members: [
                 { name: "Rachma Cantika D.", position: "Bendahara Umum", image: "/assets/pengurus/rachma-cantika.jpg" },
-                { name: "Dela Sari", position: "Wakil Bendahara Umum", image: "/assets/pengurus/alifia-s.jpg" }
+                { name: "Dela Sari", position: "Wakil Bendahara Umum", image: "/assets/pengurus/alifia-s.jpg" },
+                // Tambahkan anggota lainnya di sini
             ]
         },
         {
-            name: "Kepesertaan", members: [
-                { name: "Adnan Azizi.", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                { name: "I'zaz Dzul Fahmi", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" }
+            name: "Kepesertaan",
+            members: [
+                { name: "Adnan Azizi", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
+                { name: "I'zaz Dzul Fahmi", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
+                // Tambahkan anggota lainnya di sini
             ]
         },
-
         {
             name: "Penjaminan dan Peningkatan Mutu Tutorial",
             members: [
                 { name: "Muhammad Fathan Mubina", position: "Ketua Bidang", image: "/assets/pengurus/wisnu-atmojo.jpg" },
-                { name: "Muhammad Nashruddin A.", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" }
+                { name: "Muhammad Nashruddin A.", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" },
+                // Tambahkan anggota lainnya di sini
             ]
         },
         {
-            name: "Pengembangan Sumber Daya Insani", members: [
+            name: "Pengembangan Sumber Daya Insani",
+            members: [
                 { name: "Fatimah Amir", position: "Ketua Bidang", image: "/assets/pengurus/wisnu-atmojo.jpg" },
-                { name: "Ilfa Hanna M.", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" }
+                { name: "Ilfa Hanna M.", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" },
+                // Tambahkan anggota lainnya di sini
             ]
         },
         {
-            name: "Ketutoran", members: [
+            name: "Ketutoran",
+            members: [
                 { name: "Nelsya Winanda", position: "Ketua Bidang", image: "/assets/pengurus/wisnu-atmojo.jpg" },
-                { name: "Dika Fihara", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" }
+                { name: "Dika Fihara", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" },
+                // Tambahkan anggota lainnya di sini
             ]
         },
         {
             name: "Bidang Pelaksana PAI",
             members: [
                 { name: "Nabila Nailah N.", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                { name: "Nabila Nailah N", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" }
+                { name: "Nabila Nailah N", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
+                // Tambahkan anggota lainnya di sini
             ]
         },
         {
-            name: "Bidang Pelaksana SPAI", members: [
+            name: "Bidang Pelaksana SPAI",
+            members: [
                 { name: "Ahmad Sholihin", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                { name: "Nabila Hakim Azzahra", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" }
+                { name: "Nabila Hakim Azzahra", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
+                // Tambahkan anggota lainnya di sini
             ]
         },
         {
-            name: "Media Kreatif dan Informasi", members: [
+            name: "Media Kreatif dan Informasi",
+            members: [
                 { name: "Rafli Permana", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                { name: "Najwa Futhana Ramadhani", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" }
+                { name: "Najwa Futhana Ramadhani", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
+                // Tambahkan anggota lainnya di sini
             ]
         }
     ];
@@ -128,38 +195,14 @@ export default function StrukturPage() {
                         </div>
                     </div>
 
-                    {/* Bidang-Bidang */}
-                    <div className="space-y-24">
+                    {/* Bidang-Bidang with Accordion */}
+                    <div className="space-y-8">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl font-bold text-neutral-900 mb-2">Bidang Kepengurusan</h2>
+                            <p className="text-neutral-600">Klik nama bidang untuk melihat anggota</p>
+                        </div>
                         {departments.map((dept, index) => (
-                            <div key={index} className="relative">
-                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                    <div className="w-full border-t border-neutral-200"></div>
-                                </div>
-                                <div className="relative flex justify-center mb-12">
-                                    <span className="px-6 py-2 bg-white text-xl font-bold text-neutral-900 uppercase tracking-wider border-2 border-neutral-100 rounded-full shadow-sm">
-                                        {dept.name}
-                                    </span>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-3xl mx-auto justify-items-center">
-                                    {dept.members ? (
-                                        dept.members.map((member, idx) => (
-                                            <PengurusCard
-                                                key={idx}
-                                                name={member.name}
-                                                position={member.position}
-                                                division={dept.name}
-                                                image={member.image}
-                                            />
-                                        ))
-                                    ) : (
-                                        <>
-                                            <PengurusCard name={`Ketua ${dept.name}`} position="Ketua Bidang" division={dept.name} />
-                                            <PengurusCard name={`Wakil ${dept.name}`} position="Wakil Ketua Bidang" division={dept.name} />
-                                        </>
-                                    )}
-                                </div>
-                            </div>
+                            <DepartmentAccordion key={index} dept={dept} index={index} />
                         ))}
                     </div>
                 </div>
