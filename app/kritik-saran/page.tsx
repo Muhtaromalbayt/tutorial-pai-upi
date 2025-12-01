@@ -127,28 +127,6 @@ export default function KritikSaranPage() {
 
             if (response.ok) {
                 setSuccess(true);
-                
-                // Format WhatsApp Message
-                const waNumber = "6285165888607";
-                let waMessage = `*Kritik & Saran Baru*\n\n`;
-                waMessage += `*Kategori:* ${formData.category}\n`;
-                waMessage += `*Subjek:* ${formData.subject}\n`;
-                waMessage += `*Pesan:*\n${formData.message}\n\n`;
-                
-                if (!isAnonymous) {
-                    waMessage += `*Dari:* ${formData.name} (${formData.email})`;
-                } else {
-                    waMessage += `*Dari:* Anonim`;
-                }
-
-                if (attachments.length > 0) {
-                    waMessage += `\n\n(Pengirim menyertakan ${attachments.length} lampiran di website)`;
-                }
-
-                // Redirect to WhatsApp
-                const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
-                window.open(waUrl, '_blank');
-
                 setFormData({ name: "", email: "", category: "suggestion", subject: "", message: "" });
                 setAttachments([]);
                 setTimeout(() => setSuccess(false), 5000);
@@ -305,8 +283,8 @@ export default function KritikSaranPage() {
                                         type="button"
                                         onClick={isRecording ? stopRecording : startRecording}
                                         className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${isRecording
-                                                ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
-                                                : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
+                                            ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
+                                            : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
                                             }`}
                                     >
                                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

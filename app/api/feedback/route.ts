@@ -4,6 +4,7 @@ import { feedback } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { createAuth } from "@/lib/auth";
+import { sendFeedbackEmail } from "@/lib/email";
 
 export const runtime = "edge";
 
@@ -63,13 +64,10 @@ export async function POST(req: NextRequest) {
             isAnonymous: isAnonymous || false,
             category,
             subject,
-            message,
-            attachments: attachments ? JSON.stringify(attachments) : null,
-            status: 'pending',
-            adminNotes: null,
-        };
-
-        await db.insert(feedback).values(newFeedback);
+            await sendFeedbackEmail(newFeedback);
+        } catch (e) {
+            console.error("Email sending failed", e);
+        }
 
         return NextResponse.json({
             success: true,
