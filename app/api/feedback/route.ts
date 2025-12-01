@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
         // Get DB binding from environment
         // @ts-ignore - Cloudflare Pages env
-        const dbBinding = process.env.DB;
+        const dbBinding = process.env.DB as any;
         const db = drizzle(dbBinding);
 
         const newFeedback = {
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
     try {
         // @ts-ignore - Cloudflare Pages env
-        const dbBinding = process.env.DB;
+        const dbBinding = process.env.DB as any;
         const db = drizzle(dbBinding);
         const allFeedback = await db.select().from(feedback).all();
 
