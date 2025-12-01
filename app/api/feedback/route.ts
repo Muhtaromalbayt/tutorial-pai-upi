@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { drizzle } from "drizzle-orm/d1";
 import { feedback } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import { getRequestContext } from "@cloudflare/next-on-pages";
 
 export const runtime = "edge";
 
@@ -22,7 +20,10 @@ export async function POST(req: NextRequest) {
         // Generate unique ID
         const id = `feedback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-        const db = drizzle(getRequestContext().env.DB);
+        // Get DB binding from environment
+        // @ts-ignore - Cloudflare Pages env
+        const dbBinding = process.env.DB;
+        const db = drizzle(dbBinding);
 
         const newFeedback = {
             id,
@@ -56,7 +57,9 @@ export async function POST(req: NextRequest) {
 // GET - Fetch all feedback (public for now, will add auth later)
 export async function GET(req: NextRequest) {
     try {
-        const db = drizzle(getRequestContext().env.DB);
+        // @ts-ignore - Cloudflare Pages env
+        const dbBinding = process.env.DB;
+        const db = drizzle(dbBinding);
         const allFeedback = await db.select().from(feedback).all();
 
         return NextResponse.json({ feedback: allFeedback });
