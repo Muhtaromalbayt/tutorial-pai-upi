@@ -40,6 +40,49 @@ export default function KalenderPage() {
                 method: 'GET'
             });
             const result = await response.json() as { success: boolean, data: any[] };
+
+            if (result.success && Array.isArray(result.data)) {
+                // Map Google Sheets data to Event interface
+                const mappedEvents = result.data.map((item, index) => {
+                    // Validate date
+                    if (!item.date) return null;
+
+                    // Use new Date() to handle various formats (ISO or long string)
+                    const parsedDate = new Date(item.date);
+
+                    if (!isValid(parsedDate)) {
+                        console.warn(`Invalid date for event: ${item.title}`, item.date);
+                        return null;
+                    }
+
+                    return {
+                        id: `event-${index}-${Date.now()}`, // Generate ID
+                        title: item.title,
+                        description: item.description || "",
+                        date: parsedDate.toISOString(), // Store as ISO string for consistency
+                        time: item.time || "",
+                        location: item.location || "",
+                        category: item.category || "other",
+                        imageUrl: undefined
+                    };
+                }).filter((event): event is Event => event !== null);
+
+                setEvents(mappedEvents);
+
+                // Auto-navigate to the month of the first upcoming event
+                const now = new Date();
+                const upcomingEvent = mappedEvents.find(e => new Date(e.date) >= now);
+                if (upcomingEvent) {
+                    setCurrentMonth(new Date(upcomingEvent.date));
+                } else if (mappedEvents.length > 0) {
+                    // If no upcoming events, go to the last event
+                    setCurrentMonth(new Date(mappedEvents[mappedEvents.length - 1].date));
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching events:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
