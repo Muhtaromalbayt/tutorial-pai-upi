@@ -34,7 +34,11 @@ export default function KalenderPage() {
             // Google Apps Script URL for Calendar
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7pNeAceEn96xpmywn9Qw-Eri1zeICxTRZorgGYI1k_Jeq6BhJwHkF7FEmqraoUdPb/exec";
 
-            const response = await fetch(GOOGLE_SCRIPT_URL);
+            // Add timestamp to bypass cache
+            const response = await fetch(`${GOOGLE_SCRIPT_URL}?t=${Date.now()}`, {
+                cache: 'no-store',
+                method: 'GET'
+            });
             const result = await response.json() as { success: boolean, data: any[] };
 
             if (result.success && Array.isArray(result.data)) {
