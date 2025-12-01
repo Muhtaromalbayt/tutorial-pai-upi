@@ -116,7 +116,7 @@ export default function KritikSaranPage() {
 
         try {
             // Google Apps Script Web App URL
-            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdDK1rJKxlfYQWePly2O73jkLYo7qeJ31f8k0qDeo7WX9r46_AzdQPCHZyJkw4oEz4fg/exec';
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykcBHgK_1ssPxykpwwSyvCsOtlPlzDfNKoBN5OOj9gK7wsbnu8I94ms5QZDtq0yQwjRQ/exec';
 
             // Kirim data ke Google Sheets
             await fetch(GOOGLE_SCRIPT_URL, {
