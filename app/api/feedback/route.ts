@@ -69,6 +69,23 @@ export async function POST(req: NextRequest) {
             status: 'pending',
             adminNotes: null,
         };
+
+        await db.insert(feedback).values(newFeedback);
+
+        // Send email notification (fire and forget)
+        try {
+            // Get API key from context or process.env
+            const apiKey = getRequestContext().env.RESEND_API_KEY || process.env.RESEND_API_KEY;
+            await sendFeedbackEmail(newFeedback, apiKey);
+        } catch (e) {
+            console.error("Email sending failed", e);
+        }
+
+        return NextResponse.json({
+            success: true,
+            message: "Feedback submitted successfully",
+            id
+        });
     } catch (error: any) {
         console.error("Error submitting feedback:", error);
         return NextResponse.json(
