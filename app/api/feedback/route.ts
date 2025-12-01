@@ -64,16 +64,11 @@ export async function POST(req: NextRequest) {
             isAnonymous: isAnonymous || false,
             category,
             subject,
-            await sendFeedbackEmail(newFeedback);
-        } catch (e) {
-            console.error("Email sending failed", e);
-        }
-
-        return NextResponse.json({
-            success: true,
-            message: "Feedback submitted successfully",
-            id
-        });
+            message,
+            attachments: attachments ? JSON.stringify(attachments) : null,
+            status: 'pending',
+            adminNotes: null,
+        };
     } catch (error: any) {
         console.error("Error submitting feedback:", error);
         return NextResponse.json(
