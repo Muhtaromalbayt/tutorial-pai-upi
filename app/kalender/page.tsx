@@ -31,9 +31,26 @@ export default function KalenderPage() {
 
     const fetchEvents = async () => {
         try {
-            const response = await fetch("/api/calendar");
-            const data = await response.json() as { events: Event[] };
-            setEvents(data.events || []);
+            // Google Apps Script URL for Calendar
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7pNeAceEn96xpmywn9Qw-Eri1zeICxTRZorgGYI1k_Jeq6BhJwHkF7FEmqraoUdPb/exec";
+
+            const response = await fetch(GOOGLE_SCRIPT_URL);
+            const result = await response.json() as { success: boolean, data: any[] };
+
+            if (result.success && Array.isArray(result.data)) {
+                // Map Google Sheets data to Event interface
+                const mappedEvents: Event[] = result.data.map((item, index) => ({
+                    id: `event-${index}-${Date.now()}`, // Generate ID
+                    title: item.title,
+                    description: item.description,
+                    date: item.date,
+                    time: item.time,
+                    location: item.location,
+                    category: item.category,
+                    imageUrl: undefined // No image URL in sheets yet
+                }));
+                setEvents(mappedEvents);
+            }
         } catch (error) {
             console.error("Error fetching events:", error);
         } finally {
