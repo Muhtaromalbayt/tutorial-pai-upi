@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { drizzle } from "drizzle-orm/d1";
-import { feedback } from "@/lib/db/schema";
 
 export const runtime = "edge";
+
+interface CloudflareEnv {
+    DB: D1Database;
+}
 
 // POST - Submit new feedback (public)
 export async function POST(req: NextRequest) {
     try {
-        const body = await req.json() as any;
+        const body = await req.json();
         const { name, email, isAnonymous, category, subject, message, attachments } = body;
 
+        // Validation
         if (!category || !subject || !message) {
             return NextResponse.json(
                 { error: "Category, subject, and message are required" },
@@ -20,25 +23,34 @@ export async function POST(req: NextRequest) {
         // Generate unique ID
         const id = `feedback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-        // Get DB binding from environment
-        // @ts-ignore - Cloudflare Pages env
-        const dbBinding = process.env.DB as any;
-        const db = drizzle(dbBinding);
+        // Access Cloudflare D1 directly
+        const env = (req as any).env as CloudflareEnv;
 
-        const newFeedback = {
+        if (!env?.DB) {
+            console.error("DB binding not found");
+            return NextResponse.json(
+                { error: "Database not configured" },
+                { status: 500 }
+            );
+        }
+
+        // Direct D1 query without Drizzle
+        const stmt = env.DB.prepare(`
+            INSERT INTO feedback (id, name, email, is_anonymous, category, subject, message, attachments, status, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+        `).bind(
             id,
-            name: isAnonymous ? null : name,
-            email: isAnonymous ? null : email,
-            isAnonymous: isAnonymous || false,
+            isAnonymous ? null : name,
+            isAnonymous ? null : email,
+            isAnonymous ? 1 : 0,
             category,
             subject,
             message,
-            attachments: attachments ? JSON.stringify(attachments) : null,
-            status: 'pending',
-            adminNotes: null,
-        };
+            attachments ? JSON.stringify(attachments) : null,
+            'pending'
+        );
 
-        await db.insert(feedback).values(newFeedback);
+        await stmt.run();
 
         return NextResponse.json({
             success: true,
@@ -54,19 +66,27 @@ export async function POST(req: NextRequest) {
     }
 }
 
-// GET - Fetch all feedback (public for now, will add auth later)
+// GET - Fetch all feedback
 export async function GET(req: NextRequest) {
     try {
-        // @ts-ignore - Cloudflare Pages env
-        const dbBinding = process.env.DB as any;
-        const db = drizzle(dbBinding);
-        const allFeedback = await db.select().from(feedback).all();
+        const env = (req as any).env as CloudflareEnv;
 
-        return NextResponse.json({ feedback: allFeedback });
+        if (!env?.DB) {
+            return NextResponse.json(
+                { error: "Database not configured" },
+                { status: 500 }
+            );
+        }
+
+        const { results } = await env.DB.prepare(`
+            SELECT * FROM feedback ORDER BY created_at DESC
+        `).all();
+
+        return NextResponse.json({ feedback: results });
     } catch (error: any) {
         console.error("Error fetching feedback:", error);
         return NextResponse.json(
-            { error: "Failed to fetch feedback" },
+            { error: "Failed to fetch feedback", details: error.message },
             { status: 500 }
         );
     }
