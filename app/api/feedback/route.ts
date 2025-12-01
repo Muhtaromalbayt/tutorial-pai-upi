@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "edge";
 
-interface CloudflareEnv {
-    DB: D1Database;
-}
-
 interface FeedbackBody {
     name?: string;
     email?: string;
@@ -14,6 +10,12 @@ interface FeedbackBody {
     subject: string;
     message: string;
     attachments?: any[];
+}
+
+// Helper to get Cloudflare env
+function getCloudflareContext() {
+    // @ts-ignore
+    return globalThis.__env__;
 }
 
 // POST - Submit new feedback (public)
@@ -33,19 +35,45 @@ export async function POST(req: NextRequest) {
         // Generate unique ID
         const id = `feedback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-        // Access Cloudflare D1 directly
-        const env = (req as any).env as CloudflareEnv;
+        // Try multiple ways to access DB binding
+        let DB;
 
-        if (!env?.DB) {
-            console.error("DB binding not found");
+        // Method 1: Try global env
+        const globalEnv = getCloudflareContext();
+        if (globalEnv?.DB) {
+            DB = globalEnv.DB;
+        }
+
+        // Method 2: Try from request
+        if (!DB && (req as any).env?.DB) {
+            DB = (req as any).env.DB;
+        }
+
+        // Method 3: Try from context
+        if (!DB) {
+            try {
+                // @ts-ignore
+                const { env } = await import('@cloudflare/next-on-pages');
+                if (env?.DB) {
+                    DB = env.DB;
+                }
+            } catch (e) {
+                console.error("Failed to import @cloudflare/next-on-pages", e);
+            }
+        }
+
+        if (!DB) {
+            console.error("DB binding not found in any location");
+            console.error("globalEnv:", globalEnv);
+            console.error("req.env:", (req as any).env);
             return NextResponse.json(
-                { error: "Database not configured" },
+                { error: "Database not configured. Please check D1 bindings in Cloudflare Pages settings." },
                 { status: 500 }
             );
         }
 
-        // Direct D1 query without Drizzle
-        const stmt = env.DB.prepare(`
+        // Direct D1 query
+        const stmt = DB.prepare(`
             INSERT INTO feedback (id, name, email, is_anonymous, category, subject, message, attachments, status, created_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
         `).bind(
@@ -79,16 +107,23 @@ export async function POST(req: NextRequest) {
 // GET - Fetch all feedback
 export async function GET(req: NextRequest) {
     try {
-        const env = (req as any).env as CloudflareEnv;
+        // Try to get DB binding
+        let DB;
+        const globalEnv = getCloudflareContext();
+        if (globalEnv?.DB) {
+            DB = globalEnv.DB;
+        } else if ((req as any).env?.DB) {
+            DB = (req as any).env.DB;
+        }
 
-        if (!env?.DB) {
+        if (!DB) {
             return NextResponse.json(
                 { error: "Database not configured" },
                 { status: 500 }
             );
         }
 
-        const { results } = await env.DB.prepare(`
+        const { results } = await DB.prepare(`
             SELECT * FROM feedback ORDER BY created_at DESC
         `).all();
 
