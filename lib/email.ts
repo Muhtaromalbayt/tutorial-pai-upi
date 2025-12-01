@@ -1,3 +1,5 @@
+import { Resend } from 'resend';
+
 export async function sendFeedbackEmail(feedback: any, apiKey?: string) {
     if (!apiKey) {
         console.warn("RESEND_API_KEY is not set. Skipping email notification.");
@@ -9,7 +11,7 @@ export async function sendFeedbackEmail(feedback: any, apiKey?: string) {
     try {
         await resend.emails.send({
             from: 'Tutorial PAI <onboarding@resend.dev>', // Update this with your verified domain
-            to: ['tutorialpai.upi@gmail.com'], // Update with admin email
+            to: ['programtutorial@gmail.com'], // Update with admin email
             subject: `[Feedback] ${feedback.category}: ${feedback.subject}`,
             html: `
                 <h1>Feedback Baru</h1>
