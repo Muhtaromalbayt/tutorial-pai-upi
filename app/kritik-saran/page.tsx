@@ -127,6 +127,28 @@ export default function KritikSaranPage() {
 
             if (response.ok) {
                 setSuccess(true);
+                
+                // Format WhatsApp Message
+                const waNumber = "6285165888607";
+                let waMessage = `*Kritik & Saran Baru*\n\n`;
+                waMessage += `*Kategori:* ${formData.category}\n`;
+                waMessage += `*Subjek:* ${formData.subject}\n`;
+                waMessage += `*Pesan:*\n${formData.message}\n\n`;
+                
+                if (!isAnonymous) {
+                    waMessage += `*Dari:* ${formData.name} (${formData.email})`;
+                } else {
+                    waMessage += `*Dari:* Anonim`;
+                }
+
+                if (attachments.length > 0) {
+                    waMessage += `\n\n(Pengirim menyertakan ${attachments.length} lampiran di website)`;
+                }
+
+                // Redirect to WhatsApp
+                const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+                window.open(waUrl, '_blank');
+
                 setFormData({ name: "", email: "", category: "suggestion", subject: "", message: "" });
                 setAttachments([]);
                 setTimeout(() => setSuccess(false), 5000);
