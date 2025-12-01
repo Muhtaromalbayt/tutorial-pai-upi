@@ -115,36 +115,35 @@ export default function KritikSaranPage() {
         setLoading(true);
 
         try {
-            // Format WhatsApp message
-            const waNumber = "6285165888607"; // Nomor WhatsApp tujuan
+            // Google Apps Script Web App URL
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdDK1rJKxlfYQWePly2O73jkLYo7qeJ31f8k0qDeo7WX9r46_AzdQPCHZyJkw4oEz4fg/exec';
 
-            let waMessage = `*KRITIK & SARAN*\n\n`;
-            waMessage += `📋 *Kategori:* ${getCategoryLabel(formData.category)}\n`;
-            waMessage += `📌 *Subjek:* ${formData.subject}\n\n`;
-            waMessage += `💬 *Pesan:*\n${formData.message}\n\n`;
+            // Kirim data ke Google Sheets
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    category: formData.category,
+                    subject: formData.subject,
+                    message: formData.message,
+                    name: formData.name,
+                    email: formData.email,
+                    isAnonymous: isAnonymous,
+                    attachments: attachments
+                })
+            });
 
-            if (!isAnonymous) {
-                waMessage += `👤 *Pengirim:*\n`;
-                waMessage += `Nama: ${formData.name}\n`;
-                waMessage += `Email: ${formData.email}\n`;
-            } else {
-                waMessage += `👤 *Pengirim:* Anonim\n`;
-            }
-
-            if (attachments.length > 0) {
-                waMessage += `\n📎 *Lampiran:* ${attachments.length} file (akan dikirim terpisah)`;
-            }
-
-            // Open WhatsApp
-            const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
-            window.open(waUrl, '_blank');
-
-            // Show success message
+            // Show success
             setSuccess(true);
             setFormData({ name: "", email: "", category: "suggestion", subject: "", message: "" });
             setAttachments([]);
             setTimeout(() => setSuccess(false), 5000);
+
         } catch (error) {
+            console.error('Error:', error);
             alert("Terjadi kesalahan. Silakan coba lagi.");
         } finally {
             setLoading(false);
