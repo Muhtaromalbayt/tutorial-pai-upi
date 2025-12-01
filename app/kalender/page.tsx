@@ -40,36 +40,6 @@ export default function KalenderPage() {
                 method: 'GET'
             });
             const result = await response.json() as { success: boolean, data: any[] };
-
-            if (result.success && Array.isArray(result.data)) {
-                // Map Google Sheets data to Event interface
-                const mappedEvents = result.data.map((item, index) => {
-                    // Validate date
-                    if (!item.date) return null;
-                    const parsedDate = parseISO(item.date);
-                    if (!isValid(parsedDate)) {
-                        console.warn(`Invalid date for event: ${item.title}`, item.date);
-                        return null;
-                    }
-
-                    return {
-                        id: `event-${index}-${Date.now()}`, // Generate ID
-                        title: item.title,
-                        description: item.description || "",
-                        date: item.date,
-                        time: item.time || "",
-                        location: item.location || "",
-                        category: item.category || "other",
-                        imageUrl: undefined
-                    };
-                }).filter((event): event is Event => event !== null);
-
-                setEvents(mappedEvents);
-            }
-        } catch (error) {
-            console.error("Error fetching events:", error);
-        } finally {
-            setLoading(false);
         }
     };
 
