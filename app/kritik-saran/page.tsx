@@ -115,29 +115,52 @@ export default function KritikSaranPage() {
         setLoading(true);
 
         try {
-            const response = await fetch("/api/feedback", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    ...formData,
-                    isAnonymous,
-                    attachments: attachments.length > 0 ? attachments : null,
-                }),
-            });
+            // Format WhatsApp message
+            const waNumber = "6285165888607"; // Nomor WhatsApp tujuan
 
-            if (response.ok) {
-                setSuccess(true);
-                setFormData({ name: "", email: "", category: "suggestion", subject: "", message: "" });
-                setAttachments([]);
-                setTimeout(() => setSuccess(false), 5000);
+            let waMessage = `*KRITIK & SARAN*\n\n`;
+            waMessage += `📋 *Kategori:* ${getCategoryLabel(formData.category)}\n`;
+            waMessage += `📌 *Subjek:* ${formData.subject}\n\n`;
+            waMessage += `💬 *Pesan:*\n${formData.message}\n\n`;
+
+            if (!isAnonymous) {
+                waMessage += `👤 *Pengirim:*\n`;
+                waMessage += `Nama: ${formData.name}\n`;
+                waMessage += `Email: ${formData.email}\n`;
             } else {
-                alert("Gagal mengirim feedback. Silakan coba lagi.");
+                waMessage += `👤 *Pengirim:* Anonim\n`;
             }
+
+            if (attachments.length > 0) {
+                waMessage += `\n📎 *Lampiran:* ${attachments.length} file (akan dikirim terpisah)`;
+            }
+
+            // Open WhatsApp
+            const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+            window.open(waUrl, '_blank');
+
+            // Show success message
+            setSuccess(true);
+            setFormData({ name: "", email: "", category: "suggestion", subject: "", message: "" });
+            setAttachments([]);
+            setTimeout(() => setSuccess(false), 5000);
         } catch (error) {
             alert("Terjadi kesalahan. Silakan coba lagi.");
         } finally {
             setLoading(false);
         }
+    };
+
+    // Helper function to get category label
+    const getCategoryLabel = (category: string) => {
+        const labels: Record<string, string> = {
+            suggestion: "Saran",
+            complaint: "Keluhan",
+            praise: "Pujian",
+            question: "Pertanyaan",
+            other: "Lainnya"
+        };
+        return labels[category] || category;
     };
 
     return (
