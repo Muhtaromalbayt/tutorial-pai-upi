@@ -13,6 +13,7 @@ interface Event {
     time: string;
     location: string;
     category: string;
+    timeline?: string;
     imageUrl?: string;
 }
 
