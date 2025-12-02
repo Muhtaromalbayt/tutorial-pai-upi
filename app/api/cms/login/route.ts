@@ -76,10 +76,18 @@ export async function POST(request: NextRequest) {
                 role: user.role,
             },
         });
-    } catch (error) {
-        console.error("Login error:", error);
+    } catch (error: any) {
+        console.error("Login error details:", {
+            message: error.message,
+            stack: error.stack,
+            cause: error.cause
+        });
+
         return NextResponse.json(
-            { error: "Terjadi kesalahan saat login" },
+            {
+                error: "Terjadi kesalahan saat login",
+                details: process.env.NODE_ENV === "development" ? error.message : undefined
+            },
             { status: 500 }
         );
     }
