@@ -150,25 +150,6 @@ export default function KalenderPage() {
                         </div>
                     </div>
 
-                    {/* Category Filter */}
-                    <div className="mb-8">
-                        <h3 className="text-lg font-semibold text-neutral-900 mb-3">Filter Kategori</h3>
-                        <div className="flex flex-wrap gap-3">
-                            {categories.map(category => (
-                                <button
-                                    key={category}
-                                    onClick={() => setSelectedCategory(category)}
-                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${selectedCategory === category
-                                        ? "bg-primary-600 text-white"
-                                        : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
-                                        }`}
-                                >
-                                    {category}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
                     {loading ? (
                         <div className="card-academic p-16 text-center mb-8">
                             <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary-600 mx-auto mb-4"></div>
