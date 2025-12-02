@@ -20,11 +20,18 @@ interface Event {
 export default function KalenderPage() {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedCategory, setSelectedCategory] = useState<string>("Semua");
+    const [selectedTimeline, setSelectedTimeline] = useState<string>("Semua");
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const categories = ["Semua", "Kajian", "Program", "Meeting", "Seminar", "BINDER", "Rihlah"];
+    const categories = [
+        "Semua", "Kuliah Dhuha", "Mentoring", "Bina Mentor", "Bina Kader",
+        "Tutorial SPAI", "SoS", "WoW", "Kantin/Kamus", "PMM x PCM",
+        "PMT", "Pemdiktor", "Pengukuhan Binder", "Lainnya"
+    ];
+
+    const timelines = ["Semua", "Tutorial PAI", "Tutorial SPAI", "Bina Kader", "Kepengurusan"];
 
     useEffect(() => {
         fetchEvents();
@@ -63,7 +70,8 @@ export default function KalenderPage() {
                         date: parsedDate.toISOString(), // Store as ISO string for consistency
                         time: item.time || "",
                         location: item.location || "",
-                        category: item.category || "other",
+                        category: item.category || "Lainnya",
+                        timeline: item.timeline || "Umum",
                         imageUrl: undefined
                     };
                 }).filter((event): event is Event => event !== null);
@@ -91,9 +99,11 @@ export default function KalenderPage() {
     const monthEnd = endOfMonth(currentMonth);
     const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
-    const filteredEvents = selectedCategory === "Semua"
-        ? events
-        : events.filter(event => event.category === selectedCategory);
+    const filteredEvents = events.filter(event => {
+        const categoryMatch = selectedCategory === "Semua" || event.category === selectedCategory;
+        const timelineMatch = selectedTimeline === "Semua" || event.timeline === selectedTimeline;
+        return categoryMatch && timelineMatch;
+    });
 
     const getEventsForDay = (day: Date) => {
         return filteredEvents.filter(event => {
@@ -124,9 +134,28 @@ export default function KalenderPage() {
 
             <section className="section-academic">
                 <div className="container-upi max-w-7xl">
+                    {/* Timeline Filter */}
+                    <div className="mb-6">
+                        <h3 className="text-lg font-semibold text-neutral-900 mb-3">Timeline Kegiatan</h3>
+                        <div className="flex flex-wrap gap-2">
+                            {timelines.map(timeline => (
+                                <button
+                                    key={timeline}
+                                    onClick={() => setSelectedTimeline(timeline)}
+                                    className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-sm ${selectedTimeline === timeline
+                                            ? "bg-primary-600 text-white shadow-md transform scale-105"
+                                            : "bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200"
+                                        }`}
+                                >
+                                    {timeline}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
                     {/* Category Filter */}
                     <div className="mb-8">
-                        <h3 className="text-lg font-semibold text-neutral-900 mb-4">Filter Kategori</h3>
+                        <h3 className="text-lg font-semibold text-neutral-900 mb-3">Filter Kategori</h3>
                         <div className="flex flex-wrap gap-3">
                             {categories.map(category => (
                                 <button
