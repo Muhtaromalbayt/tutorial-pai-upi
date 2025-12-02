@@ -1,60 +1,81 @@
-import { getRequestContext } from "@cloudflare/next-on-pages";
-import { drizzle } from "drizzle-orm/d1";
-import { simple_sessions, users } from "./db/schema";
-import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
 
-// Web Crypto API for hashing
-async function hashPassword(password: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+const SESSION_COOKIE_NAME = "cms_session";
+const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
+
+export interface SessionData {
+    userId: string;
+    email: string;
+    name: string;
+    role: string;
 }
 
-async function verifyPassword(password: string, hash: string): Promise<boolean> {
-    const newHash = await hashPassword(password);
-    return newHash === hash;
+/**
+ * Hash a password using bcrypt
+ */
+export async function hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(password, salt);
 }
 
-export const simpleAuth = {
-    hashPassword,
-    verifyPassword,
+/**
+ * Verify a password against a hash
+ */
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(password, hash);
+}
 
-    async createSession(userId: string, db: any) {
-        const sessionId = crypto.randomUUID();
-        const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
+/**
+ * Create a session cookie
+ */
+export async function createSession(sessionData: SessionData): Promise<void> {
+    const cookieStore = await cookies();
+    const sessionString = JSON.stringify(sessionData);
+    const encodedSession = Buffer.from(sessionString).toString("base64");
 
-        await db.insert(simple_sessions).values({
-            id: sessionId,
-            userId,
-            expiresAt,
-        });
+    cookieStore.set(SESSION_COOKIE_NAME, encodedSession, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: SESSION_MAX_AGE,
+        path: "/",
+    });
+}
 
-        return sessionId;
-    },
+/**
+ * Get session data from cookie
+ */
+export async function getSession(): Promise<SessionData | null> {
+    try {
+        const cookieStore = await cookies();
+        const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
 
-    async getSession(sessionId: string, db: any) {
-        const result = await db.select({
-            user: users,
-            session: simple_sessions
-        })
-            .from(simple_sessions)
-            .innerJoin(users, eq(simple_sessions.userId, users.id))
-            .where(eq(simple_sessions.id, sessionId))
-            .get();
-
-        if (!result) return null;
-
-        if (result.session.expiresAt < Date.now()) {
-            await db.delete(simple_sessions).where(eq(simple_sessions.id, sessionId));
+        if (!sessionCookie?.value) {
             return null;
         }
 
-        return result;
-    },
+        const sessionString = Buffer.from(sessionCookie.value, "base64").toString("utf-8");
+        const sessionData = JSON.parse(sessionString) as SessionData;
 
-    async deleteSession(sessionId: string, db: any) {
-        await db.delete(simple_sessions).where(eq(simple_sessions.id, sessionId));
+        return sessionData;
+    } catch (error) {
+        console.error("Error getting session:", error);
+        return null;
     }
-};
+}
+
+/**
+ * Delete session cookie
+ */
+export async function deleteSession(): Promise<void> {
+    const cookieStore = await cookies();
+    cookieStore.delete(SESSION_COOKIE_NAME);
+}
+
+/**
+ * Validate session and return user data
+ */
+export async function validateSession(): Promise<SessionData | null> {
+    return getSession();
+}

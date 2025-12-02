@@ -1,7 +1,85 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import HeroActivities from "@/components/HeroActivities";
 import Card from "@/components/Card";
 import Link from "next/link";
 import Image from "next/image";
+
+interface NewsItem {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  imageUrl?: string;
+  publishedDate?: string;
+  isPublished: boolean;
+}
+
+function NewsGrid() {
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchNews();
+  }, []);
+
+  const fetchNews = async () => {
+    try {
+      const response = await fetch("/api/news");
+      const data = await response.json() as { news: NewsItem[] };
+      const publishedNews = (data.news || [])
+        .filter((item: NewsItem) => item.isPublished)
+        .slice(0, 3); // Get only first 3 published news
+      setNews(publishedNews);
+    } catch (error) {
+      console.error("Error fetching news:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="animate-pulse">
+            <div className="bg-neutral-200 h-48 rounded-t-xl"></div>
+            <div className="bg-neutral-100 p-6 rounded-b-xl">
+              <div className="h-4 bg-neutral-200 rounded w-3/4 mb-3"></div>
+              <div className="h-3 bg-neutral-200 rounded w-full mb-2"></div>
+              <div className="h-3 bg-neutral-200 rounded w-5/6"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (news.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-neutral-600">Belum ada berita yang dipublikasikan.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {news.map((item) => (
+        <Card
+          key={item.id}
+          title={item.title}
+          description={item.content}
+          date={item.publishedDate || ""}
+          category={item.category}
+          imageUrl={item.imageUrl || "/assets/kegiatan/default.png"}
+          href={`/news/${item.id}`}
+        />
+      ))}
+    </div>
+  );
+}
 
 export default function Home() {
   return (
@@ -20,32 +98,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card
-              title="Pembukaan Kuliah Dhuha Perdana"
-              description="Ribuan mahasiswa antusias mengikuti Kuliah Dhuha perdana semester genap di Masjid Al-Furqan."
-              date="18 Februari 2025"
-              category="Kegiatan"
-              imageUrl="/assets/kegiatan/kuliah-dhuha.png"
-              href="/news/kuliah-dhuha-perdana"
-            />
-            <Card
-              title="Seminar PAI: Membangun Generasi Rabbani"
-              description="Seminar nasional menghadirkan pembicara inspiratif membahas tantangan pemuda masa kini."
-              date="25 Februari 2025"
-              category="Seminar"
-              imageUrl="/assets/kegiatan/seminar-pai.png"
-              href="/news/seminar-pai"
-            />
-            <Card
-              title="Open Recruitment Mentor 2025"
-              description="Mari bergabung menjadi bagian dari kebaikan. Pendaftaran mentor Tutorial PAI kini dibuka."
-              date="1 Maret 2025"
-              category="Pengumuman"
-              imageUrl="/assets/kegiatan/oprec-mentor.png"
-              href="/news/oprec-mentor"
-            />
-          </div>
+          <NewsGrid />
 
           <div className="text-center mt-12">
             <Link

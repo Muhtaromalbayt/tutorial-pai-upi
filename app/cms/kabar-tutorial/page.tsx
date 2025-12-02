@@ -3,43 +3,45 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-interface Schedule {
+interface NewsItem {
     id: string;
-    weekNumber: number;
-    date: string;
-    topic: string;
-    facilitator?: string;
-    materials?: string;
-    location: string;
+    title: string;
+    content: string;
+    category: string;
+    imageUrl?: string;
+    author?: string;
+    publishedDate?: string;
+    isPublished: boolean;
 }
 
-export default function AdminBinderPage() {
-    const [schedules, setSchedules] = useState<Schedule[]>([]);
+export default function KabarTutorialPage() {
+    const [newsList, setNewsList] = useState<NewsItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
 
     // Form state
     const [formData, setFormData] = useState({
-        weekNumber: "",
-        date: "",
-        topic: "",
-        facilitator: "",
-        materials: "",
-        location: "Masjid Kampus UPI",
+        title: "",
+        content: "",
+        category: "Kegiatan",
+        imageUrl: "",
+        author: "",
+        publishedDate: "",
+        isPublished: false,
     });
 
     useEffect(() => {
-        fetchSchedules();
+        fetchNews();
     }, []);
 
-    const fetchSchedules = async () => {
+    const fetchNews = async () => {
         try {
-            const response = await fetch("/api/binder");
-            const data = await response.json() as any;
-            setSchedules(data.schedules || []);
+            const response = await fetch("/api/news");
+            const data = await response.json() as { news: NewsItem[] };
+            setNewsList(data.news || []);
         } catch (error) {
-            console.error("Error fetching schedules:", error);
+            console.error("Error fetching news:", error);
         } finally {
             setLoading(false);
         }
@@ -49,7 +51,7 @@ export default function AdminBinderPage() {
         e.preventDefault();
 
         try {
-            const url = "/api/binder";
+            const url = "/api/news";
             const method = editingId ? "PUT" : "POST";
 
             const payload = {
@@ -64,59 +66,61 @@ export default function AdminBinderPage() {
             });
 
             if (response.ok) {
-                alert(editingId ? "Jadwal berhasil diupdate!" : "Jadwal berhasil ditambahkan!");
+                alert(editingId ? "Berita berhasil diupdate!" : "Berita berhasil ditambahkan!");
                 resetForm();
-                fetchSchedules();
+                fetchNews();
             } else {
-                alert("Gagal menyimpan jadwal");
+                alert("Gagal menyimpan berita");
             }
         } catch (error) {
-            console.error("Error saving schedule:", error);
+            console.error("Error saving news:", error);
             alert("Terjadi kesalahan");
         }
     };
 
-    const handleEdit = (schedule: Schedule) => {
+    const handleEdit = (news: NewsItem) => {
         setFormData({
-            weekNumber: schedule.weekNumber.toString(),
-            date: schedule.date,
-            topic: schedule.topic,
-            facilitator: schedule.facilitator || "",
-            materials: schedule.materials || "",
-            location: schedule.location,
+            title: news.title,
+            content: news.content,
+            category: news.category || "Kegiatan",
+            imageUrl: news.imageUrl || "",
+            author: news.author || "",
+            publishedDate: news.publishedDate || "",
+            isPublished: news.isPublished,
         });
-        setEditingId(schedule.id);
+        setEditingId(news.id);
         setShowForm(true);
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Yakin ingin menghapus jadwal ini?")) return;
+        if (!confirm("Yakin ingin menghapus berita ini?")) return;
 
         try {
-            const response = await fetch(`/api/binder?id=${id}`, {
+            const response = await fetch(`/api/news?id=${id}`, {
                 method: "DELETE",
             });
 
             if (response.ok) {
-                alert("Jadwal berhasil dihapus!");
-                fetchSchedules();
+                alert("Berita berhasil dihapus!");
+                fetchNews();
             } else {
-                alert("Gagal menghapus jadwal");
+                alert("Gagal menghapus berita");
             }
         } catch (error) {
-            console.error("Error deleting schedule:", error);
+            console.error("Error deleting news:", error);
             alert("Terjadi kesalahan");
         }
     };
 
     const resetForm = () => {
         setFormData({
-            weekNumber: "",
-            date: "",
-            topic: "",
-            facilitator: "",
-            materials: "",
-            location: "Masjid Kampus UPI",
+            title: "",
+            content: "",
+            category: "Kegiatan",
+            imageUrl: "",
+            author: "",
+            publishedDate: "",
+            isPublished: false,
         });
         setEditingId(null);
         setShowForm(false);
@@ -130,20 +134,20 @@ export default function AdminBinderPage() {
                     <div className="flex items-center justify-between">
                         <div>
                             <Link
-                                href="/admin/dashboard"
+                                href="/cms/dashboard"
                                 className="text-sm text-neutral-600 hover:text-primary-600 mb-2 inline-block"
                             >
                                 ← Kembali ke Dashboard
                             </Link>
                             <h1 className="text-2xl font-bold text-neutral-900">
-                                Kelola Jadwal Binder
+                                Kelola Kabar Tutorial
                             </h1>
                         </div>
                         <button
                             onClick={() => setShowForm(!showForm)}
                             className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
                         >
-                            {showForm ? "Tutup Form" : "+ Tambah Jadwal"}
+                            {showForm ? "Tutup Form" : "+ Tambah Berita"}
                         </button>
                     </div>
                 </div>
@@ -154,100 +158,118 @@ export default function AdminBinderPage() {
                 {showForm && (
                     <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 mb-8">
                         <h2 className="text-xl font-semibold mb-6">
-                            {editingId ? "Edit Jadwal" : "Tambah Jadwal Baru"}
+                            {editingId ? "Edit Berita" : "Tambah Berita Baru"}
                         </h2>
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                        Minggu Ke-*
-                                    </label>
-                                    <input
-                                        type="number"
-                                        required
-                                        value={formData.weekNumber}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, weekNumber: e.target.value })
-                                        }
-                                        className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                        placeholder="1"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                        Tanggal*
-                                    </label>
-                                    <input
-                                        type="date"
-                                        required
-                                        value={formData.date}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, date: e.target.value })
-                                        }
-                                        className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                    />
-                                </div>
-                            </div>
-
                             <div>
                                 <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                    Topik/Materi*
+                                    Judul*
                                 </label>
                                 <input
                                     type="text"
                                     required
-                                    value={formData.topic}
+                                    value={formData.title}
                                     onChange={(e) =>
-                                        setFormData({ ...formData, topic: e.target.value })
+                                        setFormData({ ...formData, title: e.target.value })
                                     }
                                     className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                    placeholder="Contoh: Materi Binder 1"
+                                    placeholder="Judul Berita"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                                    Konten/Deskripsi*
+                                </label>
+                                <textarea
+                                    required
+                                    value={formData.content}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, content: e.target.value })
+                                    }
+                                    rows={4}
+                                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                    placeholder="Deskripsi singkat berita..."
                                 />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                        Fasilitator
+                                        Kategori
+                                    </label>
+                                    <select
+                                        value={formData.category}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, category: e.target.value })
+                                        }
+                                        className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                    >
+                                        <option value="Kegiatan">Kegiatan</option>
+                                        <option value="Seminar">Seminar</option>
+                                        <option value="Pengumuman">Pengumuman</option>
+                                        <option value="Berita">Berita</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-neutral-700 mb-2">
+                                        Penulis
                                     </label>
                                     <input
                                         type="text"
-                                        value={formData.facilitator}
+                                        value={formData.author}
                                         onChange={(e) =>
-                                            setFormData({ ...formData, facilitator: e.target.value })
+                                            setFormData({ ...formData, author: e.target.value })
                                         }
                                         className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                        placeholder="Nama Fasilitator"
+                                        placeholder="Nama Penulis"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-neutral-700 mb-2">
+                                        URL Gambar
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={formData.imageUrl}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, imageUrl: e.target.value })
+                                        }
+                                        className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                        placeholder="/assets/kegiatan/..."
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                        Lokasi
+                                        Tanggal Publish
                                     </label>
                                     <input
-                                        type="text"
-                                        value={formData.location}
+                                        type="date"
+                                        value={formData.publishedDate}
                                         onChange={(e) =>
-                                            setFormData({ ...formData, location: e.target.value })
+                                            setFormData({ ...formData, publishedDate: e.target.value })
                                         }
                                         className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                                     />
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                    Materi (Link atau catatan)
-                                </label>
-                                <textarea
-                                    value={formData.materials}
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id="isPublished"
+                                    checked={formData.isPublished}
                                     onChange={(e) =>
-                                        setFormData({ ...formData, materials: e.target.value })
+                                        setFormData({ ...formData, isPublished: e.target.checked })
                                     }
-                                    rows={3}
-                                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                    placeholder="Link Google Drive, PDF, atau catatan"
+                                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded"
                                 />
+                                <label htmlFor="isPublished" className="ml-2 block text-sm text-neutral-900">
+                                    Publish Sekarang
+                                </label>
                             </div>
 
                             <div className="flex space-x-3 pt-4">
@@ -255,7 +277,7 @@ export default function AdminBinderPage() {
                                     type="submit"
                                     className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
                                 >
-                                    {editingId ? "Update Jadwal" : "Simpan Jadwal"}
+                                    {editingId ? "Update Berita" : "Simpan Berita"}
                                 </button>
                                 <button
                                     type="button"
@@ -273,18 +295,18 @@ export default function AdminBinderPage() {
                 <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
                     <div className="px-6 py-4 border-b border-neutral-200">
                         <h2 className="text-lg font-semibold text-neutral-900">
-                            Daftar Jadwal ({schedules.length})
+                            Daftar Berita ({newsList.length})
                         </h2>
                     </div>
 
                     {loading ? (
                         <div className="p-8 text-center">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-                            <p className="mt-4 text-neutral-600">Memuat jadwal...</p>
+                            <p className="mt-4 text-neutral-600">Memuat berita...</p>
                         </div>
-                    ) : schedules.length === 0 ? (
+                    ) : newsList.length === 0 ? (
                         <div className="p-8 text-center text-neutral-600">
-                            Belum ada jadwal. Klik "Tambah Jadwal" untuk menambahkan.
+                            Belum ada berita. Klik "Tambah Berita" untuk menambahkan.
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
@@ -292,19 +314,16 @@ export default function AdminBinderPage() {
                                 <thead className="bg-neutral-50">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                                            Minggu
+                                            Judul
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                                            Kategori
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                                             Tanggal
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                                            Topik
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                                            Fasilitator
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                                            Lokasi
+                                            Status
                                         </th>
                                         <th className="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
                                             Aksi
@@ -312,36 +331,39 @@ export default function AdminBinderPage() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-neutral-200">
-                                    {schedules.map((schedule) => (
-                                        <tr key={schedule.id} className="hover:bg-neutral-50">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">
-                                                Minggu {schedule.weekNumber}
+                                    {newsList.map((news) => (
+                                        <tr key={news.id} className="hover:bg-neutral-50">
+                                            <td className="px-6 py-4 text-sm font-medium text-neutral-900">
+                                                {news.title}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">
-                                                {new Date(schedule.date).toLocaleDateString("id-ID", {
-                                                    day: "numeric",
-                                                    month: "long",
-                                                    year: "numeric",
-                                                })}
+                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                    {news.category}
+                                                </span>
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-neutral-900">
-                                                {schedule.topic}
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">
+                                                {news.publishedDate || "-"}
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-neutral-600">
-                                                {schedule.facilitator || "-"}
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-neutral-600">
-                                                {schedule.location}
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">
+                                                {news.isPublished ? (
+                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                        Published
+                                                    </span>
+                                                ) : (
+                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                        Draft
+                                                    </span>
+                                                )}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <button
-                                                    onClick={() => handleEdit(schedule)}
+                                                    onClick={() => handleEdit(news)}
                                                     className="text-primary-600 hover:text-primary-900 mr-4"
                                                 >
                                                     Edit
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDelete(schedule.id)}
+                                                    onClick={() => handleDelete(news.id)}
                                                     className="text-red-600 hover:text-red-900"
                                                 >
                                                     Hapus

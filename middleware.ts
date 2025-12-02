@@ -4,12 +4,12 @@ import type { NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
 
-    // Protect /admin routes
-    if (path.startsWith("/admin") && !path.startsWith("/admin/login")) {
-        const sessionCookie = request.cookies.get("better-auth.session_token");
+    // Protect /cms routes (except login)
+    if (path.startsWith("/cms") && !path.startsWith("/cms/login")) {
+        const sessionCookie = request.cookies.get("cms_session");
 
         if (!sessionCookie) {
-            return NextResponse.redirect(new URL("/admin/login", request.url));
+            return NextResponse.redirect(new URL("/cms/login", request.url));
         }
     }
 
@@ -17,5 +17,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/admin/:path*"],
+    matcher: ["/cms/:path*"],
 };
