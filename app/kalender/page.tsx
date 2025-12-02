@@ -19,7 +19,6 @@ interface Event {
 
 export default function KalenderPage() {
     const [currentMonth, setCurrentMonth] = useState(new Date());
-    const [selectedCategory, setSelectedCategory] = useState<string>("Semua");
     const [selectedTimeline, setSelectedTimeline] = useState<string>("Semua");
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [events, setEvents] = useState<Event[]>([]);
@@ -99,11 +98,9 @@ export default function KalenderPage() {
     const monthEnd = endOfMonth(currentMonth);
     const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
-    const filteredEvents = events.filter(event => {
-        const categoryMatch = selectedCategory === "Semua" || event.category === selectedCategory;
-        const timelineMatch = selectedTimeline === "Semua" || event.timeline === selectedTimeline;
-        return categoryMatch && timelineMatch;
-    });
+    const filteredEvents = selectedTimeline === "Semua"
+        ? events
+        : events.filter(event => event.timeline === selectedTimeline);
 
     const getEventsForDay = (day: Date) => {
         return filteredEvents.filter(event => {
@@ -143,8 +140,8 @@ export default function KalenderPage() {
                                     key={timeline}
                                     onClick={() => setSelectedTimeline(timeline)}
                                     className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-sm ${selectedTimeline === timeline
-                                            ? "bg-primary-600 text-white shadow-md transform scale-105"
-                                            : "bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200"
+                                        ? "bg-primary-600 text-white shadow-md transform scale-105"
+                                        : "bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200"
                                         }`}
                                 >
                                     {timeline}
