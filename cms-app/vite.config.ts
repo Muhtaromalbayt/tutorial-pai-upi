@@ -22,7 +22,7 @@ export default defineConfig({
     define: {
         'import.meta.env.VITE_API_BASE_URL': JSON.stringify(
             process.env.NODE_ENV === 'production'
-                ? 'https://tutorial-pai-upi.pages.dev' // Update with your production URL
+                ? 'https://tutorialpaispai.bisma.online'
                 : ''
         )
     }
