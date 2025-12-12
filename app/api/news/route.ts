@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
-import { drizzle } from "drizzle-orm/d1";
-import { news } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
 import { corsHeaders, handleCors } from "@/lib/cors";
 
 export const runtime = "edge";
@@ -27,11 +24,13 @@ export async function GET(request: NextRequest) {
 
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
-        const newsList = await db.select().from(news).orderBy(desc(news.createdAt)).all();
+        const result = await db.prepare(
+            "SELECT * FROM news ORDER BY created_at DESC"
+        ).all();
 
-        return addCorsHeaders(NextResponse.json({ news: newsList }), origin);
+        return addCorsHeaders(NextResponse.json({ news: result.results }), origin);
     } catch (error: any) {
         console.error("Error fetching news:", error);
         return addCorsHeaders(
@@ -47,11 +46,9 @@ export async function POST(req: NextRequest) {
 
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
         const body = await req.json() as any;
-        console.log("POST /api/news received:", JSON.stringify(body));
-
         const { title, content, category, imageUrl, author, publishedDate, isPublished } = body;
 
         if (!title || !content) {
@@ -61,31 +58,29 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Generate ID
         const id = `news_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const now = new Date().toISOString();
+        const published = isPublished ? 1 : 0;
 
-        // Insert without .returning() which may not be supported in D1
-        await db.insert(news).values({
+        await db.prepare(
+            `INSERT INTO news (id, title, content, category, image_url, author, published_date, is_published, created_at, updated_at) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ).bind(
             id,
-            title: title || "",
-            content: content || "",
-            category: category || "Kegiatan",
-            imageUrl: imageUrl || null,
-            author: author || null,
-            publishedDate: publishedDate || null,
-            isPublished: isPublished === true,
-            createdAt: now,
-            updatedAt: now,
-        });
+            title,
+            content,
+            category || "Kegiatan",
+            imageUrl || null,
+            author || null,
+            publishedDate || null,
+            published,
+            now,
+            now
+        ).run();
 
-        // Fetch the inserted news
-        const inserted = await db.select().from(news).where(eq(news.id, id)).get();
-
-        return addCorsHeaders(NextResponse.json({ success: true, news: inserted }), origin);
+        return addCorsHeaders(NextResponse.json({ success: true, id }), origin);
     } catch (error: any) {
         console.error("Error creating news:", error);
-        console.error("Error stack:", error.stack);
         return addCorsHeaders(
             NextResponse.json({ error: "Failed to create news", details: error.message }, { status: 500 }),
             origin
@@ -99,7 +94,7 @@ export async function PUT(req: NextRequest) {
 
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
         const body = await req.json() as any;
         const { id, title, content, category, imageUrl, author, publishedDate, isPublished } = body;
@@ -111,23 +106,24 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        await db
-            .update(news)
-            .set({
-                title,
-                content,
-                category,
-                imageUrl: imageUrl || null,
-                author: author || null,
-                publishedDate: publishedDate || null,
-                isPublished: isPublished === true,
-                updatedAt: new Date().toISOString(),
-            })
-            .where(eq(news.id, id));
+        const now = new Date().toISOString();
+        const published = isPublished ? 1 : 0;
 
-        const updated = await db.select().from(news).where(eq(news.id, id)).get();
+        await db.prepare(
+            `UPDATE news SET title = ?, content = ?, category = ?, image_url = ?, author = ?, published_date = ?, is_published = ?, updated_at = ? WHERE id = ?`
+        ).bind(
+            title,
+            content,
+            category,
+            imageUrl || null,
+            author || null,
+            publishedDate || null,
+            published,
+            now,
+            id
+        ).run();
 
-        return addCorsHeaders(NextResponse.json({ success: true, news: updated }), origin);
+        return addCorsHeaders(NextResponse.json({ success: true }), origin);
     } catch (error: any) {
         console.error("Error updating news:", error);
         return addCorsHeaders(
@@ -143,7 +139,7 @@ export async function DELETE(req: NextRequest) {
 
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
@@ -152,7 +148,7 @@ export async function DELETE(req: NextRequest) {
             return addCorsHeaders(NextResponse.json({ error: "ID required" }, { status: 400 }), origin);
         }
 
-        await db.delete(news).where(eq(news.id, id));
+        await db.prepare("DELETE FROM news WHERE id = ?").bind(id).run();
 
         return addCorsHeaders(NextResponse.json({ success: true }), origin);
     } catch (error: any) {
