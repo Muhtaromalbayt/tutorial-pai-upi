@@ -4,43 +4,36 @@ import { drizzle } from "drizzle-orm/d1";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { verifyPassword, createSession } from "@/lib/simple-auth";
+import { corsHeaders, handleCors, jsonWithCors } from "@/lib/cors";
 
 export const runtime = "edge";
 
-// Fallback credentials for emergency access
-const FALLBACK_EMAIL = "admin@upi.edu";
-// Hash for "admin123"
-const FALLBACK_HASH = "$2a$10$rKZxJxH5qZQJ5YqZQJ5YqOqZQJ5YqZQJ5YqZQJ5YqZQJ5YqZQJ5Yq";
+// Handle preflight request
+export async function OPTIONS(request: NextRequest) {
+    const origin = request.headers.get("origin");
+    return handleCors(origin);
+}
 
 export async function POST(request: NextRequest) {
+    const origin = request.headers.get("origin");
+
     try {
         const body = await request.json() as { email?: string; password?: string };
         const { email, password } = body;
 
         if (!email || !password) {
-            return NextResponse.json(
+            return jsonWithCors(
                 { error: "Email dan password harus diisi" },
-                { status: 400 }
+                origin,
+                400
             );
         }
 
         let user = null;
-        let dbError = null;
 
-        // Try database authentication first
         try {
-            // Get database - works in both dev and production
-            let db;
-            try {
-                const { env } = getRequestContext();
-                db = drizzle(env.DB);
-            } catch (e: any) {
-                // Fallback for development
-                if (process.env.NODE_ENV === "development") {
-                    throw new Error("Database not configured in dev");
-                }
-                throw e;
-            }
+            const { env } = getRequestContext();
+            const db = drizzle(env.DB);
 
             // Find user by email
             const dbUser = await db
@@ -61,31 +54,14 @@ export async function POST(request: NextRequest) {
                 }
             }
         } catch (error: any) {
-            console.error("Database auth failed, attempting fallback:", error);
-            dbError = error;
-        }
-
-        // If database auth failed or user not found/invalid, try fallback if DB error occurred
-        if (!user && dbError) {
-            console.log("Checking fallback credentials...");
-            if (email === FALLBACK_EMAIL) {
-                const isValid = await verifyPassword(password, FALLBACK_HASH);
-                if (isValid) {
-                    user = {
-                        id: "admin-fallback",
-                        email: FALLBACK_EMAIL,
-                        name: "Admin (Fallback)",
-                        role: "admin"
-                    };
-                    console.log("Fallback authentication successful");
-                }
-            }
+            console.error("Database auth failed:", error);
         }
 
         if (!user) {
-            return NextResponse.json(
+            return jsonWithCors(
                 { error: "Email atau password salah" },
-                { status: 401 }
+                origin,
+                401
             );
         }
 
@@ -97,7 +73,7 @@ export async function POST(request: NextRequest) {
             role: user.role,
         });
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             success: true,
             user: {
                 id: user.id,
@@ -106,19 +82,20 @@ export async function POST(request: NextRequest) {
                 role: user.role,
             },
         });
-    } catch (error: any) {
-        console.error("Login error details:", {
-            message: error.message,
-            stack: error.stack,
-            cause: error.cause
+
+        // Add CORS headers
+        const headers = corsHeaders(origin);
+        Object.entries(headers).forEach(([key, value]) => {
+            response.headers.set(key, value);
         });
 
-        return NextResponse.json(
-            {
-                error: "Terjadi kesalahan saat login",
-                details: process.env.NODE_ENV === "development" ? error.message : undefined
-            },
-            { status: 500 }
+        return response;
+    } catch (error: any) {
+        console.error("Login error:", error);
+        return jsonWithCors(
+            { error: "Terjadi kesalahan saat login" },
+            origin,
+            500
         );
     }
 }

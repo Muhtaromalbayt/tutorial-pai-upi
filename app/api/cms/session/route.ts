@@ -1,20 +1,30 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { validateSession } from "@/lib/simple-auth";
+import { corsHeaders, handleCors, jsonWithCors } from "@/lib/cors";
 
 export const runtime = "edge";
 
-export async function GET() {
+// Handle preflight request
+export async function OPTIONS(request: NextRequest) {
+    const origin = request.headers.get("origin");
+    return handleCors(origin);
+}
+
+export async function GET(request: NextRequest) {
+    const origin = request.headers.get("origin");
+
     try {
         const session = await validateSession();
 
         if (!session) {
-            return NextResponse.json(
+            return jsonWithCors(
                 { error: "Tidak ada sesi aktif" },
-                { status: 401 }
+                origin,
+                401
             );
         }
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             success: true,
             user: {
                 id: session.userId,
@@ -23,11 +33,20 @@ export async function GET() {
                 role: session.role,
             },
         });
+
+        // Add CORS headers
+        const headers = corsHeaders(origin);
+        Object.entries(headers).forEach(([key, value]) => {
+            response.headers.set(key, value);
+        });
+
+        return response;
     } catch (error) {
         console.error("Session validation error:", error);
-        return NextResponse.json(
+        return jsonWithCors(
             { error: "Terjadi kesalahan saat validasi sesi" },
-            { status: 500 }
+            origin,
+            500
         );
     }
 }
