@@ -1,130 +1,156 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useState, useEffect } from 'react'
 
 interface NewsItem {
-    id: string;
-    title: string;
-    content: string;
-    category: string;
-    imageUrl?: string;
-    author?: string;
-    publishedDate?: string;
-    isPublished: boolean;
+    id: string
+    title: string
+    content: string
+    category: string
+    imageUrl?: string
+    author?: string
+    publishedDate?: string
+    isPublished: boolean
 }
 
-export default function KabarTutorialPage() {
-    const [newsList, setNewsList] = useState<NewsItem[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [showForm, setShowForm] = useState(false);
-    const [editingId, setEditingId] = useState<string | null>(null);
+interface FormData {
+    title: string
+    content: string
+    category: string
+    imageUrl: string
+    author: string
+    publishedDate: string
+    isPublished: boolean
+}
 
-    // Form state
-    const [formData, setFormData] = useState({
-        title: "",
-        content: "",
-        category: "Kegiatan",
-        imageUrl: "",
-        author: "",
-        publishedDate: "",
+async function fetchNews(): Promise<NewsItem[]> {
+    const response = await fetch('/api/news')
+    if (!response.ok) throw new Error('Failed to fetch news')
+    const data = await response.json() as { news: NewsItem[] }
+    return data.news || []
+}
+
+async function checkSession() {
+    const response = await fetch('/api/cms/session')
+    if (!response.ok) throw new Error('Not authenticated')
+    return response.json()
+}
+
+export const Route = createFileRoute('/kabar-tutorial')({
+    component: KabarTutorialPage,
+})
+
+function KabarTutorialPage() {
+    const navigate = useNavigate()
+    const queryClient = useQueryClient()
+
+    const [showForm, setShowForm] = useState(false)
+    const [editingId, setEditingId] = useState<string | null>(null)
+    const [formData, setFormData] = useState<FormData>({
+        title: '',
+        content: '',
+        category: 'Kegiatan',
+        imageUrl: '',
+        author: '',
+        publishedDate: '',
         isPublished: false,
-    });
+    })
+
+    // Check session
+    const { isError: sessionError } = useQuery({
+        queryKey: ['session'],
+        queryFn: checkSession,
+        retry: false,
+    })
 
     useEffect(() => {
-        fetchNews();
-    }, []);
-
-    const fetchNews = async () => {
-        try {
-            const response = await fetch("/api/news");
-            const data = await response.json() as { news: NewsItem[] };
-            setNewsList(data.news || []);
-        } catch (error) {
-            console.error("Error fetching news:", error);
-        } finally {
-            setLoading(false);
+        if (sessionError) {
+            navigate({ to: '/login' })
         }
-    };
+    }, [sessionError, navigate])
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    // Fetch news
+    const { data: newsList = [], isLoading } = useQuery({
+        queryKey: ['news'],
+        queryFn: fetchNews,
+    })
 
-        try {
-            const url = "/api/news";
-            const method = editingId ? "PUT" : "POST";
+    // Create/Update mutation
+    const saveMutation = useMutation({
+        mutationFn: async (data: FormData & { id?: string }) => {
+            const response = await fetch('/api/news', {
+                method: data.id ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            })
+            if (!response.ok) throw new Error('Failed to save')
+            return response.json()
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['news'] })
+            queryClient.invalidateQueries({ queryKey: ['stats'] })
+            resetForm()
+            alert(editingId ? 'Berita berhasil diupdate!' : 'Berita berhasil ditambahkan!')
+        },
+        onError: () => {
+            alert('Gagal menyimpan berita')
+        },
+    })
 
-            const payload = {
-                ...formData,
-                ...(editingId && { id: editingId }),
-            };
+    // Delete mutation
+    const deleteMutation = useMutation({
+        mutationFn: async (id: string) => {
+            const response = await fetch(`/api/news?id=${id}`, { method: 'DELETE' })
+            if (!response.ok) throw new Error('Failed to delete')
+            return response.json()
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['news'] })
+            queryClient.invalidateQueries({ queryKey: ['stats'] })
+            alert('Berita berhasil dihapus!')
+        },
+        onError: () => {
+            alert('Gagal menghapus berita')
+        },
+    })
 
-            const response = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
-
-            if (response.ok) {
-                alert(editingId ? "Berita berhasil diupdate!" : "Berita berhasil ditambahkan!");
-                resetForm();
-                fetchNews();
-            } else {
-                alert("Gagal menyimpan berita");
-            }
-        } catch (error) {
-            console.error("Error saving news:", error);
-            alert("Terjadi kesalahan");
-        }
-    };
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+        saveMutation.mutate({ ...formData, ...(editingId && { id: editingId }) })
+    }
 
     const handleEdit = (news: NewsItem) => {
         setFormData({
             title: news.title,
             content: news.content,
-            category: news.category || "Kegiatan",
-            imageUrl: news.imageUrl || "",
-            author: news.author || "",
-            publishedDate: news.publishedDate || "",
+            category: news.category || 'Kegiatan',
+            imageUrl: news.imageUrl || '',
+            author: news.author || '',
+            publishedDate: news.publishedDate || '',
             isPublished: news.isPublished,
-        });
-        setEditingId(news.id);
-        setShowForm(true);
-    };
+        })
+        setEditingId(news.id)
+        setShowForm(true)
+    }
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Yakin ingin menghapus berita ini?")) return;
-
-        try {
-            const response = await fetch(`/api/news?id=${id}`, {
-                method: "DELETE",
-            });
-
-            if (response.ok) {
-                alert("Berita berhasil dihapus!");
-                fetchNews();
-            } else {
-                alert("Gagal menghapus berita");
-            }
-        } catch (error) {
-            console.error("Error deleting news:", error);
-            alert("Terjadi kesalahan");
-        }
-    };
+    const handleDelete = (id: string) => {
+        if (!confirm('Yakin ingin menghapus berita ini?')) return
+        deleteMutation.mutate(id)
+    }
 
     const resetForm = () => {
         setFormData({
-            title: "",
-            content: "",
-            category: "Kegiatan",
-            imageUrl: "",
-            author: "",
-            publishedDate: "",
+            title: '',
+            content: '',
+            category: 'Kegiatan',
+            imageUrl: '',
+            author: '',
+            publishedDate: '',
             isPublished: false,
-        });
-        setEditingId(null);
-        setShowForm(false);
-    };
+        })
+        setEditingId(null)
+        setShowForm(false)
+    }
 
     return (
         <div className="min-h-screen bg-neutral-50">
@@ -134,20 +160,18 @@ export default function KabarTutorialPage() {
                     <div className="flex items-center justify-between">
                         <div>
                             <Link
-                                href="/cms/dashboard"
+                                to="/dashboard"
                                 className="text-sm text-neutral-600 hover:text-primary-600 mb-2 inline-block"
                             >
                                 ← Kembali ke Dashboard
                             </Link>
-                            <h1 className="text-2xl font-bold text-neutral-900">
-                                Kelola Kabar Tutorial
-                            </h1>
+                            <h1 className="text-2xl font-bold text-neutral-900">Kelola Kabar Tutorial</h1>
                         </div>
                         <button
                             onClick={() => setShowForm(!showForm)}
                             className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
                         >
-                            {showForm ? "Tutup Form" : "+ Tambah Berita"}
+                            {showForm ? 'Tutup Form' : '+ Tambah Berita'}
                         </button>
                     </div>
                 </div>
@@ -158,35 +182,27 @@ export default function KabarTutorialPage() {
                 {showForm && (
                     <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 mb-8">
                         <h2 className="text-xl font-semibold mb-6">
-                            {editingId ? "Edit Berita" : "Tambah Berita Baru"}
+                            {editingId ? 'Edit Berita' : 'Tambah Berita Baru'}
                         </h2>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                    Judul*
-                                </label>
+                                <label className="block text-sm font-medium text-neutral-700 mb-2">Judul*</label>
                                 <input
                                     type="text"
                                     required
                                     value={formData.title}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, title: e.target.value })
-                                    }
+                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                                     placeholder="Judul Berita"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                    Konten/Deskripsi*
-                                </label>
+                                <label className="block text-sm font-medium text-neutral-700 mb-2">Konten/Deskripsi*</label>
                                 <textarea
                                     required
                                     value={formData.content}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, content: e.target.value })
-                                    }
+                                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                                     rows={4}
                                     className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                                     placeholder="Deskripsi singkat berita..."
@@ -195,14 +211,10 @@ export default function KabarTutorialPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                        Kategori
-                                    </label>
+                                    <label className="block text-sm font-medium text-neutral-700 mb-2">Kategori</label>
                                     <select
                                         value={formData.category}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, category: e.target.value })
-                                        }
+                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                                         className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                                     >
                                         <option value="Kegiatan">Kegiatan</option>
@@ -212,15 +224,11 @@ export default function KabarTutorialPage() {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                        Penulis
-                                    </label>
+                                    <label className="block text-sm font-medium text-neutral-700 mb-2">Penulis</label>
                                     <input
                                         type="text"
                                         value={formData.author}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, author: e.target.value })
-                                        }
+                                        onChange={(e) => setFormData({ ...formData, author: e.target.value })}
                                         className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                                         placeholder="Nama Penulis"
                                     />
@@ -229,29 +237,21 @@ export default function KabarTutorialPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                        URL Gambar
-                                    </label>
+                                    <label className="block text-sm font-medium text-neutral-700 mb-2">URL Gambar</label>
                                     <input
                                         type="text"
                                         value={formData.imageUrl}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, imageUrl: e.target.value })
-                                        }
+                                        onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
                                         className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                                         placeholder="/assets/kegiatan/..."
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                        Tanggal Publish
-                                    </label>
+                                    <label className="block text-sm font-medium text-neutral-700 mb-2">Tanggal Publish</label>
                                     <input
                                         type="date"
                                         value={formData.publishedDate}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, publishedDate: e.target.value })
-                                        }
+                                        onChange={(e) => setFormData({ ...formData, publishedDate: e.target.value })}
                                         className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                                     />
                                 </div>
@@ -262,9 +262,7 @@ export default function KabarTutorialPage() {
                                     type="checkbox"
                                     id="isPublished"
                                     checked={formData.isPublished}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, isPublished: e.target.checked })
-                                    }
+                                    onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
                                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded"
                                 />
                                 <label htmlFor="isPublished" className="ml-2 block text-sm text-neutral-900">
@@ -275,9 +273,10 @@ export default function KabarTutorialPage() {
                             <div className="flex space-x-3 pt-4">
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                                    disabled={saveMutation.isPending}
+                                    className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
                                 >
-                                    {editingId ? "Update Berita" : "Simpan Berita"}
+                                    {saveMutation.isPending ? 'Menyimpan...' : (editingId ? 'Update Berita' : 'Simpan Berita')}
                                 </button>
                                 <button
                                     type="button"
@@ -299,7 +298,7 @@ export default function KabarTutorialPage() {
                         </h2>
                     </div>
 
-                    {loading ? (
+                    {isLoading ? (
                         <div className="p-8 text-center">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
                             <p className="mt-4 text-neutral-600">Memuat berita...</p>
@@ -313,36 +312,24 @@ export default function KabarTutorialPage() {
                             <table className="w-full">
                                 <thead className="bg-neutral-50">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                                            Judul
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                                            Kategori
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                                            Tanggal
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                                            Status
-                                        </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                                            Aksi
-                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Judul</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Kategori</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Tanggal</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Status</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-neutral-200">
                                     {newsList.map((news) => (
                                         <tr key={news.id} className="hover:bg-neutral-50">
-                                            <td className="px-6 py-4 text-sm font-medium text-neutral-900">
-                                                {news.title}
-                                            </td>
+                                            <td className="px-6 py-4 text-sm font-medium text-neutral-900">{news.title}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">
                                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                                                     {news.category}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">
-                                                {news.publishedDate || "-"}
+                                                {news.publishedDate || '-'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">
                                                 {news.isPublished ? (
@@ -356,14 +343,12 @@ export default function KabarTutorialPage() {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <button
-                                                    onClick={() => handleEdit(news)}
-                                                    className="text-primary-600 hover:text-primary-900 mr-4"
-                                                >
+                                                <button onClick={() => handleEdit(news)} className="text-primary-600 hover:text-primary-900 mr-4">
                                                     Edit
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(news.id)}
+                                                    disabled={deleteMutation.isPending}
                                                     className="text-red-600 hover:text-red-900"
                                                 >
                                                     Hapus
@@ -378,5 +363,5 @@ export default function KabarTutorialPage() {
                 </div>
             </main>
         </div>
-    );
+    )
 }

@@ -1,40 +1,42 @@
-"use client";
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useState, FormEvent } from 'react'
 
-import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+export const Route = createFileRoute('/login')({
+    component: LoginPage,
+})
 
-export default function CMSLoginPage() {
-    const router = useRouter();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+function LoginPage() {
+    const navigate = useNavigate()
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        setError("");
-        setLoading(true);
+        e.preventDefault()
+        setError('')
+        setLoading(true)
 
         try {
-            const response = await fetch("/api/cms/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+            const response = await fetch('/api/cms/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
-            });
+            })
 
-            const data = await response.json() as { error?: string; success?: boolean };
+            const data = await response.json() as { error?: string; success?: boolean }
 
             if (response.ok) {
-                router.push("/cms/dashboard");
+                navigate({ to: '/dashboard' })
             } else {
-                setError(data.error || "Login gagal");
+                setError(data.error || 'Login gagal')
             }
         } catch (err) {
-            setError("Terjadi kesalahan. Silakan coba lagi.");
+            setError('Terjadi kesalahan. Silakan coba lagi.')
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 flex items-center justify-center p-4">
@@ -47,9 +49,7 @@ export default function CMSLoginPage() {
 
                 {/* Login Card */}
                 <div className="bg-white rounded-2xl shadow-2xl p-8">
-                    <h2 className="text-2xl font-bold text-neutral-900 mb-6">
-                        Login
-                    </h2>
+                    <h2 className="text-2xl font-bold text-neutral-900 mb-6">Login</h2>
 
                     {error && (
                         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
@@ -59,10 +59,7 @@ export default function CMSLoginPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-neutral-700 mb-2"
-                            >
+                            <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-2">
                                 Email
                             </label>
                             <input
@@ -78,10 +75,7 @@ export default function CMSLoginPage() {
                         </div>
 
                         <div>
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium text-neutral-700 mb-2"
-                            >
+                            <label htmlFor="password" className="block text-sm font-medium text-neutral-700 mb-2">
                                 Password
                             </label>
                             <input
@@ -101,18 +95,16 @@ export default function CMSLoginPage() {
                             disabled={loading}
                             className="w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {loading ? "Memproses..." : "Login"}
+                            {loading ? 'Memproses...' : 'Login'}
                         </button>
                     </form>
                 </div>
 
                 {/* Footer */}
                 <div className="text-center mt-6">
-                    <p className="text-primary-100 text-sm">
-                        Tutorial PAI-SPAI UPI © 2025
-                    </p>
+                    <p className="text-primary-100 text-sm">Tutorial PAI-SPAI UPI © 2025</p>
                 </div>
             </div>
         </div>
-    );
+    )
 }

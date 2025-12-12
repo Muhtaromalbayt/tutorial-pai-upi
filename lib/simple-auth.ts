@@ -79,3 +79,13 @@ export async function deleteSession(): Promise<void> {
 export async function validateSession(): Promise<SessionData | null> {
     return getSession();
 }
+
+// Namespace export for API routes that import { simpleAuth }
+export const simpleAuth = {
+    hashPassword,
+    verifyPassword,
+    createSession,
+    getSession,
+    deleteSession,
+    validateSession,
+};

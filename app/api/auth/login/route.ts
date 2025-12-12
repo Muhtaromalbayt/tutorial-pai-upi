@@ -3,7 +3,7 @@ import { getRequestContext } from "@cloudflare/next-on-pages";
 import { drizzle } from "drizzle-orm/d1";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { simpleAuth } from "@/lib/simple-auth";
+import { verifyPassword, createSession, SessionData } from "@/lib/simple-auth";
 
 export const runtime = "edge";
 
@@ -26,26 +26,30 @@ export async function POST(req: NextRequest) {
         }
 
         // Verify password
-        const isValid = await simpleAuth.verifyPassword(password, user.password);
+        const isValid = await verifyPassword(password, user.password);
 
         if (!isValid) {
             return NextResponse.json({ error: "Email atau password salah" }, { status: 401 });
         }
 
-        // Create session
-        const sessionId = await simpleAuth.createSession(user.id, db);
+        // Create session via cookie
+        const sessionData: SessionData = {
+            userId: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role
+        };
+        await createSession(sessionData);
 
-        // Set cookie
-        const response = NextResponse.json({ success: true, user: { name: user.name, email: user.email, role: user.role } });
-        response.cookies.set("session_id", sessionId, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-            maxAge: 60 * 60 * 24 * 7 // 7 days
+        return NextResponse.json({
+            success: true,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
         });
-
-        return response;
 
     } catch (error: any) {
         console.error("Login error:", error);

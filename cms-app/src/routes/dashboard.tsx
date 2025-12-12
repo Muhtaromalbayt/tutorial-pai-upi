@@ -1,82 +1,82 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
 
 interface User {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
+    id: string
+    email: string
+    name: string
+    role: string
 }
 
 interface Stats {
-    total: number;
-    published: number;
-    drafts: number;
+    total: number
+    published: number
+    drafts: number
 }
 
-export default function CMSDashboard() {
-    const router = useRouter();
-    const [user, setUser] = useState<User | null>(null);
-    const [stats, setStats] = useState<Stats>({ total: 0, published: 0, drafts: 0 });
-    const [loading, setLoading] = useState(true);
+async function fetchSession(): Promise<{ user: User }> {
+    const response = await fetch('/api/cms/session')
+    if (!response.ok) {
+        throw new Error('Not authenticated')
+    }
+    return response.json()
+}
+
+async function fetchStats(): Promise<Stats> {
+    const response = await fetch('/api/news')
+    if (!response.ok) {
+        return { total: 0, published: 0, drafts: 0 }
+    }
+    const data = await response.json() as { news: any[] }
+    const news = data.news || []
+    return {
+        total: news.length,
+        published: news.filter((n: any) => n.isPublished).length,
+        drafts: news.filter((n: any) => !n.isPublished).length,
+    }
+}
+
+export const Route = createFileRoute('/dashboard')({
+    component: DashboardPage,
+})
+
+function DashboardPage() {
+    const navigate = useNavigate()
+
+    const { data: sessionData, isLoading: sessionLoading, isError } = useQuery({
+        queryKey: ['session'],
+        queryFn: fetchSession,
+        retry: false,
+    })
+
+    const { data: stats = { total: 0, published: 0, drafts: 0 } } = useQuery({
+        queryKey: ['stats'],
+        queryFn: fetchStats,
+        enabled: !!sessionData,
+    })
 
     useEffect(() => {
-        checkSession();
-        fetchStats();
-    }, []);
-
-    const checkSession = async () => {
-        try {
-            const response = await fetch("/api/cms/session");
-            if (response.ok) {
-                const data = await response.json() as { user: User };
-                setUser(data.user);
-            } else {
-                router.push("/cms/login");
-            }
-        } catch (error) {
-            console.error("Session check error:", error);
-            router.push("/cms/login");
-        } finally {
-            setLoading(false);
+        if (isError) {
+            navigate({ to: '/login' })
         }
-    };
-
-    const fetchStats = async () => {
-        try {
-            const response = await fetch("/api/news");
-            if (response.ok) {
-                const data = await response.json() as { news: any[] };
-                const news = data.news || [];
-                setStats({
-                    total: news.length,
-                    published: news.filter((n: any) => n.isPublished).length,
-                    drafts: news.filter((n: any) => !n.isPublished).length,
-                });
-            }
-        } catch (error) {
-            console.error("Error fetching stats:", error);
-        }
-    };
+    }, [isError, navigate])
 
     const handleLogout = async () => {
         try {
-            await fetch("/api/cms/logout", { method: "POST" });
-            router.push("/cms/login");
+            await fetch('/api/cms/logout', { method: 'POST' })
+            navigate({ to: '/login' })
         } catch (error) {
-            console.error("Logout error:", error);
+            console.error('Logout error:', error)
         }
-    };
+    }
 
-    if (loading) {
+    if (sessionLoading) {
         return (
             <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
             </div>
-        );
+        )
     }
 
     return (
@@ -86,11 +86,9 @@ export default function CMSDashboard() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold text-neutral-900">
-                                CMS Dashboard
-                            </h1>
+                            <h1 className="text-2xl font-bold text-neutral-900">CMS Dashboard</h1>
                             <p className="text-sm text-neutral-600 mt-1">
-                                Selamat datang, {user?.name}
+                                Selamat datang, {sessionData?.user?.name}
                             </p>
                         </div>
                         <button
@@ -151,12 +149,10 @@ export default function CMSDashboard() {
 
                 {/* Quick Actions */}
                 <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6">
-                    <h2 className="text-lg font-semibold text-neutral-900 mb-4">
-                        Kelola Konten
-                    </h2>
+                    <h2 className="text-lg font-semibold text-neutral-900 mb-4">Kelola Konten</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Link
-                            href="/cms/kabar-tutorial"
+                            to="/kabar-tutorial"
                             className="flex items-center p-4 border-2 border-neutral-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all group"
                         >
                             <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-primary-200 transition-colors">
@@ -168,14 +164,12 @@ export default function CMSDashboard() {
                                 <h3 className="font-semibold text-neutral-900 group-hover:text-primary-700">
                                     Kabar Tutorial
                                 </h3>
-                                <p className="text-sm text-neutral-600">
-                                    Kelola berita dan pengumuman
-                                </p>
+                                <p className="text-sm text-neutral-600">Kelola berita dan pengumuman</p>
                             </div>
                         </Link>
                     </div>
                 </div>
             </main>
         </div>
-    );
+    )
 }
