@@ -2,6 +2,8 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState, useEffect } from 'react'
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+
 interface NewsItem {
     id: string
     title: string
@@ -24,14 +26,18 @@ interface FormData {
 }
 
 async function fetchNews(): Promise<NewsItem[]> {
-    const response = await fetch('/api/news')
+    const response = await fetch(`${API_BASE}/api/news`, {
+        credentials: 'include'
+    })
     if (!response.ok) throw new Error('Failed to fetch news')
     const data = await response.json() as { news: NewsItem[] }
     return data.news || []
 }
 
 async function checkSession() {
-    const response = await fetch('/api/cms/session')
+    const response = await fetch(`${API_BASE}/api/cms/session`, {
+        credentials: 'include'
+    })
     if (!response.ok) throw new Error('Not authenticated')
     return response.json()
 }
@@ -78,9 +84,10 @@ function KabarTutorialPage() {
     // Create/Update mutation
     const saveMutation = useMutation({
         mutationFn: async (data: FormData & { id?: string }) => {
-            const response = await fetch('/api/news', {
+            const response = await fetch(`${API_BASE}/api/news`, {
                 method: data.id ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify(data),
             })
             if (!response.ok) throw new Error('Failed to save')
@@ -100,7 +107,10 @@ function KabarTutorialPage() {
     // Delete mutation
     const deleteMutation = useMutation({
         mutationFn: async (id: string) => {
-            const response = await fetch(`/api/news?id=${id}`, { method: 'DELETE' })
+            const response = await fetch(`${API_BASE}/api/news?id=${id}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            })
             if (!response.ok) throw new Error('Failed to delete')
             return response.json()
         },

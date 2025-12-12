@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, FormEvent } from 'react'
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+
 export const Route = createFileRoute('/login')({
     component: LoginPage,
 })
@@ -18,9 +20,10 @@ function LoginPage() {
         setLoading(true)
 
         try {
-            const response = await fetch('/api/cms/login', {
+            const response = await fetch(`${API_BASE}/api/cms/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ email, password }),
             })
 

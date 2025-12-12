@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+
 interface User {
     id: string
     email: string
@@ -16,7 +18,9 @@ interface Stats {
 }
 
 async function fetchSession(): Promise<{ user: User }> {
-    const response = await fetch('/api/cms/session')
+    const response = await fetch(`${API_BASE}/api/cms/session`, {
+        credentials: 'include'
+    })
     if (!response.ok) {
         throw new Error('Not authenticated')
     }
@@ -24,7 +28,9 @@ async function fetchSession(): Promise<{ user: User }> {
 }
 
 async function fetchStats(): Promise<Stats> {
-    const response = await fetch('/api/news')
+    const response = await fetch(`${API_BASE}/api/news`, {
+        credentials: 'include'
+    })
     if (!response.ok) {
         return { total: 0, published: 0, drafts: 0 }
     }
@@ -64,7 +70,10 @@ function DashboardPage() {
 
     const handleLogout = async () => {
         try {
-            await fetch('/api/cms/logout', { method: 'POST' })
+            await fetch(`${API_BASE}/api/cms/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            })
             navigate({ to: '/login' })
         } catch (error) {
             console.error('Logout error:', error)

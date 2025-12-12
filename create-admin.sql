@@ -1,12 +1,10 @@
--- Create admin user
--- Password: admin123
-
+-- Create admin user for CMS
 INSERT INTO users (id, email, name, password, role, created_at)
 VALUES (
-  'admin-001',
-  'admin@upi.edu',
-  'Admin Tutorial PAI',
-  '$2a$10$rKZxJxH5qZQJ5YqZQJ5YqOqZQJ5YqZQJ5YqZQJ5YqZQJ5YqZQJ5Yq',
-  'admin',
-  CURRENT_TIMESTAMP
+    'admin-alfath-001',
+    'alfath@upi.edu',
+    'Admin AL-FATH',
+    '$2a$10$BcRjBuP9zFX02BdfqwjOUOsCT2Xf1bDdGTU1yz.qPOEKDjpP1fDjG',
+    'admin',
+    datetime('now')
 );
