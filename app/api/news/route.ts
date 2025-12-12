@@ -50,30 +50,42 @@ export async function POST(req: NextRequest) {
         const db = drizzle(env.DB);
 
         const body = await req.json() as any;
+        console.log("POST /api/news received:", JSON.stringify(body));
+
         const { title, content, category, imageUrl, author, publishedDate, isPublished } = body;
+
+        if (!title || !content) {
+            return addCorsHeaders(
+                NextResponse.json({ error: "Title and content are required" }, { status: 400 }),
+                origin
+            );
+        }
 
         // Generate ID
         const id = `news_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const now = new Date().toISOString();
 
-        const newNews = await db
-            .insert(news)
-            .values({
-                id,
-                title,
-                content,
-                category: category || "announcement",
-                imageUrl,
-                author,
-                publishedDate,
-                isPublished: isPublished ? true : false,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            })
-            .returning();
+        // Insert without .returning() which may not be supported in D1
+        await db.insert(news).values({
+            id,
+            title: title || "",
+            content: content || "",
+            category: category || "Kegiatan",
+            imageUrl: imageUrl || null,
+            author: author || null,
+            publishedDate: publishedDate || null,
+            isPublished: isPublished === true,
+            createdAt: now,
+            updatedAt: now,
+        });
 
-        return addCorsHeaders(NextResponse.json({ news: newNews[0] }), origin);
+        // Fetch the inserted news
+        const inserted = await db.select().from(news).where(eq(news.id, id)).get();
+
+        return addCorsHeaders(NextResponse.json({ success: true, news: inserted }), origin);
     } catch (error: any) {
         console.error("Error creating news:", error);
+        console.error("Error stack:", error.stack);
         return addCorsHeaders(
             NextResponse.json({ error: "Failed to create news", details: error.message }, { status: 500 }),
             origin
@@ -92,22 +104,30 @@ export async function PUT(req: NextRequest) {
         const body = await req.json() as any;
         const { id, title, content, category, imageUrl, author, publishedDate, isPublished } = body;
 
-        const updated = await db
+        if (!id) {
+            return addCorsHeaders(
+                NextResponse.json({ error: "News ID is required" }, { status: 400 }),
+                origin
+            );
+        }
+
+        await db
             .update(news)
             .set({
                 title,
                 content,
                 category,
-                imageUrl,
-                author,
-                publishedDate,
-                isPublished: isPublished ? true : false,
+                imageUrl: imageUrl || null,
+                author: author || null,
+                publishedDate: publishedDate || null,
+                isPublished: isPublished === true,
                 updatedAt: new Date().toISOString(),
             })
-            .where(eq(news.id, id))
-            .returning();
+            .where(eq(news.id, id));
 
-        return addCorsHeaders(NextResponse.json({ news: updated[0] }), origin);
+        const updated = await db.select().from(news).where(eq(news.id, id)).get();
+
+        return addCorsHeaders(NextResponse.json({ success: true, news: updated }), origin);
     } catch (error: any) {
         console.error("Error updating news:", error);
         return addCorsHeaders(
