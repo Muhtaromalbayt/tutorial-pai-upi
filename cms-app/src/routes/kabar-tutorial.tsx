@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
@@ -49,6 +51,7 @@ function KabarTutorialPage() {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const [isChecking, setIsChecking] = useState(true)
+    const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit')
 
     const [showForm, setShowForm] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
@@ -87,7 +90,10 @@ function KabarTutorialPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
             })
-            if (!response.ok) throw new Error('Failed to save')
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}))
+                throw new Error(errorData.error || 'Failed to save')
+            }
             return response.json()
         },
         onSuccess: () => {
@@ -96,8 +102,8 @@ function KabarTutorialPage() {
             resetForm()
             alert(editingId ? 'Berita berhasil diupdate!' : 'Berita berhasil ditambahkan!')
         },
-        onError: () => {
-            alert('Gagal menyimpan berita')
+        onError: (error: Error) => {
+            alert('Gagal menyimpan berita: ' + error.message)
         },
     })
 
@@ -137,6 +143,7 @@ function KabarTutorialPage() {
         })
         setEditingId(news.id)
         setShowForm(true)
+        setActiveTab('edit')
     }
 
     const handleDelete = (id: string) => {
@@ -156,6 +163,7 @@ function KabarTutorialPage() {
         })
         setEditingId(null)
         setShowForm(false)
+        setActiveTab('edit')
     }
 
     if (isChecking) {
@@ -211,16 +219,62 @@ function KabarTutorialPage() {
                                 />
                             </div>
 
+                            {/* Markdown Editor with Tabs */}
                             <div>
-                                <label className="block text-sm font-medium text-neutral-700 mb-2">Konten/Deskripsi*</label>
-                                <textarea
-                                    required
-                                    value={formData.content}
-                                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                    rows={4}
-                                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                    placeholder="Deskripsi singkat berita..."
-                                />
+                                <label className="block text-sm font-medium text-neutral-700 mb-2">Konten (Markdown)*</label>
+                                <div className="border border-neutral-300 rounded-lg overflow-hidden">
+                                    {/* Tabs */}
+                                    <div className="flex border-b border-neutral-300 bg-neutral-50">
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveTab('edit')}
+                                            className={`px-4 py-2 text-sm font-medium ${activeTab === 'edit' ? 'bg-white text-primary-600 border-b-2 border-primary-600' : 'text-neutral-600 hover:text-neutral-900'}`}
+                                        >
+                                            ✏️ Edit
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveTab('preview')}
+                                            className={`px-4 py-2 text-sm font-medium ${activeTab === 'preview' ? 'bg-white text-primary-600 border-b-2 border-primary-600' : 'text-neutral-600 hover:text-neutral-900'}`}
+                                        >
+                                            👁️ Preview
+                                        </button>
+                                    </div>
+
+                                    {/* Content */}
+                                    {activeTab === 'edit' ? (
+                                        <textarea
+                                            required
+                                            value={formData.content}
+                                            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                            rows={10}
+                                            className="w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 font-mono text-sm"
+                                            placeholder="Tulis konten dengan Markdown...
+
+Contoh:
+# Judul
+## Sub Judul
+
+**Teks tebal** dan *teks miring*
+
+- List item 1
+- List item 2
+
+[Link](https://example.com)"
+                                        />
+                                    ) : (
+                                        <div className="p-4 min-h-[250px] prose prose-sm max-w-none">
+                                            {formData.content ? (
+                                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                    {formData.content}
+                                                </ReactMarkdown>
+                                            ) : (
+                                                <p className="text-neutral-400 italic">Tidak ada konten untuk di-preview</p>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                                <p className="text-xs text-neutral-500 mt-1">Mendukung Markdown: **bold**, *italic*, # heading, - list, [link](url)</p>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
