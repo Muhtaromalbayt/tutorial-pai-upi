@@ -8,6 +8,15 @@ import { corsHeaders, handleCors, jsonWithCors } from "@/lib/cors";
 
 export const runtime = "edge";
 
+// Temporary hardcoded admin for testing (remove in production)
+const TEMP_ADMIN = {
+    email: "alfath@upi.edu",
+    password: "admin123",
+    id: "admin-001",
+    name: "Admin AL-FATH",
+    role: "admin"
+};
+
 // Handle preflight request
 export async function OPTIONS(request: NextRequest) {
     const origin = request.headers.get("origin");
@@ -31,30 +40,42 @@ export async function POST(request: NextRequest) {
 
         let user = null;
 
-        try {
-            const { env } = getRequestContext();
-            const db = drizzle(env.DB);
+        // Check temporary admin first (for testing)
+        if (email === TEMP_ADMIN.email && password === TEMP_ADMIN.password) {
+            user = {
+                id: TEMP_ADMIN.id,
+                email: TEMP_ADMIN.email,
+                name: TEMP_ADMIN.name,
+                role: TEMP_ADMIN.role
+            };
+        }
 
-            // Find user by email
-            const dbUser = await db
-                .select()
-                .from(users)
-                .where(eq(users.email, email))
-                .get();
+        // If not temp admin, try database
+        if (!user) {
+            try {
+                const { env } = getRequestContext();
+                const db = drizzle(env.DB);
 
-            if (dbUser) {
-                const isValid = await verifyPassword(password, dbUser.password);
-                if (isValid) {
-                    user = {
-                        id: dbUser.id,
-                        email: dbUser.email,
-                        name: dbUser.name,
-                        role: dbUser.role || "admin"
-                    };
+                const dbUser = await db
+                    .select()
+                    .from(users)
+                    .where(eq(users.email, email))
+                    .get();
+
+                if (dbUser) {
+                    const isValid = await verifyPassword(password, dbUser.password);
+                    if (isValid) {
+                        user = {
+                            id: dbUser.id,
+                            email: dbUser.email,
+                            name: dbUser.name,
+                            role: dbUser.role || "admin"
+                        };
+                    }
                 }
+            } catch (error: any) {
+                console.error("Database auth failed:", error);
             }
-        } catch (error: any) {
-            console.error("Database auth failed:", error);
         }
 
         if (!user) {
