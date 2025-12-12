@@ -17,5 +17,13 @@ export default defineConfig({
                 changeOrigin: true,
             }
         }
+    },
+    // For production, API calls go to the main website domain
+    define: {
+        'import.meta.env.VITE_API_BASE_URL': JSON.stringify(
+            process.env.NODE_ENV === 'production'
+                ? 'https://tutorial-pai-upi.pages.dev' // Update with your production URL
+                : ''
+        )
     }
 })
