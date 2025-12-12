@@ -25,21 +25,20 @@ interface FormData {
     isPublished: boolean
 }
 
+function getLocalUser() {
+    try {
+        const userStr = localStorage.getItem('cms_user')
+        return userStr ? JSON.parse(userStr) : null
+    } catch {
+        return null
+    }
+}
+
 async function fetchNews(): Promise<NewsItem[]> {
-    const response = await fetch(`${API_BASE}/api/news`, {
-        credentials: 'include'
-    })
+    const response = await fetch(`${API_BASE}/api/news`)
     if (!response.ok) throw new Error('Failed to fetch news')
     const data = await response.json() as { news: NewsItem[] }
     return data.news || []
-}
-
-async function checkSession() {
-    const response = await fetch(`${API_BASE}/api/cms/session`, {
-        credentials: 'include'
-    })
-    if (!response.ok) throw new Error('Not authenticated')
-    return response.json()
 }
 
 export const Route = createFileRoute('/kabar-tutorial')({
@@ -49,6 +48,7 @@ export const Route = createFileRoute('/kabar-tutorial')({
 function KabarTutorialPage() {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
+    const [isChecking, setIsChecking] = useState(true)
 
     const [showForm, setShowForm] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
@@ -62,23 +62,21 @@ function KabarTutorialPage() {
         isPublished: false,
     })
 
-    // Check session
-    const { isError: sessionError } = useQuery({
-        queryKey: ['session'],
-        queryFn: checkSession,
-        retry: false,
-    })
-
+    // Check session from localStorage
     useEffect(() => {
-        if (sessionError) {
+        const user = getLocalUser()
+        const token = localStorage.getItem('cms_token')
+        if (!user || !token) {
             navigate({ to: '/login' })
         }
-    }, [sessionError, navigate])
+        setIsChecking(false)
+    }, [navigate])
 
     // Fetch news
     const { data: newsList = [], isLoading } = useQuery({
         queryKey: ['news'],
         queryFn: fetchNews,
+        enabled: !isChecking,
     })
 
     // Create/Update mutation
@@ -87,7 +85,6 @@ function KabarTutorialPage() {
             const response = await fetch(`${API_BASE}/api/news`, {
                 method: data.id ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
                 body: JSON.stringify(data),
             })
             if (!response.ok) throw new Error('Failed to save')
@@ -108,8 +105,7 @@ function KabarTutorialPage() {
     const deleteMutation = useMutation({
         mutationFn: async (id: string) => {
             const response = await fetch(`${API_BASE}/api/news?id=${id}`, {
-                method: 'DELETE',
-                credentials: 'include'
+                method: 'DELETE'
             })
             if (!response.ok) throw new Error('Failed to delete')
             return response.json()
@@ -160,6 +156,14 @@ function KabarTutorialPage() {
         })
         setEditingId(null)
         setShowForm(false)
+    }
+
+    if (isChecking) {
+        return (
+            <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+            </div>
+        )
     }
 
     return (

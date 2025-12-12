@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
@@ -17,20 +17,17 @@ interface Stats {
     drafts: number
 }
 
-async function fetchSession(): Promise<{ user: User }> {
-    const response = await fetch(`${API_BASE}/api/cms/session`, {
-        credentials: 'include'
-    })
-    if (!response.ok) {
-        throw new Error('Not authenticated')
+function getLocalUser(): User | null {
+    try {
+        const userStr = localStorage.getItem('cms_user')
+        return userStr ? JSON.parse(userStr) : null
+    } catch {
+        return null
     }
-    return response.json()
 }
 
 async function fetchStats(): Promise<Stats> {
-    const response = await fetch(`${API_BASE}/api/news`, {
-        credentials: 'include'
-    })
+    const response = await fetch(`${API_BASE}/api/news`)
     if (!response.ok) {
         return { total: 0, published: 0, drafts: 0 }
     }
@@ -49,43 +46,43 @@ export const Route = createFileRoute('/dashboard')({
 
 function DashboardPage() {
     const navigate = useNavigate()
+    const [user, setUser] = useState<User | null>(null)
+    const [isChecking, setIsChecking] = useState(true)
 
-    const { data: sessionData, isLoading: sessionLoading, isError } = useQuery({
-        queryKey: ['session'],
-        queryFn: fetchSession,
-        retry: false,
-    })
+    useEffect(() => {
+        const localUser = getLocalUser()
+        const token = localStorage.getItem('cms_token')
+
+        if (!localUser || !token) {
+            navigate({ to: '/login' })
+        } else {
+            setUser(localUser)
+        }
+        setIsChecking(false)
+    }, [navigate])
 
     const { data: stats = { total: 0, published: 0, drafts: 0 } } = useQuery({
         queryKey: ['stats'],
         queryFn: fetchStats,
-        enabled: !!sessionData,
+        enabled: !!user,
     })
 
-    useEffect(() => {
-        if (isError) {
-            navigate({ to: '/login' })
-        }
-    }, [isError, navigate])
-
-    const handleLogout = async () => {
-        try {
-            await fetch(`${API_BASE}/api/cms/logout`, {
-                method: 'POST',
-                credentials: 'include'
-            })
-            navigate({ to: '/login' })
-        } catch (error) {
-            console.error('Logout error:', error)
-        }
+    const handleLogout = () => {
+        localStorage.removeItem('cms_user')
+        localStorage.removeItem('cms_token')
+        navigate({ to: '/login' })
     }
 
-    if (sessionLoading) {
+    if (isChecking) {
         return (
             <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
             </div>
         )
+    }
+
+    if (!user) {
+        return null
     }
 
     return (
@@ -97,7 +94,7 @@ function DashboardPage() {
                         <div>
                             <h1 className="text-2xl font-bold text-neutral-900">CMS Dashboard</h1>
                             <p className="text-sm text-neutral-600 mt-1">
-                                Selamat datang, {sessionData?.user?.name}
+                                Selamat datang, {user.name}
                             </p>
                         </div>
                         <button

@@ -23,18 +23,21 @@ function LoginPage() {
             const response = await fetch(`${API_BASE}/api/cms/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
                 body: JSON.stringify({ email, password }),
             })
 
-            const data = await response.json() as { error?: string; success?: boolean }
+            const data = await response.json() as { error?: string; success?: boolean; user?: any; token?: string }
 
-            if (response.ok) {
+            if (response.ok && data.success) {
+                // Store user info in localStorage for cross-origin session
+                localStorage.setItem('cms_user', JSON.stringify(data.user))
+                localStorage.setItem('cms_token', data.token || 'authenticated')
                 navigate({ to: '/dashboard' })
             } else {
                 setError(data.error || 'Login gagal')
             }
         } catch (err) {
+            console.error('Login error:', err)
             setError('Terjadi kesalahan. Silakan coba lagi.')
         } finally {
             setLoading(false)
