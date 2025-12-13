@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 
-// Force dynamic rendering for Cloudflare Pages
-export const dynamic = "force-dynamic";
+// Edge runtime for Cloudflare Pages
+export const runtime = "edge";
 
 interface NewsItem {
     id: string;
