@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
-import { drizzle } from "drizzle-orm/d1";
-import { calendarEvents } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
 
 export const runtime = "edge";
 
@@ -10,15 +7,13 @@ export const runtime = "edge";
 export async function GET() {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
-        const events = await db
-            .select()
-            .from(calendarEvents)
-            .orderBy(desc(calendarEvents.date))
-            .all();
+        const result = await db.prepare(
+            "SELECT * FROM calendar_events ORDER BY date DESC"
+        ).all();
 
-        return NextResponse.json({ events });
+        return NextResponse.json({ events: result.results });
     } catch (error: any) {
         console.error("Error fetching events:", error);
         return NextResponse.json(
@@ -32,29 +27,38 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
         const body = await req.json() as any;
-        const { title, description, category, date, time, location } = body;
+        const { title, description, category, date, time, location, imageUrl } = body;
+
+        if (!title || !date) {
+            return NextResponse.json(
+                { error: "Title and date are required" },
+                { status: 400 }
+            );
+        }
 
         const id = `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const now = new Date().toISOString();
 
-        const newEvent = await db
-            .insert(calendarEvents)
-            .values({
-                id,
-                title,
-                description,
-                category,
-                date,
-                time,
-                location,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            })
-            .returning();
+        await db.prepare(
+            `INSERT INTO calendar_events (id, title, description, category, date, time, location, image_url, created_at, updated_at) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ).bind(
+            id,
+            title,
+            description || null,
+            category || "Kegiatan",
+            date,
+            time || null,
+            location || null,
+            imageUrl || null,
+            now,
+            now
+        ).run();
 
-        return NextResponse.json({ event: newEvent[0] });
+        return NextResponse.json({ success: true, id });
     } catch (error: any) {
         console.error("Error creating event:", error);
         return NextResponse.json(
@@ -68,26 +72,35 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
         const body = await req.json() as any;
-        const { id, title, description, category, date, time, location } = body;
+        const { id, title, description, category, date, time, location, imageUrl } = body;
 
-        const updated = await db
-            .update(calendarEvents)
-            .set({
-                title,
-                description,
-                category,
-                date,
-                time,
-                location,
-                updatedAt: new Date().toISOString(),
-            })
-            .where(eq(calendarEvents.id, id))
-            .returning();
+        if (!id) {
+            return NextResponse.json(
+                { error: "Event ID is required" },
+                { status: 400 }
+            );
+        }
 
-        return NextResponse.json({ event: updated[0] });
+        const now = new Date().toISOString();
+
+        await db.prepare(
+            `UPDATE calendar_events SET title = ?, description = ?, category = ?, date = ?, time = ?, location = ?, image_url = ?, updated_at = ? WHERE id = ?`
+        ).bind(
+            title,
+            description || null,
+            category,
+            date,
+            time || null,
+            location || null,
+            imageUrl || null,
+            now,
+            id
+        ).run();
+
+        return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error("Error updating event:", error);
         return NextResponse.json(
@@ -101,7 +114,7 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
@@ -110,7 +123,7 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ error: "ID required" }, { status: 400 });
         }
 
-        await db.delete(calendarEvents).where(eq(calendarEvents.id, id));
+        await db.prepare("DELETE FROM calendar_events WHERE id = ?").bind(id).run();
 
         return NextResponse.json({ success: true });
     } catch (error: any) {

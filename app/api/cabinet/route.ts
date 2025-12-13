@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
-import { drizzle } from "drizzle-orm/d1";
-import { cabinetMembers } from "@/lib/db/schema";
-import { eq, asc } from "drizzle-orm";
 
 export const runtime = "edge";
 
@@ -10,11 +7,13 @@ export const runtime = "edge";
 export async function GET() {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
-        const members = await db.select().from(cabinetMembers).orderBy(asc(cabinetMembers.orderIndex)).all();
+        const result = await db.prepare(
+            "SELECT * FROM cabinet_members ORDER BY order_index ASC"
+        ).all();
 
-        return NextResponse.json({ members });
+        return NextResponse.json({ members: result.results });
     } catch (error: any) {
         console.error("Error fetching members:", error);
         return NextResponse.json(
@@ -28,32 +27,39 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
         const body = await req.json() as any;
         const { name, position, division, photoUrl, email, phone, bio, orderIndex } = body;
 
-        // Generate ID
+        if (!name || !position) {
+            return NextResponse.json(
+                { error: "Name and position are required" },
+                { status: 400 }
+            );
+        }
+
         const id = `cab_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const now = new Date().toISOString();
 
-        const newMember = await db
-            .insert(cabinetMembers)
-            .values({
-                id,
-                name,
-                position,
-                division,
-                photoUrl,
-                email,
-                phone,
-                bio,
-                orderIndex: orderIndex ? Number(orderIndex) : 0,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            })
-            .returning();
+        await db.prepare(
+            `INSERT INTO cabinet_members (id, name, position, division, photo_url, email, phone, bio, order_index, created_at, updated_at) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ).bind(
+            id,
+            name,
+            position,
+            division || null,
+            photoUrl || null,
+            email || null,
+            phone || null,
+            bio || null,
+            orderIndex ? Number(orderIndex) : 0,
+            now,
+            now
+        ).run();
 
-        return NextResponse.json({ member: newMember[0] });
+        return NextResponse.json({ success: true, id });
     } catch (error: any) {
         console.error("Error creating member:", error);
         return NextResponse.json(
@@ -67,28 +73,36 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
         const body = await req.json() as any;
         const { id, name, position, division, photoUrl, email, phone, bio, orderIndex } = body;
 
-        const updated = await db
-            .update(cabinetMembers)
-            .set({
-                name,
-                position,
-                division,
-                photoUrl,
-                email,
-                phone,
-                bio,
-                orderIndex: orderIndex ? Number(orderIndex) : 0,
-                updatedAt: new Date().toISOString(),
-            })
-            .where(eq(cabinetMembers.id, id))
-            .returning();
+        if (!id) {
+            return NextResponse.json(
+                { error: "Member ID is required" },
+                { status: 400 }
+            );
+        }
 
-        return NextResponse.json({ member: updated[0] });
+        const now = new Date().toISOString();
+
+        await db.prepare(
+            `UPDATE cabinet_members SET name = ?, position = ?, division = ?, photo_url = ?, email = ?, phone = ?, bio = ?, order_index = ?, updated_at = ? WHERE id = ?`
+        ).bind(
+            name,
+            position,
+            division || null,
+            photoUrl || null,
+            email || null,
+            phone || null,
+            bio || null,
+            orderIndex ? Number(orderIndex) : 0,
+            now,
+            id
+        ).run();
+
+        return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error("Error updating member:", error);
         return NextResponse.json(
@@ -102,7 +116,7 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = env.DB;
 
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
@@ -111,7 +125,7 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ error: "ID required" }, { status: 400 });
         }
 
-        await db.delete(cabinetMembers).where(eq(cabinetMembers.id, id));
+        await db.prepare("DELETE FROM cabinet_members WHERE id = ?").bind(id).run();
 
         return NextResponse.json({ success: true });
     } catch (error: any) {

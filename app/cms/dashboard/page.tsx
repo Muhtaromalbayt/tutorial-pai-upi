@@ -154,14 +154,14 @@ export default function CMSDashboardPage() {
                 {/* Quick Actions */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h2 className="text-lg font-semibold text-gray-900 mb-4">Kelola Konten</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <Link
                             href="/cms/kabar-tutorial"
                             className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-[#055E5B] hover:bg-[#055E5B]/5 transition-all group"
                         >
                             <div className="w-12 h-12 bg-[#055E5B]/10 rounded-lg flex items-center justify-center mr-4 group-hover:bg-[#055E5B]/20 transition-colors">
                                 <svg className="w-6 h-6 text-[#055E5B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                                 </svg>
                             </div>
                             <div>
@@ -169,6 +169,40 @@ export default function CMSDashboardPage() {
                                     Kabar Tutorial
                                 </h3>
                                 <p className="text-sm text-gray-600">Kelola berita dan pengumuman</p>
+                            </div>
+                        </Link>
+
+                        <Link
+                            href="/cms/kabinet"
+                            className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-[#055E5B] hover:bg-[#055E5B]/5 transition-all group"
+                        >
+                            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-purple-200 transition-colors">
+                                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-gray-900 group-hover:text-[#055E5B]">
+                                    Kabinet/Pengurus
+                                </h3>
+                                <p className="text-sm text-gray-600">Kelola struktur organisasi</p>
+                            </div>
+                        </Link>
+
+                        <Link
+                            href="/cms/kalender"
+                            className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-[#055E5B] hover:bg-[#055E5B]/5 transition-all group"
+                        >
+                            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-orange-200 transition-colors">
+                                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-gray-900 group-hover:text-[#055E5B]">
+                                    Kalender Kegiatan
+                                </h3>
+                                <p className="text-sm text-gray-600">Kelola jadwal dan event</p>
                             </div>
                         </Link>
                     </div>
