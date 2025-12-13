@@ -16,6 +16,13 @@ interface NewsItem {
   is_published: boolean | number;
 }
 
+interface SiteSettings {
+  hero_title?: string;
+  hero_subtitle?: string;
+  hero_image_url?: string;
+  [key: string]: any;
+}
+
 function NewsGrid() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,10 +90,32 @@ function NewsGrid() {
 }
 
 export default function Home() {
+  const [settings, setSettings] = useState<SiteSettings>({});
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch("/api/settings");
+      const data = await res.json();
+      if (data.settings) {
+        setSettings(data.settings);
+      }
+    } catch (err) {
+      console.error("Failed to fetch settings:", err);
+    }
+  };
+
   return (
     <main>
-      {/* Hero Section with Activity Photos */}
-      <HeroActivities />
+      {/* Hero Section with Activity Photos - now Dynamic */}
+      <HeroActivities
+        title={settings.hero_title}
+        subtitle={settings.hero_subtitle}
+        heroImage={settings.hero_image_url}
+      />
 
       {/* News Section */}
       <section className="section-academic bg-white">

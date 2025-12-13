@@ -4,27 +4,21 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-interface User {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
-}
-
-interface Stats {
-    total: number;
-    published: number;
+interface DashboardStats {
+    news: number;
     drafts: number;
+    members: number;
+    events: number;
 }
 
-export default function CMSDashboardPage() {
+export default function CMSDashboard() {
     const router = useRouter();
-    const [user, setUser] = useState<User | null>(null);
-    const [stats, setStats] = useState<Stats>({ total: 0, published: 0, drafts: 0 });
-    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+    const [stats, setStats] = useState<DashboardStats>({ news: 0, drafts: 0, members: 0, events: 0 });
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check auth
+        // Client-side auth check
         const userStr = localStorage.getItem("cms_user");
         const token = localStorage.getItem("cms_token");
 
@@ -33,41 +27,48 @@ export default function CMSDashboardPage() {
             return;
         }
 
-        try {
-            setUser(JSON.parse(userStr));
-        } catch {
-            router.push("/cms/login");
-            return;
-        }
-
-        // Fetch stats
+        setUser(JSON.parse(userStr));
         fetchStats();
     }, [router]);
 
     const fetchStats = async () => {
         try {
-            const res = await fetch("/api/news");
-            const data = await res.json();
-            const news = data.news || [];
+            // Parallel fetch for all stats
+            const [newsRes, cabinetRes, calendarRes] = await Promise.all([
+                fetch("/api/news"),
+                fetch("/api/cabinet"),
+                fetch("/api/calendar")
+            ]);
+
+            const newsData = await newsRes.json();
+            const cabinetData = await cabinetRes.json();
+            const calendarData = await calendarRes.json();
+
+            const newsCount = (newsData.news || []).filter((n: any) => n.is_published).length;
+            const draftsCount = (newsData.news || []).filter((n: any) => !n.is_published).length;
+            const membersCount = (cabinetData.members || []).length;
+            const eventsCount = (calendarData.events || []).length;
+
             setStats({
-                total: news.length,
-                published: news.filter((n: any) => n.is_published).length,
-                drafts: news.filter((n: any) => !n.is_published).length,
+                news: newsCount,
+                drafts: draftsCount,
+                members: membersCount,
+                events: eventsCount
             });
-        } catch (err) {
-            console.error("Failed to fetch stats:", err);
+        } catch (error) {
+            console.error("Error fetching stats:", error);
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         localStorage.removeItem("cms_user");
         localStorage.removeItem("cms_token");
         router.push("/cms/login");
     };
 
-    if (isLoading) {
+    if (loading) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#055E5B]"></div>
@@ -77,45 +78,48 @@ export default function CMSDashboardPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <header className="bg-white shadow-sm border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900">CMS Dashboard</h1>
-                            <p className="text-sm text-gray-600 mt-1">
-                                Selamat datang, {user?.name}
-                            </p>
+            {/* Top Navigation */}
+            <nav className="bg-white shadow-sm border-b border-gray-200">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between h-16">
+                        <div className="flex items-center">
+                            <span className="text-xl font-bold text-[#055E5B]">CMS Tutorial PAI-SPAI</span>
                         </div>
-                        <div className="flex items-center gap-4">
-                            <Link
-                                href="/"
-                                className="text-sm text-gray-600 hover:text-[#055E5B]"
-                            >
-                                ← Ke Website
-                            </Link>
+                        <div className="flex items-center space-x-4">
+                            <div className="text-right hidden md:block">
+                                <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                                <p className="text-xs text-gray-500">{user?.email}</p>
+                            </div>
                             <button
                                 onClick={handleLogout}
-                                className="px-4 py-2 text-sm text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                className="p-2 text-gray-500 hover:text-red-600 transition-colors"
+                                title="Logout"
                             >
-                                Logout
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
                             </button>
                         </div>
                     </div>
                 </div>
-            </header>
+            </nav>
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="mb-8">
+                    <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+                    <p className="text-gray-600">Selamat datang kembali, {user?.name}!</p>
+                </div>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-600">Total Berita</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-2">{stats.total}</p>
+                                <p className="text-sm font-medium text-gray-600">Berita Published</p>
+                                <p className="text-3xl font-bold text-[#055E5B] mt-2">{stats.news}</p>
                             </div>
-                            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="w-12 h-12 bg-[#055E5B]/10 rounded-xl flex items-center justify-center">
+                                <svg className="w-6 h-6 text-[#055E5B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                                 </svg>
                             </div>
@@ -125,12 +129,12 @@ export default function CMSDashboardPage() {
                     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-600">Published</p>
-                                <p className="text-3xl font-bold text-green-600 mt-2">{stats.published}</p>
+                                <p className="text-sm font-medium text-gray-600">Total Pengurus</p>
+                                <p className="text-3xl font-bold text-purple-600 mt-2">{stats.members}</p>
                             </div>
-                            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
                             </div>
                         </div>
@@ -139,7 +143,21 @@ export default function CMSDashboardPage() {
                     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-600">Drafts</p>
+                                <p className="text-sm font-medium text-gray-600">Total Event</p>
+                                <p className="text-3xl font-bold text-orange-600 mt-2">{stats.events}</p>
+                            </div>
+                            <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-gray-600">Draft Berita</p>
                                 <p className="text-3xl font-bold text-yellow-600 mt-2">{stats.drafts}</p>
                             </div>
                             <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
@@ -203,6 +221,24 @@ export default function CMSDashboardPage() {
                                     Kalender Kegiatan
                                 </h3>
                                 <p className="text-sm text-gray-600">Kelola jadwal dan event</p>
+                            </div>
+                        </Link>
+
+                        <Link
+                            href="/cms/pengaturan"
+                            className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-[#055E5B] hover:bg-[#055E5B]/5 transition-all group"
+                        >
+                            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-gray-200 transition-colors">
+                                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-gray-900 group-hover:text-[#055E5B]">
+                                    Pengaturan Situs
+                                </h3>
+                                <p className="text-sm text-gray-600">Edit hero & info situs</p>
                             </div>
                         </Link>
                     </div>
