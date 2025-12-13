@@ -1,16 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
+import { verifyPassword } from "@/lib/auth-edge";
 
 export const runtime = "edge";
-
-// Temporary hardcoded admin for testing
-const TEMP_ADMIN = {
-    email: "alfath@upi.edu",
-    password: "admin123",
-    id: "admin-001",
-    name: "Admin AL-FATH",
-    role: "admin"
-};
 
 export async function POST(request: NextRequest) {
     try {
@@ -24,44 +16,26 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        let user = null;
+        const { env } = getRequestContext();
+        const db = env.DB;
 
-        // Check temporary admin first (for testing)
-        if (email === TEMP_ADMIN.email && password === TEMP_ADMIN.password) {
-            user = {
-                id: TEMP_ADMIN.id,
-                email: TEMP_ADMIN.email,
-                name: TEMP_ADMIN.name,
-                role: TEMP_ADMIN.role
-            };
-        }
-
-        // If not temp admin, try database
-        if (!user) {
-            try {
-                const { env } = getRequestContext();
-                const db = env.DB;
-
-                const result = await db.prepare(
-                    "SELECT * FROM users WHERE email = ?"
-                ).bind(email).first();
-
-                if (result) {
-                    // For now, simple password check (should use bcrypt in production)
-                    // This is a fallback - temp admin above should work
-                    user = {
-                        id: result.id as string,
-                        email: result.email as string,
-                        name: result.name as string,
-                        role: (result.role as string) || "admin"
-                    };
-                }
-            } catch (error: any) {
-                console.error("Database auth failed:", error);
-            }
-        }
+        // Fetch user by email
+        const user = await db.prepare(
+            "SELECT * FROM users WHERE email = ?"
+        ).bind(email).first();
 
         if (!user) {
+            return NextResponse.json(
+                { error: "Email atau password salah" },
+                { status: 401 }
+            );
+        }
+
+        // Verify password
+        const storedPassword = user.password as string;
+        const isValid = await verifyPassword(password, storedPassword);
+
+        if (!isValid) {
             return NextResponse.json(
                 { error: "Email atau password salah" },
                 { status: 401 }
