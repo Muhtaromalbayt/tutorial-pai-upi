@@ -11,9 +11,9 @@ interface NewsItem {
   title: string;
   content: string;
   category: string;
-  imageUrl?: string;
-  publishedDate?: string;
-  isPublished: boolean;
+  image_url?: string;
+  published_date?: string;
+  is_published: boolean | number;
 }
 
 function NewsGrid() {
@@ -28,8 +28,9 @@ function NewsGrid() {
     try {
       const response = await fetch("/api/news");
       const data = await response.json() as { news: NewsItem[] };
+      // Filter by is_published (database uses snake_case)
       const publishedNews = (data.news || [])
-        .filter((item: NewsItem) => item.isPublished)
+        .filter((item: NewsItem) => item.is_published)
         .slice(0, 3); // Get only first 3 published news
       setNews(publishedNews);
     } catch (error) {
@@ -71,9 +72,9 @@ function NewsGrid() {
           key={item.id}
           title={item.title}
           description={item.content}
-          date={item.publishedDate || ""}
+          date={item.published_date || ""}
           category={item.category}
-          imageUrl={item.imageUrl || "/assets/kegiatan/default.png"}
+          imageUrl={item.image_url || "/assets/kegiatan/default.png"}
           href={`/news/${item.id}`}
         />
       ))}
