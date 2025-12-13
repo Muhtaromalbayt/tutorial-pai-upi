@@ -22,13 +22,14 @@ export default function CMSLoginPage() {
                 body: JSON.stringify({ email, password }),
             });
 
-            const data = await response.json();
+            const data = await response.json() as { success?: boolean; user?: any; error?: string };
 
             if (response.ok && data.success) {
                 // Store in localStorage for session persistence
                 localStorage.setItem("cms_user", JSON.stringify(data.user));
                 localStorage.setItem("cms_token", "authenticated");
-                router.push("/cms/dashboard");
+                // Use window.location for more reliable redirect
+                window.location.href = "/cms/dashboard";
             } else {
                 setError(data.error || "Login gagal");
             }
