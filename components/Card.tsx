@@ -10,7 +10,23 @@ interface CardProps {
     href?: string;
 }
 
+// Strip markdown formatting for clean preview text
+function stripMarkdown(text: string): string {
+    if (!text) return "";
+    return text
+        .replace(/^#{1,6} /gm, "") // Remove headings
+        .replace(/\*\*(.+?)\*\*/g, "$1") // Remove bold
+        .replace(/\*(.+?)\*/g, "$1") // Remove italic
+        .replace(/\[(.+?)\]\(.+?\)/g, "$1") // Remove links, keep text
+        .replace(/^- /gm, "") // Remove list markers
+        .replace(/\n+/g, " ") // Replace newlines with spaces
+        .trim();
+}
+
 const Card = ({ title, description, imageUrl, date, category, href }: CardProps) => {
+    // Strip markdown for clean preview
+    const cleanDescription = stripMarkdown(description);
+
     const content = (
         <div className="card-academic h-full overflow-hidden group cursor-pointer">
             {imageUrl && (
@@ -33,7 +49,7 @@ const Card = ({ title, description, imageUrl, date, category, href }: CardProps)
                     {title}
                 </h3>
                 <p className="text-sm text-neutral-600 mb-4 line-clamp-3">
-                    {description}
+                    {cleanDescription}
                 </p>
                 {date && (
                     <div className="flex items-center text-xs text-neutral-500">
