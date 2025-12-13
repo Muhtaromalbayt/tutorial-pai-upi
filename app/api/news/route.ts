@@ -1,27 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
-import { corsHeaders, handleCors } from "@/lib/cors";
 
 export const runtime = "edge";
 
-// Handle preflight request
-export async function OPTIONS(request: NextRequest) {
-    const origin = request.headers.get("origin");
-    return handleCors(origin);
-}
-
-function addCorsHeaders(response: NextResponse, origin: string | null) {
-    const headers = corsHeaders(origin);
-    Object.entries(headers).forEach(([key, value]) => {
-        response.headers.set(key, value);
-    });
-    return response;
-}
-
 // GET all news
-export async function GET(request: NextRequest) {
-    const origin = request.headers.get("origin");
-
+export async function GET() {
     try {
         const { env } = getRequestContext();
         const db = env.DB;
@@ -30,20 +13,18 @@ export async function GET(request: NextRequest) {
             "SELECT * FROM news ORDER BY created_at DESC"
         ).all();
 
-        return addCorsHeaders(NextResponse.json({ news: result.results }), origin);
+        return NextResponse.json({ news: result.results });
     } catch (error: any) {
         console.error("Error fetching news:", error);
-        return addCorsHeaders(
-            NextResponse.json({ error: "Failed to fetch news", details: error.message }, { status: 500 }),
-            origin
+        return NextResponse.json(
+            { error: "Failed to fetch news", details: error.message },
+            { status: 500 }
         );
     }
 }
 
 // POST new news
 export async function POST(req: NextRequest) {
-    const origin = req.headers.get("origin");
-
     try {
         const { env } = getRequestContext();
         const db = env.DB;
@@ -52,9 +33,9 @@ export async function POST(req: NextRequest) {
         const { title, content, category, imageUrl, author, publishedDate, isPublished } = body;
 
         if (!title || !content) {
-            return addCorsHeaders(
-                NextResponse.json({ error: "Title and content are required" }, { status: 400 }),
-                origin
+            return NextResponse.json(
+                { error: "Title and content are required" },
+                { status: 400 }
             );
         }
 
@@ -78,20 +59,18 @@ export async function POST(req: NextRequest) {
             now
         ).run();
 
-        return addCorsHeaders(NextResponse.json({ success: true, id }), origin);
+        return NextResponse.json({ success: true, id });
     } catch (error: any) {
         console.error("Error creating news:", error);
-        return addCorsHeaders(
-            NextResponse.json({ error: "Failed to create news", details: error.message }, { status: 500 }),
-            origin
+        return NextResponse.json(
+            { error: "Failed to create news", details: error.message },
+            { status: 500 }
         );
     }
 }
 
 // PUT update news
 export async function PUT(req: NextRequest) {
-    const origin = req.headers.get("origin");
-
     try {
         const { env } = getRequestContext();
         const db = env.DB;
@@ -100,9 +79,9 @@ export async function PUT(req: NextRequest) {
         const { id, title, content, category, imageUrl, author, publishedDate, isPublished } = body;
 
         if (!id) {
-            return addCorsHeaders(
-                NextResponse.json({ error: "News ID is required" }, { status: 400 }),
-                origin
+            return NextResponse.json(
+                { error: "News ID is required" },
+                { status: 400 }
             );
         }
 
@@ -123,20 +102,18 @@ export async function PUT(req: NextRequest) {
             id
         ).run();
 
-        return addCorsHeaders(NextResponse.json({ success: true }), origin);
+        return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error("Error updating news:", error);
-        return addCorsHeaders(
-            NextResponse.json({ error: "Failed to update news", details: error.message }, { status: 500 }),
-            origin
+        return NextResponse.json(
+            { error: "Failed to update news", details: error.message },
+            { status: 500 }
         );
     }
 }
 
 // DELETE news
 export async function DELETE(req: NextRequest) {
-    const origin = req.headers.get("origin");
-
     try {
         const { env } = getRequestContext();
         const db = env.DB;
@@ -145,17 +122,17 @@ export async function DELETE(req: NextRequest) {
         const id = searchParams.get("id");
 
         if (!id) {
-            return addCorsHeaders(NextResponse.json({ error: "ID required" }, { status: 400 }), origin);
+            return NextResponse.json({ error: "ID required" }, { status: 400 });
         }
 
         await db.prepare("DELETE FROM news WHERE id = ?").bind(id).run();
 
-        return addCorsHeaders(NextResponse.json({ success: true }), origin);
+        return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error("Error deleting news:", error);
-        return addCorsHeaders(
-            NextResponse.json({ error: "Failed to delete news", details: error.message }, { status: 500 }),
-            origin
+        return NextResponse.json(
+            { error: "Failed to delete news", details: error.message },
+            { status: 500 }
         );
     }
 }

@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 
 const SESSION_COOKIE_NAME = "cms_session";
@@ -12,18 +11,12 @@ export interface SessionData {
 }
 
 /**
- * Hash a password using bcrypt
- */
-export async function hashPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt(10);
-    return bcrypt.hash(password, salt);
-}
-
-/**
- * Verify a password against a hash
+ * Simple password verification (for temporary use)
+ * In production, use a proper hashing library compatible with Edge runtime
  */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password, hash);
+    // Simple comparison for now - passwords are checked directly in login route
+    return password === hash;
 }
 
 /**
@@ -82,7 +75,6 @@ export async function validateSession(): Promise<SessionData | null> {
 
 // Namespace export for API routes that import { simpleAuth }
 export const simpleAuth = {
-    hashPassword,
     verifyPassword,
     createSession,
     getSession,
