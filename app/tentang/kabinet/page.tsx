@@ -2,126 +2,139 @@ import Hero from "@/components/Hero";
 import Button from "@/components/Button";
 
 export default function KabinetPage() {
-    const kabinetMembers = [
-        { nama: "Ahmad Zaki Mubarak", jabatan: "Ketua Umum", foto: "/assets/pengurus/ketua-umum.jpg" },
-        { nama: "Siti Nur Aisyah", jabatan: "Wakil Ketua", foto: "/assets/pengurus/wakil.jpg" },
-        { nama: "Muhammad Rizki", jabatan: "Sekretaris", foto: "/assets/pengurus/sekretaris.jpg" },
-        { nama: "Fatimah Zahra", jabatan: "Bendahara", foto: "/assets/pengurus/bendahara.jpg" },
-        { nama: "Huda Prasetyo", jabatan: "Kepala Dept. Keilmuan", foto: "/assets/pengurus/kabinet/keilmuan.jpg" },
-        { nama: "Rina Safitri", jabatan: "Kepala Dept. Kaderisasi", foto: "/assets/pengurus/kabinet/kaderisasi.jpg" },
-        { nama: "Firman Hidayat", jabatan: "Kepala Dept. Mentoring", foto: "/assets/pengurus/kabinet/mentoring.jpg" },
-        { nama: "Laila Rahma", jabatan: "Kepala Dept. Kerohanian", foto: "/assets/pengurus/kabinet/kerohanian.jpg" },
-        { nama: "Yoga Ramadan", jabatan: "Kepala Dept. Humas", foto: "/assets/pengurus/kabinet/humas.jpg" },
-        { nama: "Dina Amalia", jabatan: "Kepala Dept. Kreatif", foto: "/assets/pengurus/kabinet/kreatif.jpg" },
-        { nama: "Ilham Fauzi", jabatan: "Koordinator Kajian", foto: "/assets/pengurus/kabinet/kajian.jpg" },
-        { nama: "Sarah Azizah", jabatan: "Koordinator Seminar", foto: "/assets/pengurus/kabinet/seminar.jpg" },
+    const coreValues = [
+        {
+            letter: "F",
+            title: "Freedom",
+            desc: "Kemerdekaan dalam berpikir dan bertindak yang berlandaskan pada nilai-nilai ketauhidan, membebaskan diri dari belenggu keduniawian untuk mencapai ridha Allah.",
+            color: "from-blue-500 to-indigo-600"
+        },
+        {
+            letter: "A",
+            title: "Adil",
+            desc: "Menempatkan segala sesuatu pada tempatnya. Berkomitmen pada kebenaran dan kesetaraan dalam setiap langkah dakwah dan pelayanan.",
+            color: "from-emerald-500 to-teal-600"
+        },
+        {
+            letter: "T",
+            title: "Tarbiyah",
+            desc: "Proses pendidikan dan pembinaan yang berkelanjutan untuk membentuk karakter (syakhshiyah) Islamiyah yang kokoh.",
+            color: "from-orange-500 to-red-600"
+        },
+        {
+            letter: "H",
+            title: "Himmah wa Hubb",
+            desc: "Semangat yang tinggi disertai dengan cinta. Melayani dengan hati dan tekad baja untuk kemajuan Tutorial PAI.",
+            color: "from-purple-500 to-pink-600"
+        }
     ];
 
     return (
-        <div>
+        <div className="bg-neutral-50 min-h-screen">
             <Hero
                 title="Kabinet AL-FATH"
-                subtitle="Tim Pengurus Tutorial PAI Semester Genap 2025/2026"
+                subtitle="Fostering Adab through Thought and Hearth"
                 height="normal"
             />
 
-            <section className="section-academic">
+            {/* Section 1: Philosophy & Meaning */}
+            <section className="py-24 relative overflow-hidden">
+                <div className="container-upi relative z-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                        <div className="animate-fade-in-up">
+                            <span className="inline-block px-4 py-1.5 mb-6 text-sm font-bold tracking-wider text-primary-600 uppercase bg-primary-50 rounded-full">
+                                Filosofi & Makna
+                            </span>
+                            <h2 className="text-4xl md:text-5xl font-bold text-neutral-900 mb-8 leading-tight">
+                                Membawa Semangat <br />
+                                <span className="text-primary-600 italic">Kemenangan Baru</span>
+                            </h2>
+                            <div className="space-y-6 text-lg text-neutral-600 leading-relaxed">
+                                <p>
+                                    <strong>AL-FATH</strong> yang secara etimologi bermakna <em>"pembukaan"</em> atau <em>"kemenangan"</em>, merepresentasikan visi besar kami untuk membuka lembaran baru yang lebih gemilang dalam dakwah kampus.
+                                </p>
+                                <p>
+                                    Latar belakang penamaan ini didasari oleh semangat untuk menghadirkan solusi kreatif atas tantangan zaman, menjadikan Tutorial PAI sebagai wadah yang inklusif namun tetap kokoh dalam memegang prinsip.
+                                </p>
+                                <div className="p-6 bg-white border-l-4 border-primary-600 shadow-sm rounded-r-xl">
+                                    <p className="font-heading text-xl text-neutral-800 font-semibold italic">
+                                        "Menumbuhkan Adab, Menggerakkan Peradaban"
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="relative animate-reveal delay-200">
+                            <div className="aspect-square bg-gradient-to-br from-neutral-900 to-neutral-800 rounded-3xl p-12 flex flex-col justify-center items-center text-center shadow-2xl overflow-hidden relative group">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                                <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl -ml-32 -mb-32"></div>
+
+                                <h3 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter">
+                                    AL-FATH
+                                </h3>
+                                <p className="text-xl md:text-2xl text-neutral-300 font-medium tracking-wide max-w-md">
+                                    <span className="text-primary-400">F</span>ostering <span className="text-primary-400">A</span>dab through <span className="text-primary-400">T</span>hought and <span className="text-primary-400">H</span>earth
+                                </p>
+                                <div className="mt-12 h-1 w-24 bg-primary-500 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Section 2: 4 Core Values (FATH) */}
+            <section className="py-24 bg-white">
                 <div className="container-upi">
-                    {/* Introduction */}
-                    <div className="max-w-3xl mx-auto text-center mb-16">
-                        <h2 className="text-3xl font-bold text-neutral-900 mb-6">
-                            Mengenal Kabinet AL-FATH
+                    <div className="text-center max-w-3xl mx-auto mb-20 animate-fade-in-up">
+                        <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-6">
+                            4 Core Values (FATH)
                         </h2>
-                        <p className="text-lg text-neutral-600 leading-relaxed">
-                            AL-FATH yang bermakna <em>"pembukaan"</em> atau <em>"kemenangan"</em> merepresentasikan semangat kabinet ini untuk membuka peluang-peluang baru dalam dakwah kampus dan meraih kemenangan dalam menyebarkan nilai-nilai Islam. Kabinet AL-FATH menjunjung tinggi prinsip <strong>Menumbuhkan Adab, Menggerakkan Peradaban</strong> sebagai landasan setiap program dan kegiatan.
+                        <p className="text-lg text-neutral-600">
+                            Nilai-nilai utama yang kami junjung tinggi dalam setiap detak langkah perjuangan Kabinet Al Fath.
                         </p>
                     </div>
 
-                    {/* Kabinet Members Grid */}
-                    <div className="mb-16">
-                        <h3 className="text-2xl font-bold text-neutral-900 mb-8 text-center">
-                            Anggota Kabinet
-                        </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                            {kabinetMembers.map((member, index) => (
-                                <div key={index} className="group">
-                                    <div className="card-academic overflow-hidden">
-                                        <div className="relative h-64 bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
-                                            {/* Placeholder untuk foto */}
-                                            <div className="text-white text-6xl font-bold">
-                                                {member.nama.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                                            </div>
-                                            <div className="absolute inset-0 bg-neutral-900 opacity-0 group-hover:opacity-20 transition-opacity"></div>
-                                        </div>
-                                        <div className="p-5 text-center">
-                                            <h4 className="text-lg font-semibold text-neutral-900 mb-1">
-                                                {member.nama}
-                                            </h4>
-                                            <p className="text-sm text-primary-600 font-medium">
-                                                {member.jabatan}
-                                            </p>
-                                        </div>
-                                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {coreValues.map((val, idx) => (
+                            <div
+                                key={idx}
+                                className={`group p-8 rounded-2xl border border-neutral-100 bg-neutral-50 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-fade-in-up`}
+                                style={{ animationDelay: `${(idx + 1) * 150}ms` }}
+                            >
+                                <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${val.color} flex items-center justify-center text-white text-3xl font-black mb-8 group-hover:scale-110 transition-transform duration-500 shadow-lg`}>
+                                    {val.letter}
                                 </div>
-                            ))}
-                        </div>
+                                <h4 className="text-2xl font-bold text-neutral-900 mb-4">
+                                    {val.title}
+                                </h4>
+                                <p className="text-neutral-600 leading-relaxed">
+                                    {val.desc}
+                                </p>
+                            </div>
+                        ))}
                     </div>
+                </div>
+            </section>
 
-                    {/* Values Section */}
-                    <div className="max-w-5xl mx-auto">
-                        <h3 className="text-2xl font-bold text-neutral-900 mb-8 text-center">
-                            Nilai-Nilai Kabinet AL-FATH
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {[
-                                {
-                                    icon: (
-                                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                        </svg>
-                                    ),
-                                    title: "Adab & Akhlak",
-                                    desc: "Mendahulukan pembinaan karakter dan akhlak mulia sebagai fondasi utama"
-                                },
-                                {
-                                    icon: (
-                                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                                        </svg>
-                                    ),
-                                    title: "Inovasi & Kreativitas",
-                                    desc: "Menghadirkan program-program inovatif yang menarik dan berdampak"
-                                },
-                                {
-                                    icon: (
-                                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                        </svg>
-                                    ),
-                                    title: "Kebersamaan & Ukhuwah",
-                                    desc: "Membangun ikatan persaudaraan yang kuat dalam semangat Islam"
-                                },
-                            ].map((value, index) => (
-                                <div key={index} className="card-academic p-8 text-center group hover:shadow-xl transition-all">
-                                    <div className="w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-6 text-primary-600 group-hover:bg-primary-600 group-hover:text-white transition-colors">
-                                        {value.icon}
-                                    </div>
-                                    <h4 className="text-xl font-semibold text-neutral-900 mb-3">
-                                        {value.title}
-                                    </h4>
-                                    <p className="text-neutral-600">
-                                        {value.desc}
-                                    </p>
-                                </div>
-                            ))}
+            {/* Section 3: Closing/CTA */}
+            <section className="py-24 bg-neutral-900 text-white relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10 bg-pattern-academic"></div>
+                <div className="container-upi relative z-10 text-center">
+                    <div className="max-w-4xl mx-auto animate-fade-in-up">
+                        <h2 className="text-3xl md:text-5xl font-black mb-8 leading-tight">
+                            Siap Melangkah Menuju <br />
+                            Tutorial PAI yang Beradab
+                        </h2>
+                        <p className="text-xl text-neutral-400 mb-12 max-w-2xl mx-auto">
+                            Mari bersama Kabinet Al Fath, kita bangun peradaban ilmu yang berlandaskan kasih sayang dan ketaqwaan.
+                        </p>
+                        <div className="flex flex-wrap justify-center gap-6">
+                            <Button href="/tentang/struktur" variant="primary" className="!px-10 !py-4 text-lg">
+                                Lihat Struktur Organisasi
+                            </Button>
+                            <Button href="/tentang/sejarah" variant="secondary" className="!bg-transparent !text-white !border-white/20 hover:!bg-white/10 !px-10 !py-4 text-lg">
+                                Pelajari Sejarah
+                            </Button>
                         </div>
-                    </div>
-
-                    {/* Call to Action */}
-                    <div className="text-center mt-16">
-                        <Button href="/tentang/struktur" variant="primary">
-                            Lihat Struktur Lengkap
-                        </Button>
                     </div>
                 </div>
             </section>
