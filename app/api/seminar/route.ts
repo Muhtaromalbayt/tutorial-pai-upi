@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
-import { drizzle } from "drizzle-orm/d1";
-import { seminarSchedule } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { createDb, seminarSchedule } from "@/lib/db/client";
+import { eq, asc } from "drizzle-orm";
 
 export const runtime = "edge";
 
@@ -10,15 +9,16 @@ export const runtime = "edge";
 export async function GET() {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = createDb(env.DB);
 
-        const schedules = await db.select().from(seminarSchedule).all();
+        const schedules = await db.select().from(seminarSchedule).orderBy(asc(seminarSchedule.weekNumber));
 
         return NextResponse.json({ schedules });
-    } catch (error: any) {
-        console.error("Error fetching schedules:", error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error fetching schedules:", message);
         return NextResponse.json(
-            { error: "Failed to fetch schedules", details: error.message },
+            { error: "Failed to fetch schedules", details: message },
             { status: 500 }
         );
     }
@@ -28,13 +28,20 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = createDb(env.DB);
 
-        const body = await req.json() as any;
+        const body = await req.json() as {
+            weekNumber: number;
+            date: string;
+            topic: string;
+            speaker?: string;
+            materials?: string[];
+            location?: string;
+        };
         const { weekNumber, date, topic, speaker, materials, location } = body;
 
-        // Generate ID
         const id = `sem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const now = new Date().toISOString();
 
         const newSchedule = await db
             .insert(seminarSchedule)
@@ -43,19 +50,20 @@ export async function POST(req: NextRequest) {
                 weekNumber: Number(weekNumber),
                 date,
                 topic,
-                speaker,
+                speaker: speaker || null,
                 materials: JSON.stringify(materials || []),
                 location: location || "Masjid Kampus UPI",
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
+                createdAt: now,
+                updatedAt: now,
             })
             .returning();
 
         return NextResponse.json({ schedule: newSchedule[0] });
-    } catch (error: any) {
-        console.error("Error creating schedule:", error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error creating schedule:", message);
         return NextResponse.json(
-            { error: "Failed to create schedule", details: error.message },
+            { error: "Failed to create schedule", details: message },
             { status: 500 }
         );
     }
@@ -65,10 +73,20 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = createDb(env.DB);
 
-        const body = await req.json() as any;
+        const body = await req.json() as {
+            id: string;
+            weekNumber: number;
+            date: string;
+            topic: string;
+            speaker?: string;
+            materials?: string[];
+            location?: string;
+        };
         const { id, weekNumber, date, topic, speaker, materials, location } = body;
+
+        const now = new Date().toISOString();
 
         const updated = await db
             .update(seminarSchedule)
@@ -76,19 +94,20 @@ export async function PUT(req: NextRequest) {
                 weekNumber: Number(weekNumber),
                 date,
                 topic,
-                speaker,
+                speaker: speaker || null,
                 materials: JSON.stringify(materials || []),
-                location,
-                updatedAt: new Date().toISOString(),
+                location: location || null,
+                updatedAt: now,
             })
             .where(eq(seminarSchedule.id, id))
             .returning();
 
         return NextResponse.json({ schedule: updated[0] });
-    } catch (error: any) {
-        console.error("Error updating schedule:", error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error updating schedule:", message);
         return NextResponse.json(
-            { error: "Failed to update schedule", details: error.message },
+            { error: "Failed to update schedule", details: message },
             { status: 500 }
         );
     }
@@ -98,7 +117,7 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = drizzle(env.DB);
+        const db = createDb(env.DB);
 
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
@@ -110,10 +129,11 @@ export async function DELETE(req: NextRequest) {
         await db.delete(seminarSchedule).where(eq(seminarSchedule.id, id));
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        console.error("Error deleting schedule:", error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error deleting schedule:", message);
         return NextResponse.json(
-            { error: "Failed to delete schedule", details: error.message },
+            { error: "Failed to delete schedule", details: message },
             { status: 500 }
         );
     }

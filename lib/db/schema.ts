@@ -158,6 +158,13 @@ export const cabinetMembers = sqliteTable('cabinet_members', {
     updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
+// Site Settings
+export const siteSettings = sqliteTable('site_settings', {
+    key: text('key').primaryKey(),
+    value: text('value'),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -173,3 +180,4 @@ export type BinderSchedule = typeof binderSchedule.$inferSelect;
 export type News = typeof news.$inferSelect;
 export type CabinetMember = typeof cabinetMembers.$inferSelect;
 export type Feedback = typeof feedback.$inferSelect;
+export type SiteSetting = typeof siteSettings.$inferSelect;

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
+import { createDb, cabinetMembers } from "@/lib/db/client";
+import { eq, asc } from "drizzle-orm";
 
 export const runtime = "edge";
 
@@ -7,17 +9,16 @@ export const runtime = "edge";
 export async function GET() {
     try {
         const { env } = getRequestContext();
-        const db = env.DB;
+        const db = createDb(env.DB);
 
-        const result = await db.prepare(
-            "SELECT * FROM cabinet_members ORDER BY order_index ASC"
-        ).all();
+        const result = await db.select().from(cabinetMembers).orderBy(asc(cabinetMembers.orderIndex));
 
-        return NextResponse.json({ members: result.results });
-    } catch (error: any) {
-        console.error("Error fetching members:", error);
+        return NextResponse.json({ members: result });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error fetching members:", message);
         return NextResponse.json(
-            { error: "Failed to fetch members", details: error.message },
+            { error: "Failed to fetch members", details: message },
             { status: 500 }
         );
     }
@@ -27,9 +28,18 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = env.DB;
+        const db = createDb(env.DB);
 
-        const body = await req.json() as any;
+        const body = await req.json() as {
+            name: string;
+            position: string;
+            division?: string;
+            photoUrl?: string;
+            email?: string;
+            phone?: string;
+            bio?: string;
+            orderIndex?: number;
+        };
         const { name, position, division, photoUrl, email, phone, bio, orderIndex } = body;
 
         if (!name || !position) {
@@ -42,28 +52,26 @@ export async function POST(req: NextRequest) {
         const id = `cab_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const now = new Date().toISOString();
 
-        await db.prepare(
-            `INSERT INTO cabinet_members (id, name, position, division, photo_url, email, phone, bio, order_index, created_at, updated_at) 
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-        ).bind(
+        await db.insert(cabinetMembers).values({
             id,
             name,
             position,
-            division || null,
-            photoUrl || null,
-            email || null,
-            phone || null,
-            bio || null,
-            orderIndex ? Number(orderIndex) : 0,
-            now,
-            now
-        ).run();
+            division: division || null,
+            photoUrl: photoUrl || null,
+            email: email || null,
+            phone: phone || null,
+            bio: bio || null,
+            orderIndex: orderIndex ? Number(orderIndex) : 0,
+            createdAt: now,
+            updatedAt: now,
+        });
 
         return NextResponse.json({ success: true, id });
-    } catch (error: any) {
-        console.error("Error creating member:", error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error creating member:", message);
         return NextResponse.json(
-            { error: "Failed to create member", details: error.message },
+            { error: "Failed to create member", details: message },
             { status: 500 }
         );
     }
@@ -73,9 +81,19 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = env.DB;
+        const db = createDb(env.DB);
 
-        const body = await req.json() as any;
+        const body = await req.json() as {
+            id: string;
+            name: string;
+            position: string;
+            division?: string;
+            photoUrl?: string;
+            email?: string;
+            phone?: string;
+            bio?: string;
+            orderIndex?: number;
+        };
         const { id, name, position, division, photoUrl, email, phone, bio, orderIndex } = body;
 
         if (!id) {
@@ -87,26 +105,26 @@ export async function PUT(req: NextRequest) {
 
         const now = new Date().toISOString();
 
-        await db.prepare(
-            `UPDATE cabinet_members SET name = ?, position = ?, division = ?, photo_url = ?, email = ?, phone = ?, bio = ?, order_index = ?, updated_at = ? WHERE id = ?`
-        ).bind(
-            name,
-            position,
-            division || null,
-            photoUrl || null,
-            email || null,
-            phone || null,
-            bio || null,
-            orderIndex ? Number(orderIndex) : 0,
-            now,
-            id
-        ).run();
+        await db.update(cabinetMembers)
+            .set({
+                name,
+                position,
+                division: division || null,
+                photoUrl: photoUrl || null,
+                email: email || null,
+                phone: phone || null,
+                bio: bio || null,
+                orderIndex: orderIndex ? Number(orderIndex) : 0,
+                updatedAt: now,
+            })
+            .where(eq(cabinetMembers.id, id));
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        console.error("Error updating member:", error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error updating member:", message);
         return NextResponse.json(
-            { error: "Failed to update member", details: error.message },
+            { error: "Failed to update member", details: message },
             { status: 500 }
         );
     }
@@ -116,7 +134,7 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = env.DB;
+        const db = createDb(env.DB);
 
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
@@ -125,13 +143,14 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ error: "ID required" }, { status: 400 });
         }
 
-        await db.prepare("DELETE FROM cabinet_members WHERE id = ?").bind(id).run();
+        await db.delete(cabinetMembers).where(eq(cabinetMembers.id, id));
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        console.error("Error deleting member:", error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error deleting member:", message);
         return NextResponse.json(
-            { error: "Failed to delete member", details: error.message },
+            { error: "Failed to delete member", details: message },
             { status: 500 }
         );
     }

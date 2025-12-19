@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
+import { createDb, news } from "@/lib/db/client";
+import { eq, desc } from "drizzle-orm";
 
 export const runtime = "edge";
 
@@ -7,17 +9,16 @@ export const runtime = "edge";
 export async function GET() {
     try {
         const { env } = getRequestContext();
-        const db = env.DB;
+        const db = createDb(env.DB);
 
-        const result = await db.prepare(
-            "SELECT * FROM news ORDER BY created_at DESC"
-        ).all();
+        const result = await db.select().from(news).orderBy(desc(news.createdAt));
 
-        return NextResponse.json({ news: result.results });
-    } catch (error: any) {
-        console.error("Error fetching news:", error);
+        return NextResponse.json({ news: result });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error fetching news:", message);
         return NextResponse.json(
-            { error: "Failed to fetch news", details: error.message },
+            { error: "Failed to fetch news", details: message },
             { status: 500 }
         );
     }
@@ -27,9 +28,17 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = env.DB;
+        const db = createDb(env.DB);
 
-        const body = await req.json() as any;
+        const body = await req.json() as {
+            title: string;
+            content: string;
+            category?: string;
+            imageUrl?: string;
+            author?: string;
+            publishedDate?: string;
+            isPublished?: boolean;
+        };
         const { title, content, category, imageUrl, author, publishedDate, isPublished } = body;
 
         if (!title || !content) {
@@ -41,29 +50,26 @@ export async function POST(req: NextRequest) {
 
         const id = `news_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const now = new Date().toISOString();
-        const published = isPublished ? 1 : 0;
 
-        await db.prepare(
-            `INSERT INTO news (id, title, content, category, image_url, author, published_date, is_published, created_at, updated_at) 
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-        ).bind(
+        await db.insert(news).values({
             id,
             title,
             content,
-            category || "Kegiatan",
-            imageUrl || null,
-            author || null,
-            publishedDate || null,
-            published,
-            now,
-            now
-        ).run();
+            category: category || "Kegiatan",
+            imageUrl: imageUrl || null,
+            author: author || null,
+            publishedDate: publishedDate || null,
+            isPublished: isPublished || false,
+            createdAt: now,
+            updatedAt: now,
+        });
 
         return NextResponse.json({ success: true, id });
-    } catch (error: any) {
-        console.error("Error creating news:", error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error creating news:", message);
         return NextResponse.json(
-            { error: "Failed to create news", details: error.message },
+            { error: "Failed to create news", details: message },
             { status: 500 }
         );
     }
@@ -73,9 +79,18 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = env.DB;
+        const db = createDb(env.DB);
 
-        const body = await req.json() as any;
+        const body = await req.json() as {
+            id: string;
+            title: string;
+            content: string;
+            category?: string;
+            imageUrl?: string;
+            author?: string;
+            publishedDate?: string;
+            isPublished?: boolean;
+        };
         const { id, title, content, category, imageUrl, author, publishedDate, isPublished } = body;
 
         if (!id) {
@@ -86,27 +101,26 @@ export async function PUT(req: NextRequest) {
         }
 
         const now = new Date().toISOString();
-        const published = isPublished ? 1 : 0;
 
-        await db.prepare(
-            `UPDATE news SET title = ?, content = ?, category = ?, image_url = ?, author = ?, published_date = ?, is_published = ?, updated_at = ? WHERE id = ?`
-        ).bind(
-            title,
-            content,
-            category,
-            imageUrl || null,
-            author || null,
-            publishedDate || null,
-            published,
-            now,
-            id
-        ).run();
+        await db.update(news)
+            .set({
+                title,
+                content,
+                category,
+                imageUrl: imageUrl || null,
+                author: author || null,
+                publishedDate: publishedDate || null,
+                isPublished: isPublished || false,
+                updatedAt: now,
+            })
+            .where(eq(news.id, id));
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        console.error("Error updating news:", error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error updating news:", message);
         return NextResponse.json(
-            { error: "Failed to update news", details: error.message },
+            { error: "Failed to update news", details: message },
             { status: 500 }
         );
     }
@@ -116,7 +130,7 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
     try {
         const { env } = getRequestContext();
-        const db = env.DB;
+        const db = createDb(env.DB);
 
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
@@ -125,13 +139,14 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ error: "ID required" }, { status: 400 });
         }
 
-        await db.prepare("DELETE FROM news WHERE id = ?").bind(id).run();
+        await db.delete(news).where(eq(news.id, id));
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        console.error("Error deleting news:", error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error deleting news:", message);
         return NextResponse.json(
-            { error: "Failed to delete news", details: error.message },
+            { error: "Failed to delete news", details: message },
             { status: 500 }
         );
     }

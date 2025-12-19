@@ -2,7 +2,23 @@
 
 import Hero from "@/components/Hero";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+// Types
+interface Member {
+    id: string;
+    name: string;
+    position: string;
+    division: string; // "BPH" for top leaders, or specific division name
+    image_url?: string; // Should be photo_url from DB, need mapping or adjust here
+    photo_url?: string; // DB field name
+    order?: number; // Optional sorting order
+}
+
+interface Department {
+    name: string;
+    members: Member[];
+}
 
 const PengurusCard = ({ name, position, division, isLeader = false, image }: { name: string, position: string, division?: string, isLeader?: boolean, image?: string }) => (
     <div className="flex flex-col items-center text-center group w-[240px] mx-auto transform hover:-translate-y-2 transition-transform duration-300">
@@ -30,12 +46,28 @@ const PengurusCard = ({ name, position, division, isLeader = false, image }: { n
     </div>
 );
 
-const DepartmentAccordion = ({ dept, index }: { dept: any, index: number }) => {
+const DepartmentAccordion = ({ dept, index }: { dept: Department, index: number }) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    // Pisahkan pimpinan (2 orang pertama) dan staf (sisanya)
-    const leaders = dept.members ? dept.members.slice(0, 2) : [];
-    const staff = dept.members ? dept.members.slice(2) : [];
+    // Sort logic within department: Ketua -> Wakil -> Anggota
+    // Using simple heuristic matches
+    const sortedMembers = [...dept.members].sort((a, b) => {
+        const getScore = (pos: string) => {
+            const p = pos.toLowerCase();
+            if (p.includes("ketua") && !p.includes("wakil")) return 1;
+            if (p.includes("wakil ketua") || p.includes("sekretaris") || p.includes("bendahara")) return 2;
+            return 3;
+        };
+        return getScore(a.position) - getScore(b.position);
+    });
+
+    const leaders = sortedMembers.filter(m =>
+        m.position.toLowerCase().includes("ketua") ||
+        m.position.toLowerCase().includes("wakil") ||
+        m.position.toLowerCase().includes("sekretaris") ||
+        m.position.toLowerCase().includes("bendahara")
+    );
+    const staff = sortedMembers.filter(m => !leaders.includes(m));
 
     return (
         <div className="relative">
@@ -63,33 +95,30 @@ const DepartmentAccordion = ({ dept, index }: { dept: any, index: number }) => {
             <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100 mb-12' : 'max-h-0 opacity-0'
                 }`}>
                 <div className="pt-8 pb-4">
-                    {/* Leaders - Tetap pakai Foto */}
+                    {/* Leaders */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-3xl mx-auto justify-items-center mb-12">
                         {leaders.length > 0 ? (
-                            leaders.map((member: any, idx: number) => (
+                            leaders.map((member) => (
                                 <PengurusCard
-                                    key={idx}
+                                    key={member.id}
                                     name={member.name}
                                     position={member.position}
                                     division={dept.name}
-                                    image={member.image}
+                                    image={member.photo_url || member.image_url}
                                 />
                             ))
                         ) : (
-                            <>
-                                <PengurusCard name={`Ketua ${dept.name}`} position="Ketua Bidang" division={dept.name} />
-                                <PengurusCard name={`Wakil ${dept.name}`} position="Wakil Ketua Bidang" division={dept.name} />
-                            </>
+                            <div className="col-span-2 text-center text-neutral-500 italic">Belum ada pimpinan bidang ini.</div>
                         )}
                     </div>
 
-                    {/* Staff Members - Hanya Nama */}
+                    {/* Staff Members */}
                     {staff.length > 0 && (
                         <div className="max-w-5xl mx-auto px-4">
                             <h4 className="text-center text-lg font-semibold text-neutral-500 mb-6 uppercase tracking-wide">Anggota Bidang</h4>
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                {staff.map((member: any, idx: number) => (
-                                    <div key={idx} className="bg-neutral-50 p-4 rounded-xl text-center hover:bg-white hover:shadow-sm transition-all border border-neutral-100">
+                                {staff.map((member) => (
+                                    <div key={member.id} className="bg-neutral-50 p-4 rounded-xl text-center hover:bg-white hover:shadow-sm transition-all border border-neutral-100">
                                         <div className="font-medium text-neutral-800">{member.name}</div>
                                         {member.position && member.position !== "Anggota" && (
                                             <div className="text-xs text-primary-600 mt-1">{member.position}</div>
@@ -106,80 +135,82 @@ const DepartmentAccordion = ({ dept, index }: { dept: any, index: number }) => {
 };
 
 export default function StrukturPage() {
-    const departments = [
-        {
-            name: "Sekretaris Umum",
-            members: [
-                { name: "Nina Wulandari", position: "Sekretaris Umum", image: "/assets/pengurus/dini-fatia.jpg" },
-                { name: "Frans Fernando Aji Soko", position: "Wakil Sekretaris Umum", image: "/assets/pengurus/m-zalfa.jpg" },
-                // Tambahkan anggota lainnya di sini
-            ]
-        },
-        {
-            name: "Bendahara Umum",
-            members: [
-                { name: "Rachma Cantika D.", position: "Bendahara Umum", image: "/assets/pengurus/rachma-cantika.jpg" },
-                { name: "Dela Sari", position: "Wakil Bendahara Umum", image: "/assets/pengurus/alifia-s.jpg" },
-                // Tambahkan anggota lainnya di sini
-            ]
-        },
-        {
-            name: "Kepesertaan",
-            members: [
-                { name: "Adnan Azizi", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                { name: "I'zaz Dzul Fahmi", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                // Tambahkan anggota lainnya di sini
-            ]
-        },
-        {
-            name: "Penjaminan dan Peningkatan Mutu Tutorial",
-            members: [
-                { name: "Muhammad Fathan Mubina", position: "Ketua Bidang", image: "/assets/pengurus/wisnu-atmojo.jpg" },
-                { name: "Muhammad Nashruddin A.", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" },
-                // Tambahkan anggota lainnya di sini
-            ]
-        },
-        {
-            name: "Pengembangan Sumber Daya Insani",
-            members: [
-                { name: "Fatimah Amir", position: "Ketua Bidang", image: "/assets/pengurus/wisnu-atmojo.jpg" },
-                { name: "Ilfa Hanna M.", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" },
-                // Tambahkan anggota lainnya di sini
-            ]
-        },
-        {
-            name: "Ketutoran",
-            members: [
-                { name: "Nelsya Winanda", position: "Ketua Bidang", image: "/assets/pengurus/wisnu-atmojo.jpg" },
-                { name: "Dika Fihara", position: "Wakil Ketua Bidang", image: "/assets/pengurus/arwyn-syabani.jpg" },
-                // Tambahkan anggota lainnya di sini
-            ]
-        },
-        {
-            name: "Bidang Pelaksana PAI",
-            members: [
-                { name: "Nabila Nailah N.", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                { name: "Nabila Nailah N", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                // Tambahkan anggota lainnya di sini
-            ]
-        },
-        {
-            name: "Bidang Pelaksana SPAI",
-            members: [
-                { name: "Ahmad Sholihin", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                { name: "Nabila Hakim Azzahra", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                // Tambahkan anggota lainnya di sini
-            ]
-        },
-        {
-            name: "Media Kreatif dan Informasi",
-            members: [
-                { name: "Rafli Permana", position: "Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                { name: "Najwa Futhana Ramadhani", position: "Wakil Ketua Bidang", image: "/assets/pengurus/dea-apriliyani.jpg" },
-                // Tambahkan anggota lainnya di sini
-            ]
+    const [departments, setDepartments] = useState<Department[]>([]);
+    const [topLeaders, setTopLeaders] = useState<Member[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchMembers();
+    }, []);
+
+    const fetchMembers = async () => {
+        try {
+            const res = await fetch("/api/cabinet");
+            const data = await res.json() as any;
+
+            if (data.members) {
+                const allMembers: Member[] = data.members;
+
+                // 1. Extract Top Leaders (BPH Inti usually)
+                // Assuming "Ketua Umum" and "Wakil Ketua Umum" are top leaders irrespective of division, 
+                // OR they are in a specific division like "BPH" or "Inti".
+                // Let's rely on position names for top leaders logic for now.
+
+                const isTopLeader = (pos: string) => {
+                    const low = pos.toLowerCase();
+                    return low.includes("ketua umum") || low.includes("wakil ketua umum");
+                };
+
+                const tops = allMembers.filter(m => isTopLeader(m.position));
+
+                // Sort tops: Ketua Umum first, then Waketums
+                tops.sort((a, b) => {
+                    if (a.position.toLowerCase().includes("ketua umum") && !a.position.toLowerCase().includes("wakil")) return -1;
+                    if (b.position.toLowerCase().includes("ketua umum") && !b.position.toLowerCase().includes("wakil")) return 1;
+                    return 0;
+                });
+
+                setTopLeaders(tops);
+
+                // 2. Group the rest by Division
+                const nonTops = allMembers.filter(m => !isTopLeader(m.position));
+
+                const grouped = nonTops.reduce((acc, member) => {
+                    if (!member.division) return acc;
+                    if (!acc[member.division]) {
+                        acc[member.division] = [];
+                    }
+                    acc[member.division].push(member);
+                    return acc;
+                }, {} as Record<string, Member[]>);
+
+                const deptArray: Department[] = Object.keys(grouped).map(key => ({
+                    name: key,
+                    members: grouped[key]
+                }));
+
+                // Sort departments alphabetically or custom order if needed
+                deptArray.sort((a, b) => a.name.localeCompare(b.name));
+
+                setDepartments(deptArray);
+            }
+        } catch (error) {
+            console.error("Failed to fetch cabinet members:", error);
+        } finally {
+            setLoading(false);
         }
-    ];
+    };
+
+    if (loading) {
+        return (
+            <main>
+                <Hero title="Struktur Kepengurusan" subtitle="Loading..." />
+                <div className="py-20 text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+                </div>
+            </main>
+        )
+    }
 
     return (
         <main>
@@ -192,32 +223,24 @@ export default function StrukturPage() {
             <section className="section-academic bg-white py-20">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
                     {/* Top Leaders */}
-                    <div className="flex flex-col items-center mb-24 space-y-12">
-                        {/* Ketum */}
-                        <div className="w-full flex justify-center">
-                            <PengurusCard
-                                name="Muhtarom Nur Rasyid"
-                                position="Ketua Umum Tutorial PAI SPAI"
-                                isLeader={true}
-                                image="/assets/pengurus/ketum.jpg"
-                            />
+                    {topLeaders.length > 0 && (
+                        <div className="flex flex-col items-center mb-24 space-y-12">
+                            {/* Generic render for Top Leaders, assuming 1 Ketua and others below */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl justify-items-center items-end">
+                                {/* Rough layout logic: Try to center the Chief */}
+                                {topLeaders.map((leader, idx) => (
+                                    <div key={leader.id} className={topLeaders.length === 1 ? "col-span-3" : (idx === 0 ? "col-span-3 md:col-start-2 -mb-8 z-10 scale-110" : "col-span-3 md:col-span-1")}>
+                                        <PengurusCard
+                                            name={leader.name}
+                                            position={leader.position}
+                                            isLeader={true}
+                                            image={leader.photo_url || leader.image_url}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        {/* Waketums */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-3xl justify-items-center">
-                            <PengurusCard
-                                name="Dika Rahman Firmansah"
-                                position="Wakil Ketua Umum I"
-                                isLeader={true}
-                                image="/assets/pengurus/waketum1.jpg"
-                            />
-                            <PengurusCard
-                                name="Adinda Zakiyah Ramadhanti"
-                                position="Wakil Ketua Umum II"
-                                isLeader={true}
-                                image="/assets/pengurus/waketum2.jpg"
-                            />
-                        </div>
-                    </div>
+                    )}
 
                     {/* Bidang-Bidang with Accordion */}
                     <div className="space-y-8">
@@ -225,9 +248,13 @@ export default function StrukturPage() {
                             <h2 className="text-3xl font-bold text-neutral-900 mb-2">Bidang Kepengurusan</h2>
                             <p className="text-neutral-600">Klik nama bidang untuk melihat anggota</p>
                         </div>
-                        {departments.map((dept, index) => (
-                            <DepartmentAccordion key={index} dept={dept} index={index} />
-                        ))}
+                        {departments.length > 0 ? (
+                            departments.map((dept, index) => (
+                                <DepartmentAccordion key={index} dept={dept} index={index} />
+                            ))
+                        ) : (
+                            <div className="text-center text-neutral-500">Belum ada data bidang.</div>
+                        )}
                     </div>
                 </div>
             </section>

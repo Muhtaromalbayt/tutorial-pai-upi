@@ -38,19 +38,13 @@ export default function KalenderPage() {
 
     const fetchEvents = async () => {
         try {
-            // Google Apps Script URL for Calendar
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7pNeAceEn96xpmywn9Qw-Eri1zeICxTRZorgGYI1k_Jeq6BhJwHkF7FEmqraoUdPb/exec";
+            // New CMS API Endpoint
+            const response = await fetch('/api/calendar');
+            const result = await response.json();
 
-            // Add timestamp to bypass cache
-            const response = await fetch(`${GOOGLE_SCRIPT_URL}?t=${Date.now()}`, {
-                cache: 'no-store',
-                method: 'GET'
-            });
-            const result = await response.json() as { success: boolean, data: any[] };
-
-            if (result.success && Array.isArray(result.data)) {
-                // Map Google Sheets data to Event interface
-                const mappedEvents = result.data.map((item, index) => {
+            if (result.events && Array.isArray(result.events)) {
+                // Map API data (snake_case) to Event interface (camelCase)
+                const mappedEvents = result.events.map((item: any) => {
                     // Validate date
                     if (!item.date) return null;
 
@@ -63,17 +57,17 @@ export default function KalenderPage() {
                     }
 
                     return {
-                        id: `event-${index}-${Date.now()}`, // Generate ID
+                        id: item.id,
                         title: item.title,
                         description: item.description || "",
-                        date: parsedDate.toISOString(), // Store as ISO string for consistency
+                        date: parsedDate.toISOString(),
                         time: item.time || "",
                         location: item.location || "",
                         category: item.category || "Lainnya",
                         timeline: item.timeline || "Umum",
-                        imageUrl: undefined
+                        imageUrl: item.image_url // Use image_url from API
                     };
-                }).filter((event): event is Event => event !== null);
+                }).filter((event: any): event is Event => event !== null);
 
                 setEvents(mappedEvents);
 
@@ -125,7 +119,7 @@ export default function KalenderPage() {
         <div>
             <Hero
                 title="Kalender Tutorial PAI"
-                subtitle="Semester Genap 2025/2026 — Februari - Juli 2026"
+                subtitle="Semester Genap 2025/2026"
                 height="normal"
             />
 
@@ -315,6 +309,16 @@ export default function KalenderPage() {
                                     </button>
                                 </div>
                                 <div className="space-y-4">
+                                    {selectedEvent.imageUrl && (
+                                        <div className="relative w-full h-64 mb-4 rounded-lg overflow-hidden">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src={selectedEvent.imageUrl}
+                                                alt={selectedEvent.title}
+                                                className="object-cover w-full h-full"
+                                            />
+                                        </div>
+                                    )}
                                     <div>
                                         <div className="text-sm font-semibold text-neutral-500 mb-1">Deskripsi</div>
                                         <p className="text-neutral-700">{selectedEvent.description}</p>

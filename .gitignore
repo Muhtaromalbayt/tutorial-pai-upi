@@ -15,6 +15,10 @@ node_modules
 .dev.vars
 .wrangler
 
+# Drizzle
+sqlite.db
+/drizzle/
+
 # Production
 /build
 

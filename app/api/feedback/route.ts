@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getRequestContext } from "@cloudflare/next-on-pages";
+import { createDb, feedback } from "@/lib/db/client";
+import { eq, desc } from "drizzle-orm";
 
 export const runtime = "edge";
 
@@ -9,18 +12,15 @@ interface FeedbackBody {
     category: string;
     subject: string;
     message: string;
-    attachments?: any[];
-}
-
-// Helper to get Cloudflare env
-function getCloudflareContext() {
-    // @ts-ignore
-    return globalThis.__env__;
+    attachments?: unknown[];
 }
 
 // POST - Submit new feedback (public)
 export async function POST(req: NextRequest) {
     try {
+        const { env } = getRequestContext();
+        const db = createDb(env.DB);
+
         const body = await req.json() as FeedbackBody;
         const { name, email, isAnonymous, category, subject, message, attachments } = body;
 
@@ -32,106 +32,112 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Generate unique ID
         const id = `feedback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const now = new Date().toISOString();
 
-        // Try multiple ways to access DB binding
-        let DB;
-
-        // Method 1: Try global env
-        const globalEnv = getCloudflareContext();
-        if (globalEnv?.DB) {
-            DB = globalEnv.DB;
-        }
-
-        // Method 2: Try from request
-        if (!DB && (req as any).env?.DB) {
-            DB = (req as any).env.DB;
-        }
-
-        // Method 3: Try from context
-        if (!DB) {
-            try {
-                // @ts-ignore
-                const { env } = await import('@cloudflare/next-on-pages');
-                if (env?.DB) {
-                    DB = env.DB;
-                }
-            } catch (e) {
-                console.error("Failed to import @cloudflare/next-on-pages", e);
-            }
-        }
-
-        if (!DB) {
-            console.error("DB binding not found in any location");
-            console.error("globalEnv:", globalEnv);
-            console.error("req.env:", (req as any).env);
-            return NextResponse.json(
-                { error: "Database not configured. Please check D1 bindings in Cloudflare Pages settings." },
-                { status: 500 }
-            );
-        }
-
-        // Direct D1 query
-        const stmt = DB.prepare(`
-            INSERT INTO feedback (id, name, email, is_anonymous, category, subject, message, attachments, status, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
-        `).bind(
+        await db.insert(feedback).values({
             id,
-            isAnonymous ? null : name,
-            isAnonymous ? null : email,
-            isAnonymous ? 1 : 0,
+            name: isAnonymous ? null : name,
+            email: isAnonymous ? null : email,
+            isAnonymous: isAnonymous || false,
             category,
             subject,
             message,
-            attachments ? JSON.stringify(attachments) : null,
-            'pending'
-        );
-
-        await stmt.run();
+            attachments: attachments ? JSON.stringify(attachments) : null,
+            status: "pending",
+            createdAt: now,
+            updatedAt: now,
+        });
 
         return NextResponse.json({
             success: true,
             message: "Feedback submitted successfully",
             id
         });
-    } catch (error: any) {
-        console.error("Error submitting feedback:", error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error submitting feedback:", message);
         return NextResponse.json(
-            { error: "Failed to submit feedback", details: error.message },
+            { error: "Failed to submit feedback", details: message },
             { status: 500 }
         );
     }
 }
 
 // GET - Fetch all feedback
-export async function GET(req: NextRequest) {
+export async function GET() {
     try {
-        // Try to get DB binding
-        let DB;
-        const globalEnv = getCloudflareContext();
-        if (globalEnv?.DB) {
-            DB = globalEnv.DB;
-        } else if ((req as any).env?.DB) {
-            DB = (req as any).env.DB;
-        }
+        const { env } = getRequestContext();
+        const db = createDb(env.DB);
 
-        if (!DB) {
-            return NextResponse.json(
-                { error: "Database not configured" },
-                { status: 500 }
-            );
-        }
+        const result = await db.select().from(feedback).orderBy(desc(feedback.createdAt));
 
-        const { results } = await DB.prepare(`
-            SELECT * FROM feedback ORDER BY created_at DESC
-        `).all();
-
-        return NextResponse.json({ feedback: results });
-    } catch (error: any) {
-        console.error("Error fetching feedback:", error);
+        return NextResponse.json({ feedback: result });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error fetching feedback:", message);
         return NextResponse.json(
-            { error: "Failed to fetch feedback", details: error.message },
+            { error: "Failed to fetch feedback", details: message },
+            { status: 500 }
+        );
+    }
+}
+
+// PUT - Update feedback status (admin)
+export async function PUT(req: NextRequest) {
+    try {
+        const { env } = getRequestContext();
+        const db = createDb(env.DB);
+
+        const body = await req.json() as { id: string; status: string; adminNotes?: string };
+        const { id, status, adminNotes } = body;
+
+        if (!id) {
+            return NextResponse.json({ error: "Feedback ID is required" }, { status: 400 });
+        }
+
+        const now = new Date().toISOString();
+
+        await db.update(feedback)
+            .set({
+                status,
+                adminNotes: adminNotes || null,
+                updatedAt: now,
+            })
+            .where(eq(feedback.id, id));
+
+        return NextResponse.json({ success: true });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error updating feedback:", message);
+        return NextResponse.json(
+            { error: "Failed to update feedback", details: message },
+            { status: 500 }
+        );
+    }
+}
+
+// DELETE - Delete feedback (admin)
+export async function DELETE(req: NextRequest) {
+    try {
+        const { env } = getRequestContext();
+        const db = createDb(env.DB);
+
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get("id");
+
+        if (!id) {
+            return NextResponse.json({ error: "ID required" }, { status: 400 });
+        }
+
+        await db.delete(feedback).where(eq(feedback.id, id));
+
+        return NextResponse.json({ success: true });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Error deleting feedback:", message);
+        return NextResponse.json(
+            { error: "Failed to delete feedback", details: message },
             { status: 500 }
         );
     }
