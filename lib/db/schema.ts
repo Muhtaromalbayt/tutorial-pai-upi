@@ -172,6 +172,7 @@ export const gallery = sqliteTable('gallery', {
     description: text('description'),
     imageUrl: text('image_url').notNull(), // Google Drive URL
     category: text('category').default('Kegiatan'),
+    placeholder: text('placeholder'), // Which location this photo should appear (e.g., hero_home, hero_struktur)
     orderIndex: integer('order_index').default(0),
     isPublished: integer('is_published', { mode: 'boolean' }).default(true),
     createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),

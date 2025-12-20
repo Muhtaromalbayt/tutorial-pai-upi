@@ -35,9 +35,10 @@ export async function POST(req: NextRequest) {
             description?: string;
             imageUrl: string;
             category?: string;
+            placeholder?: string;
             isPublished?: boolean;
         };
-        const { title, description, imageUrl, category, isPublished } = body;
+        const { title, description, imageUrl, category, placeholder, isPublished } = body;
 
         if (!title || !imageUrl) {
             return NextResponse.json(
@@ -55,6 +56,7 @@ export async function POST(req: NextRequest) {
             description: description || null,
             imageUrl,
             category: category || "Kegiatan",
+            placeholder: placeholder || null,
             isPublished: isPublished !== false,
             createdAt: now,
             updatedAt: now,
@@ -83,9 +85,10 @@ export async function PUT(req: NextRequest) {
             description?: string;
             imageUrl: string;
             category?: string;
+            placeholder?: string;
             isPublished?: boolean;
         };
-        const { id, title, description, imageUrl, category, isPublished } = body;
+        const { id, title, description, imageUrl, category, placeholder, isPublished } = body;
 
         if (!id) {
             return NextResponse.json(
@@ -102,6 +105,7 @@ export async function PUT(req: NextRequest) {
                 description: description || null,
                 imageUrl,
                 category,
+                placeholder: placeholder || null,
                 isPublished: isPublished !== false,
                 updatedAt: now,
             })

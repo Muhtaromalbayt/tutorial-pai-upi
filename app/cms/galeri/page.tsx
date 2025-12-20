@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { PHOTO_PLACEHOLDERS, getPlaceholdersGrouped } from "@/lib/photo-placeholders";
 
 interface GalleryItem {
     id: string;
@@ -10,6 +11,7 @@ interface GalleryItem {
     description?: string;
     image_url: string;
     category: string;
+    placeholder?: string;
     is_published: boolean;
 }
 
@@ -18,6 +20,7 @@ interface FormData {
     description: string;
     imageUrl: string;
     category: string;
+    placeholder: string;
     isPublished: boolean;
 }
 
@@ -41,6 +44,12 @@ function getGoogleDrivePreviewUrl(url: string): string {
     return url;
 }
 
+// Get placeholder name by ID
+function getPlaceholderName(id: string): string {
+    const placeholder = PHOTO_PLACEHOLDERS.find(p => p.id === id);
+    return placeholder?.name || id || "Tidak ditentukan";
+}
+
 export default function GaleriCMSPage() {
     const router = useRouter();
     const [galleryList, setGalleryList] = useState<GalleryItem[]>([]);
@@ -54,8 +63,12 @@ export default function GaleriCMSPage() {
         description: "",
         imageUrl: "",
         category: "Kegiatan",
+        placeholder: "",
         isPublished: true,
     });
+
+    // Group placeholders by page for organized dropdown
+    const placeholderGroups = getPlaceholdersGrouped();
 
     useEffect(() => {
         const userStr = localStorage.getItem("cms_user");
@@ -99,6 +112,7 @@ export default function GaleriCMSPage() {
                 description: formData.description || null,
                 imageUrl: formData.imageUrl,
                 category: formData.category,
+                placeholder: formData.placeholder || null,
                 isPublished: formData.isPublished,
             };
 
@@ -129,6 +143,7 @@ export default function GaleriCMSPage() {
             description: item.description || "",
             imageUrl: item.image_url,
             category: item.category || "Kegiatan",
+            placeholder: item.placeholder || "",
             isPublished: item.is_published,
         });
         setEditingId(item.id);
@@ -157,6 +172,7 @@ export default function GaleriCMSPage() {
             description: "",
             imageUrl: "",
             category: "Kegiatan",
+            placeholder: "",
             isPublished: true,
         });
         setEditingId(null);
@@ -241,6 +257,41 @@ export default function GaleriCMSPage() {
                                         />
                                     </div>
 
+                                    {/* PLACEHOLDER DROPDOWN - New Feature */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            📍 Lokasi di Website
+                                            <span className="text-gray-400 font-normal ml-1">(opsional)</span>
+                                        </label>
+                                        <select
+                                            value={formData.placeholder}
+                                            onChange={(e) => setFormData({ ...formData, placeholder: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#055E5B] focus:border-[#055E5B] bg-white"
+                                        >
+                                            <option value="">-- Pilih lokasi di website --</option>
+                                            {Object.entries(placeholderGroups).map(([page, placeholders]) => (
+                                                <optgroup key={page} label={`📄 ${page}`}>
+                                                    {placeholders.map(p => (
+                                                        <option key={p.id} value={p.id}>
+                                                            {p.name}
+                                                        </option>
+                                                    ))}
+                                                </optgroup>
+                                            ))}
+                                        </select>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Pilih di mana foto ini akan ditampilkan di website
+                                        </p>
+                                        {/* Show selected placeholder description */}
+                                        {formData.placeholder && (
+                                            <div className="mt-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
+                                                <p className="text-xs text-blue-700">
+                                                    ℹ️ {PHOTO_PLACEHOLDERS.find(p => p.id === formData.placeholder)?.description}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
                                         <select
@@ -293,6 +344,14 @@ export default function GaleriCMSPage() {
                                                 </svg>
                                                 <p className="text-sm">Masukkan URL untuk preview</p>
                                             </div>
+                                        </div>
+                                    )}
+                                    {/* Show where this photo will appear */}
+                                    {formData.placeholder && (
+                                        <div className="mt-3 p-2 bg-green-50 rounded-lg border border-green-200">
+                                            <p className="text-xs text-green-700 font-medium">
+                                                ✓ Akan ditampilkan di: {getPlaceholderName(formData.placeholder)}
+                                            </p>
                                         </div>
                                     )}
                                 </div>
@@ -350,6 +409,15 @@ export default function GaleriCMSPage() {
                                     <div className="p-4">
                                         <h3 className="font-medium text-gray-900 truncate">{item.title}</h3>
                                         <p className="text-sm text-gray-500 truncate">{item.description || "-"}</p>
+
+                                        {/* Show placeholder location */}
+                                        {item.placeholder && (
+                                            <div className="mt-2 flex items-center text-xs text-green-700 bg-green-50 px-2 py-1 rounded">
+                                                <span className="mr-1">📍</span>
+                                                {getPlaceholderName(item.placeholder)}
+                                            </div>
+                                        )}
+
                                         <div className="flex items-center justify-between mt-3">
                                             <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                                                 {item.category}
