@@ -24,20 +24,28 @@ interface FormData {
     isPublished: boolean;
 }
 
-// Helper to convert Google Drive URL to direct image URL
+// Helper to convert Google Drive URL to FULL HD direct image URL
 function getGoogleDrivePreviewUrl(url: string): string {
     if (!url) return "";
+
+    // Extract file ID
+    let fileId = "";
 
     // Format: https://drive.google.com/file/d/FILE_ID/view
     const fileIdMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
     if (fileIdMatch) {
-        return `https://drive.google.com/thumbnail?id=${fileIdMatch[1]}&sz=w400`;
+        fileId = fileIdMatch[1];
+    } else {
+        // Format: https://drive.google.com/open?id=FILE_ID
+        const openIdMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (openIdMatch) {
+            fileId = openIdMatch[1];
+        }
     }
 
-    // Format: https://drive.google.com/open?id=FILE_ID
-    const openIdMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
-    if (openIdMatch) {
-        return `https://drive.google.com/thumbnail?id=${openIdMatch[1]}&sz=w400`;
+    if (fileId) {
+        // Use uc?export=view for FULL RESOLUTION original quality
+        return `https://drive.google.com/uc?export=view&id=${fileId}`;
     }
 
     // Already a direct URL or other format
