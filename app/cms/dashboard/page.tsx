@@ -40,12 +40,12 @@ export default function CMSDashboard() {
                 fetch("/api/calendar")
             ]);
 
-            const newsData = await newsRes.json();
-            const cabinetData = await cabinetRes.json();
-            const calendarData = await calendarRes.json();
+            const newsData = await newsRes.json() as { news?: { is_published: boolean }[] };
+            const cabinetData = await cabinetRes.json() as { members?: unknown[] };
+            const calendarData = await calendarRes.json() as { events?: unknown[] };
 
-            const newsCount = (newsData.news || []).filter((n: any) => n.is_published).length;
-            const draftsCount = (newsData.news || []).filter((n: any) => !n.is_published).length;
+            const newsCount = (newsData.news || []).filter((n) => n.is_published).length;
+            const draftsCount = (newsData.news || []).filter((n) => !n.is_published).length;
             const membersCount = (cabinetData.members || []).length;
             const eventsCount = (calendarData.events || []).length;
 
@@ -221,6 +221,23 @@ export default function CMSDashboard() {
                                     Kalender Kegiatan
                                 </h3>
                                 <p className="text-sm text-gray-600">Kelola jadwal dan event</p>
+                            </div>
+                        </Link>
+
+                        <Link
+                            href="/cms/galeri"
+                            className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-[#055E5B] hover:bg-[#055E5B]/5 transition-all group"
+                        >
+                            <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-pink-200 transition-colors">
+                                <svg className="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-gray-900 group-hover:text-[#055E5B]">
+                                    Galeri Foto
+                                </h3>
+                                <p className="text-sm text-gray-600">Kelola foto & dokumentasi</p>
                             </div>
                         </Link>
 

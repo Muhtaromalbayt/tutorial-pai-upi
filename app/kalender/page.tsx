@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import { useState, useEffect } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, parseISO, isValid } from "date-fns";
 import { id } from "date-fns/locale";
+import { gregorianToHijri, formatHijriDate, HIJRI_MONTHS, getCurrentHijriMonthYear } from "@/lib/hijri-calendar";
 
 interface Event {
     id: string;
@@ -13,8 +14,8 @@ interface Event {
     time: string;
     location: string;
     category: string;
-    timeline?: string;
-    imageUrl?: string;
+    timeline: string;
+    imageUrl: string;
 }
 
 export default function KalenderPage() {
@@ -40,11 +41,23 @@ export default function KalenderPage() {
         try {
             // New CMS API Endpoint
             const response = await fetch('/api/calendar');
-            const result = await response.json();
+            const result = await response.json() as {
+                events?: Array<{
+                    id: string;
+                    date: string;
+                    title: string;
+                    description?: string;
+                    time?: string;
+                    location?: string;
+                    category?: string;
+                    timeline?: string;
+                    image_url?: string;
+                }>
+            };
 
             if (result.events && Array.isArray(result.events)) {
                 // Map API data (snake_case) to Event interface (camelCase)
-                const mappedEvents = result.events.map((item: any) => {
+                const mappedEvents = result.events.map((item) => {
                     // Validate date
                     if (!item.date) return null;
 
@@ -65,20 +78,21 @@ export default function KalenderPage() {
                         location: item.location || "",
                         category: item.category || "Lainnya",
                         timeline: item.timeline || "Umum",
-                        imageUrl: item.image_url // Use image_url from API
+                        imageUrl: item.image_url || ""
                     };
-                }).filter((event: any): event is Event => event !== null);
+                }).filter((event): event is Event => event !== null);
 
                 setEvents(mappedEvents);
 
                 // Auto-navigate to the month of the first upcoming event
                 const now = new Date();
-                const upcomingEvent = mappedEvents.find(e => new Date(e.date) >= now);
+                const upcomingEvent = mappedEvents.find((e: Event) => new Date(e.date) >= now);
                 if (upcomingEvent) {
                     setCurrentMonth(new Date(upcomingEvent.date));
                 } else if (mappedEvents.length > 0) {
                     // If no upcoming events, go to the last event
-                    setCurrentMonth(new Date(mappedEvents[mappedEvents.length - 1].date));
+                    const lastEvent = mappedEvents[mappedEvents.length - 1];
+                    if (lastEvent) setCurrentMonth(new Date(lastEvent.date));
                 }
             }
         } catch (error) {
@@ -153,11 +167,34 @@ export default function KalenderPage() {
                         <>
                             {/* Calendar */}
                             <div className="card-academic p-8 mb-8">
+                                {/* Hijri Month Banner */}
+                                <div className="bg-gradient-to-r from-emerald-600 to-teal-600 -m-8 mb-6 p-6 rounded-t-lg">
+                                    <div className="flex items-center justify-between text-white">
+                                        <div>
+                                            <div className="text-sm opacity-80">Kalender Hijriah Muhammadiyah</div>
+                                            <div className="text-2xl font-bold">
+                                                {(() => {
+                                                    const hijri = gregorianToHijri(currentMonth);
+                                                    return `${hijri.monthName} ${hijri.year} H`;
+                                                })()}
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="text-4xl">☪</div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 {/* Calendar Header */}
                                 <div className="flex items-center justify-between mb-8">
-                                    <h2 className="text-2xl font-bold text-neutral-900">
-                                        {format(currentMonth, "MMMM yyyy", { locale: id })}
-                                    </h2>
+                                    <div>
+                                        <h2 className="text-2xl font-bold text-neutral-900">
+                                            {format(currentMonth, "MMMM yyyy", { locale: id })}
+                                        </h2>
+                                        <p className="text-sm text-neutral-500">
+                                            {formatHijriDate(currentMonth)}
+                                        </p>
+                                    </div>
                                     <div className="flex space-x-2">
                                         <button
                                             onClick={prevMonth}

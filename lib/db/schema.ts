@@ -165,6 +165,19 @@ export const siteSettings = sqliteTable('site_settings', {
     updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
+// Gallery / Photos
+export const gallery = sqliteTable('gallery', {
+    id: text('id').primaryKey(),
+    title: text('title').notNull(),
+    description: text('description'),
+    imageUrl: text('image_url').notNull(), // Google Drive URL
+    category: text('category').default('Kegiatan'),
+    orderIndex: integer('order_index').default(0),
+    isPublished: integer('is_published', { mode: 'boolean' }).default(true),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -181,3 +194,5 @@ export type News = typeof news.$inferSelect;
 export type CabinetMember = typeof cabinetMembers.$inferSelect;
 export type Feedback = typeof feedback.$inferSelect;
 export type SiteSetting = typeof siteSettings.$inferSelect;
+export type Gallery = typeof gallery.$inferSelect;
+export type NewGallery = typeof gallery.$inferInsert;
