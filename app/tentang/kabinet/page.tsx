@@ -44,6 +44,7 @@ export default function KabinetPage() {
                 title="Kabinet AL-FATH"
                 subtitle="Fostering Adab through Thought and Hearth"
                 height="normal"
+                variant="gradient"
             />
 
             {/* Section 1: Philosophy & Meaning */}

@@ -237,11 +237,98 @@ export const HIJRI_CALENDAR_1447: HijriMonth[] = [
 ];
 
 /**
- * Kegiatan Organisasi (Placeholder - akan diisi nanti)
- * User akan mengirimkan detail kegiatan
+ * Kegiatan Organisasi Tutorial PAI UPI
+ * Semester Genap 2025/2026
  */
 export const ORGANIZATION_ACTIVITIES: OrganizationActivity[] = [
-    // Placeholder - data akan ditambahkan setelah user mengirimkan detail
+    // Januari 2026
+    { date: "2026-01-17", title: "Musyawarah Pimpinan (Hari 1)", location: "-", category: "Kepengurusan" },
+    { date: "2026-01-18", title: "Musyawarah Pimpinan (Hari 2)", location: "-", category: "Kepengurusan" },
+    { date: "2026-01-19", title: "Pembacaan SK dan Pengambilan Sumpah Jabatan", location: "Aula ITC", category: "Kepengurusan" },
+    { date: "2026-01-24", title: "Musyawarah Bidang (Hari 1)", location: "-", category: "Kepengurusan" },
+    { date: "2026-01-25", title: "Musyawarah Bidang (Hari 2)", location: "-", category: "Kepengurusan" },
+    { date: "2026-01-26", title: "Musyawarah Bidang (Hari 3)", location: "-", category: "Kepengurusan" },
+    { date: "2026-01-27", title: "Musyawarah Bidang (Hari 4)", location: "-", category: "Kepengurusan" },
+    { date: "2026-01-28", title: "Musyawarah Bidang (Hari 5)", location: "-", category: "Kepengurusan" },
+    { date: "2026-01-29", title: "Musyawarah Bidang (Hari 6)", location: "-", category: "Kepengurusan" },
+    { date: "2026-01-30", title: "Musyawarah Bidang (Hari 7)", location: "-", category: "Kepengurusan" },
+    { date: "2026-01-31", title: "Musyawarah Kerja (Hari 1)", location: "Aula ITC dan Online", category: "Kepengurusan" },
+
+    // Februari 2026
+    { date: "2026-02-01", title: "Musyawarah Kerja (Hari 2)", location: "Aula ITC dan Online", category: "Kepengurusan" },
+    { date: "2026-02-02", title: "Sosialisasi Kahim", location: "Online", category: "Sosialisasi" },
+    { date: "2026-02-07", title: "Sosialisasi PJ Tutorial PAI SPAI", location: "Aula ITC", category: "Sosialisasi" },
+    { date: "2026-02-08", title: "In House Training Pengurus", location: "Aula ITC", category: "Kepengurusan" },
+    { date: "2026-02-08", title: "Kajian Rutin 1 (Munggahan)", location: "Aula ITC", category: "Kajian" },
+    { date: "2026-02-13", title: "Sosialisasi Delegasi", location: "Online", category: "Sosialisasi" },
+    { date: "2026-02-14", title: "Sosialisasi Bina Kader", location: "Online & Aula ITC", category: "Sosialisasi" },
+    { date: "2026-02-21", title: "Pembukaan dan Diklat Mentor Tutorial", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial" },
+    { date: "2026-02-25", title: "Tutorial SPAI", time: "15.30 - 17.30 WIB", location: "Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-02-27", title: "Tutorial SPAI", time: "15.30 - 17.30 WIB", location: "Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-02-28", title: "Tutorial PAI Pekan Ke-dua", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-02-28", title: "Bina Mentor", time: "08.00 - 10.30 WIB", location: "-", category: "Bina Mentor" },
+
+    // Maret 2026
+    { date: "2026-03-01", title: "Tutorial PAI Pekan Ke-dua", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-03-01", title: "Bina Mentor", time: "08.00 - 10.30 WIB", location: "-", category: "Bina Mentor" },
+    { date: "2026-03-01", title: "Bina Kader", time: "08.30 - 12.00 WIB", location: "-", category: "Bina Kader" },
+    { date: "2026-03-04", title: "Tutorial SPAI Ke-tiga", time: "15.30 - 17.30 WIB", location: "Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-03-06", title: "Tutorial SPAI Ke-tiga", time: "15.30 - 17.30 WIB", location: "Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-03-07", title: "Tutorial PAI Pekan Ke-tiga", time: "08.45 - 13.00 WIB", location: "Aula ITC", category: "Tutorial PAI" },
+    { date: "2026-03-08", title: "Tutorial PAI Pekan Ke-tiga", time: "08.45 - 13.00 WIB", location: "Aula ITC", category: "Tutorial PAI" },
+    { date: "2026-03-08", title: "Bina Kader", time: "08.30 - 12.00 WIB", location: "Masjid Al Furqan", category: "Bina Kader" },
+
+    // April 2026
+    { date: "2026-04-04", title: "Tutorial PAI Pekan Ke-empat", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-04-04", title: "Bina Mentor", time: "08.00 - 10.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Bina Mentor" },
+    { date: "2026-04-05", title: "Tutorial PAI Pekan Ke-empat", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-04-05", title: "Bina Mentor", time: "08.00 - 10.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Bina Mentor" },
+    { date: "2026-04-05", title: "Bina Kader", time: "08.30 - 12.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Bina Kader" },
+    { date: "2026-04-08", title: "Tutorial SPAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-04-10", title: "Tutorial SPAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-04-11", title: "Tutorial PAI Pekan Ke-lima", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-04-12", title: "Tutorial PAI Pekan Ke-lima", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-04-12", title: "Bina Kader", time: "08.30 - 12.00 WIB", location: "-", category: "Bina Kader" },
+    { date: "2026-04-15", title: "Tutorial SPAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-04-17", title: "Tutorial SPAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-04-18", title: "Tutorial PAI Pekan Ke-enam", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-04-18", title: "Bina Mentor", time: "08.00 - 10.30 WIB", location: "-", category: "Bina Mentor" },
+    { date: "2026-04-18", title: "Kajian Rutin 2", location: "Aula ITC", category: "Kajian" },
+    { date: "2026-04-19", title: "Tutorial PAI Pekan Ke-enam", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-04-19", title: "Bina Mentor", time: "08.00 - 10.30 WIB", location: "-", category: "Bina Mentor" },
+    { date: "2026-04-19", title: "Bina Kader", time: "08.30 - 12.00 WIB", location: "-", category: "Bina Kader" },
+    { date: "2026-04-22", title: "Tutorial SPAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-04-24", title: "Tutorial SPAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-04-25", title: "Tutorial PAI Pekan Ke-tujuh", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-04-26", title: "Tutorial PAI Pekan Ke-tujuh", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-04-26", title: "Bina Kader", time: "08.30 - 12.00 WIB", location: "-", category: "Bina Kader" },
+    { date: "2026-04-29", title: "Tutorial SPAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
+
+    // Mei 2026
+    { date: "2026-05-02", title: "Bina Kader 42 Pengukuhan (Hari 1)", time: "08.30 - 12.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Bina Kader" },
+    { date: "2026-05-03", title: "Bina Kader 42 Pengukuhan (Hari 2)", time: "08.30 - 12.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Bina Kader" },
+    { date: "2026-05-08", title: "Tutorial SPAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-05-09", title: "Tutorial PAI Pekan Ke-delapan", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-05-09", title: "Apresiasi Mentor", location: "-", category: "Apresiasi" },
+    { date: "2026-05-10", title: "Tutorial PAI Pekan Ke-delapan", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
+    { date: "2026-05-10", title: "Apresiasi Mentor", location: "-", category: "Apresiasi" },
+    { date: "2026-05-16", title: "Pembinaan Member Mula dan Calon Mentor Day 1", location: "Aula ITC dan Masjid Al Furqan", category: "Pembinaan" },
+    { date: "2026-05-17", title: "Pembinaan Member Mula dan Calon Mentor Day 2", location: "Aula ITC dan Masjid Al Furqan", category: "Pembinaan" },
+    { date: "2026-05-17", title: "Pembekalan Brand Ambassador Tutorial", location: "Aula ITC dan Online", category: "Pembekalan" },
+
+    // Juni 2026
+    { date: "2026-06-06", title: "Projek Mini Tutorial (Hari 1)", location: "Aula ITC dan Masjid Al Furqan", category: "Projek" },
+    { date: "2026-06-07", title: "Projek Mini Tutorial (Hari 2)", location: "Aula ITC dan Masjid Al Furqan", category: "Projek" },
+    { date: "2026-06-20", title: "Rihlah (Hari 1)", location: "-", category: "Rihlah" },
+    { date: "2026-06-21", title: "Rihlah (Hari 2)", location: "-", category: "Rihlah" },
+
+    // Juli 2026
+    { date: "2026-07-04", title: "Evaluasi Sughra (Hari 1)", location: "Aula ITC dan Online", category: "Evaluasi" },
+    { date: "2026-07-05", title: "Evaluasi Sughra (Hari 2)", location: "Aula ITC dan Online", category: "Evaluasi" },
+    { date: "2026-07-11", title: "Sosialisasi Pemilihan Ketua Umum", location: "Online", category: "Sosialisasi" },
+
+    // Agustus 2026
+    { date: "2026-08-07", title: "Serah Terima Jabatan", location: "Aula ITC", category: "Kepengurusan" },
 ];
 
 /**
