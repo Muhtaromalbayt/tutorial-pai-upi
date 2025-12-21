@@ -7,6 +7,7 @@ export default function BinaMentorPage() {
                 title="Bina Mentor"
                 subtitle="Pengembangan Kompetensi Mentor Tutorial PAI"
                 height="normal"
+                variant="gradient"
             />
 
             <section className="section-academic">

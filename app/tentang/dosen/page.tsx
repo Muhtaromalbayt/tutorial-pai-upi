@@ -34,6 +34,7 @@ export default function DosenPage() {
                 title="Dosen Penyelenggara"
                 subtitle="Tim Pembina Tutorial PAI SPAI UPI"
                 height="normal"
+                variant="gradient"
             />
 
             <section className="section-academic">

@@ -6,7 +6,7 @@ export default function MentoringPage() {
             <Hero
                 title="Mentoring"
                 subtitle="Pendampingan intensif dalam kelompok kecil untuk pembinaan karakter"
-                backgroundImage="/assets/kegiatan/mentoring.svg"
+                variant="gradient"
             />
 
             <section className="section-academic">

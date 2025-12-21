@@ -45,7 +45,7 @@ export default function KuliahDhuhaPage() {
             <Hero
                 title="Kuliah Dhuha"
                 subtitle="Kajian rutin pekanan untuk memperdalam pemahaman keislaman mahasiswa UPI"
-                backgroundImage="/assets/kegiatan/kuliah-dhuha.svg"
+                variant="gradient"
             />
 
             <section className="section-academic">

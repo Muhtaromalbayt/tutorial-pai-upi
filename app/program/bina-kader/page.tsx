@@ -6,7 +6,7 @@ export default function BinaKaderPage() {
             <Hero
                 title="Bina Kader"
                 subtitle="Program pengembangan potensi dan kepemimpinan mahasiswa"
-                backgroundImage="/assets/kegiatan/bina-kader.svg"
+                variant="gradient"
             />
 
             <section className="section-academic">

@@ -6,7 +6,7 @@ export default function SeminarPAIPage() {
             <Hero
                 title="Seminar PAI"
                 subtitle="Forum diskusi ilmiah untuk mengembangkan wawasan pendidikan agama Islam"
-                backgroundImage="/assets/kegiatan/seminar.svg"
+                variant="gradient"
             />
 
             <section className="section-academic">

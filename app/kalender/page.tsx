@@ -89,6 +89,7 @@ export default function KalenderPage() {
                 title="Kalender Hijriah 1447 H"
                 subtitle="Kalender Hijriah Global Tunggal Muhammadiyah"
                 height="normal"
+                variant="gradient"
             />
 
             <section className="section-academic">
@@ -129,8 +130,8 @@ export default function KalenderPage() {
                                             onClick={prevMonth}
                                             disabled={currentMonthIndex === 0}
                                             className={`p-2 rounded-lg transition-all ${currentMonthIndex === 0
-                                                    ? "opacity-30 cursor-not-allowed"
-                                                    : "hover:bg-white/20 text-white"
+                                                ? "opacity-30 cursor-not-allowed"
+                                                : "hover:bg-white/20 text-white"
                                                 }`}
                                         >
                                             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,8 +152,8 @@ export default function KalenderPage() {
                                             onClick={nextMonth}
                                             disabled={currentMonthIndex === HIJRI_CALENDAR_1447.length - 1}
                                             className={`p-2 rounded-lg transition-all ${currentMonthIndex === HIJRI_CALENDAR_1447.length - 1
-                                                    ? "opacity-30 cursor-not-allowed"
-                                                    : "hover:bg-white/20 text-white"
+                                                ? "opacity-30 cursor-not-allowed"
+                                                : "hover:bg-white/20 text-white"
                                                 }`}
                                         >
                                             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -181,22 +182,22 @@ export default function KalenderPage() {
                                         <div
                                             key={idx}
                                             className={`min-h-[80px] md:min-h-[100px] p-2 border-b border-r border-neutral-100 last:border-r-0 transition-colors ${cell.hijriDay === null
-                                                    ? "bg-neutral-50"
-                                                    : cell.hijriDay === todayHijriDay
-                                                        ? "bg-primary-50 border-primary-200"
-                                                        : cell.isSpecial
-                                                            ? "bg-accent-50"
-                                                            : "hover:bg-neutral-50"
+                                                ? "bg-neutral-50"
+                                                : cell.hijriDay === todayHijriDay
+                                                    ? "bg-primary-50 border-primary-200"
+                                                    : cell.isSpecial
+                                                        ? "bg-accent-50"
+                                                        : "hover:bg-neutral-50"
                                                 }`}
                                         >
                                             {cell.hijriDay !== null && (
                                                 <>
                                                     {/* Hijri Day - Arabic Numeral */}
                                                     <div className={`text-2xl md:text-3xl font-bold mb-1 ${cell.hijriDay === todayHijriDay
-                                                            ? "text-primary-600"
-                                                            : idx % 7 === 0
-                                                                ? "text-primary-500"
-                                                                : "text-neutral-800"
+                                                        ? "text-primary-600"
+                                                        : idx % 7 === 0
+                                                            ? "text-primary-500"
+                                                            : "text-neutral-800"
                                                         }`}>
                                                         {ARABIC_NUMERALS[cell.hijriDay]}
                                                     </div>
@@ -260,15 +261,15 @@ export default function KalenderPage() {
                                             <div key={idx} className="p-4 hover:bg-neutral-50 transition-colors">
                                                 <div className="flex items-start gap-3">
                                                     <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${day.type === 'islamic'
-                                                            ? "bg-primary-100 text-primary-700"
-                                                            : "bg-accent-100 text-accent-700"
+                                                        ? "bg-primary-100 text-primary-700"
+                                                        : "bg-accent-100 text-accent-700"
                                                         }`}>
                                                         <span className="font-bold text-lg">{day.hijriDay}</span>
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <p className={`font-semibold text-sm ${day.type === 'islamic'
-                                                                ? "text-primary-700"
-                                                                : "text-accent-700"
+                                                            ? "text-primary-700"
+                                                            : "text-accent-700"
                                                             }`}>
                                                             {day.hijriDay} {currentMonth.hijriMonthName} {currentMonth.hijriYear} H
                                                         </p>
@@ -313,8 +314,8 @@ export default function KalenderPage() {
                                                 key={month.hijriMonth}
                                                 onClick={() => setCurrentMonthIndex(idx)}
                                                 className={`p-1.5 text-xs rounded transition-colors ${idx === currentMonthIndex
-                                                        ? "bg-primary-600 text-white font-semibold"
-                                                        : "bg-white text-neutral-600 hover:bg-neutral-100 border border-neutral-200"
+                                                    ? "bg-primary-600 text-white font-semibold"
+                                                    : "bg-white text-neutral-600 hover:bg-neutral-100 border border-neutral-200"
                                                     }`}
                                                 title={month.hijriMonthName}
                                             >
