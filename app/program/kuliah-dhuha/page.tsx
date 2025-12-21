@@ -21,8 +21,11 @@ function getDayName(dateStr: string): string {
     return days[date.getDay()];
 }
 
+type DayFilter = 'all' | 'Sabtu' | 'Minggu';
+
 export default function KuliahDhuhaPage() {
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+    const [selectedDay, setSelectedDay] = useState<DayFilter>('all');
 
     // Get Tutorial PAI activities and Pembukaan
     const weeklySchedule = useMemo(() => {
@@ -145,128 +148,133 @@ export default function KuliahDhuhaPage() {
                             </h2>
                         </div>
 
-                        {/* Faculty Info Cards */}
-                        <div className="grid md:grid-cols-2 gap-4 mb-8">
-                            <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-5 text-white">
-                                <div className="flex items-center gap-3 mb-3">
-                                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                                        <span className="text-lg font-bold">S</span>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-lg">Sabtu</h3>
-                                        <p className="text-sm text-white/80">Setiap Pekan ke-2 s.d. 8</p>
-                                    </div>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">FPIPS</span>
-                                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">FPSD</span>
-                                </div>
-                            </div>
-                            <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl p-5 text-white">
-                                <div className="flex items-center gap-3 mb-3">
-                                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                                        <span className="text-lg font-bold">A</span>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-lg">Ahad</h3>
-                                        <p className="text-sm text-white/80">Setiap Pekan ke-2 s.d. 8</p>
-                                    </div>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">FIP</span>
-                                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">FK</span>
-                                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">FPEB</span>
-                                </div>
-                            </div>
+                        {/* Faculty Filter Cards */}
+                        <div className="grid grid-cols-3 gap-3 mb-8">
+                            {/* All Button */}
+                            <button
+                                onClick={() => setSelectedDay('all')}
+                                className={`rounded-xl p-4 text-center transition-all duration-300 ${selectedDay === 'all'
+                                        ? 'bg-neutral-800 text-white shadow-lg scale-[1.02]'
+                                        : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                                    }`}
+                            >
+                                <span className="font-bold">Semua</span>
+                            </button>
+
+                            {/* Sabtu Button */}
+                            <button
+                                onClick={() => setSelectedDay('Sabtu')}
+                                className={`rounded-xl p-4 transition-all duration-300 ${selectedDay === 'Sabtu'
+                                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg scale-[1.02]'
+                                        : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+                                    }`}
+                            >
+                                <div className="font-bold">Sabtu</div>
+                                <div className={`text-xs mt-1 ${selectedDay === 'Sabtu' ? 'text-white/80' : 'text-blue-500'}`}>FPIPS & FPSD</div>
+                            </button>
+
+                            {/* Ahad Button */}
+                            <button
+                                onClick={() => setSelectedDay('Minggu')}
+                                className={`rounded-xl p-4 transition-all duration-300 ${selectedDay === 'Minggu'
+                                        ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg scale-[1.02]'
+                                        : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                                    }`}
+                            >
+                                <div className="font-bold">Ahad</div>
+                                <div className={`text-xs mt-1 ${selectedDay === 'Minggu' ? 'text-white/80' : 'text-emerald-500'}`}>FIP, FK & FPEB</div>
+                            </button>
                         </div>
 
-                        {/* Schedule Grid - Clean Cards */}
+                        {/* Schedule Grid - Filtered */}
                         <div className="grid gap-4">
-                            {regularSchedule.map((schedule, index) => (
-                                <div
-                                    key={index}
-                                    className="bg-white rounded-xl border border-neutral-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
-                                >
+                            {regularSchedule
+                                .filter(schedule => selectedDay === 'all' || schedule.dayName === selectedDay)
+                                .map((schedule, index) => (
                                     <div
-                                        className="p-5 cursor-pointer"
-                                        onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+                                        key={index}
+                                        className="bg-white rounded-xl border border-neutral-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
                                     >
-                                        <div className="flex items-center gap-4">
-                                            {/* Week Number Badge */}
-                                            <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex flex-col items-center justify-center text-white shadow-md">
-                                                <span className="text-xs font-medium opacity-80">Pekan</span>
-                                                <span className="text-xl font-bold">{schedule.week}</span>
-                                            </div>
+                                        <div
+                                            className="p-5 cursor-pointer"
+                                            onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                {/* Week Number Badge */}
+                                                <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex flex-col items-center justify-center text-white shadow-md">
+                                                    <span className="text-xs font-medium opacity-80">Pekan</span>
+                                                    <span className="text-xl font-bold">{schedule.week}</span>
+                                                </div>
 
-                                            {/* Main Content */}
-                                            <div className="flex-1 min-w-0">
-                                                <h4 className="font-semibold text-neutral-900 text-lg truncate">
-                                                    {schedule.topic}
-                                                </h4>
-                                                <div className="flex flex-wrap items-center gap-2 mt-2">
-                                                    <span className="flex items-center gap-1 text-sm text-neutral-500">
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                        </svg>
-                                                        {schedule.dayName}, {schedule.date}
-                                                    </span>
-                                                    {/* Faculty Badge - only for week 2-8 */}
-                                                    {schedule.week >= 2 && schedule.dayName === "Sabtu" && (
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                                                            FPIPS & FPSD
+                                                {/* Main Content */}
+                                                <div className="flex-1 min-w-0">
+                                                    <h4 className="font-semibold text-neutral-900 text-lg truncate">
+                                                        {schedule.topic}
+                                                    </h4>
+                                                    <div className="flex flex-wrap items-center gap-2 mt-2">
+                                                        <span className="flex items-center gap-1 text-sm text-neutral-500">
+                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                            </svg>
+                                                            {schedule.dayName}, {schedule.date}
                                                         </span>
-                                                    )}
-                                                    {schedule.week >= 2 && schedule.dayName === "Minggu" && (
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
-                                                            FIP, FK & FPEB
-                                                        </span>
-                                                    )}
+                                                        {/* Faculty Badge - only for week 2-8 */}
+                                                        {schedule.week >= 2 && schedule.dayName === "Sabtu" && (
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                                                FPIPS & FPSD
+                                                            </span>
+                                                        )}
+                                                        {schedule.week >= 2 && schedule.dayName === "Minggu" && (
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                                                                FIP, FK & FPEB
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Expand Icon */}
+                                                <div className="flex-shrink-0">
+                                                    <svg
+                                                        className={`w-5 h-5 text-neutral-400 transition-transform duration-300 ${expandedIndex === index ? 'rotate-180' : ''}`}
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                    </svg>
                                                 </div>
                                             </div>
 
-                                            {/* Expand Icon */}
-                                            <div className="flex-shrink-0">
-                                                <svg
-                                                    className={`w-5 h-5 text-neutral-400 transition-transform duration-300 ${expandedIndex === index ? 'rotate-180' : ''}`}
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                </svg>
-                                            </div>
-                                        </div>
-
-                                        {/* Expanded Details */}
-                                        <div className={`overflow-hidden transition-all duration-300 ${expandedIndex === index ? 'max-h-40 mt-4 pt-4 border-t border-neutral-100' : 'max-h-0'}`}>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="flex items-center gap-2 text-neutral-600">
-                                                    <div className="w-8 h-8 bg-primary-50 rounded-lg flex items-center justify-center">
-                                                        <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                        </svg>
+                                            {/* Expanded Details */}
+                                            <div className={`overflow-hidden transition-all duration-300 ${expandedIndex === index ? 'max-h-40 mt-4 pt-4 border-t border-neutral-100' : 'max-h-0'}`}>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="flex items-center gap-2 text-neutral-600">
+                                                        <div className="w-8 h-8 bg-primary-50 rounded-lg flex items-center justify-center">
+                                                            <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-xs text-neutral-400">Waktu</div>
+                                                            <div className="font-medium text-sm">{schedule.time}</div>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <div className="text-xs text-neutral-400">Waktu</div>
-                                                        <div className="font-medium text-sm">{schedule.time}</div>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-2 text-neutral-600">
-                                                    <div className="w-8 h-8 bg-secondary-50 rounded-lg flex items-center justify-center">
-                                                        <svg className="w-4 h-4 text-secondary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                        </svg>
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-xs text-neutral-400">Lokasi</div>
-                                                        <div className="font-medium text-sm">{schedule.location}</div>
+                                                    <div className="flex items-center gap-2 text-neutral-600">
+                                                        <div className="w-8 h-8 bg-secondary-50 rounded-lg flex items-center justify-center">
+                                                            <svg className="w-4 h-4 text-secondary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-xs text-neutral-400">Lokasi</div>
+                                                            <div className="font-medium text-sm">{schedule.location}</div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
                         </div>
                     </div>
 
