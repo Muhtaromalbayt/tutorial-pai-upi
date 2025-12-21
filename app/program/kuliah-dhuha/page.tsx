@@ -54,6 +54,7 @@ type DayFilter = 'all' | 'Sabtu' | 'Minggu';
 interface DBSchedule {
     id: string;
     weekNumber: number;
+    dayType: string | null; // 'Sabtu' or 'Minggu'
     date: string;
     topic: string;
     speaker: string | null;
@@ -103,19 +104,33 @@ export default function KuliahDhuhaPage() {
             const weekNum = extractWeekNumber(activity.title);
             const isSoS = activity.title.toLowerCase().includes('shine on sunday') || activity.title.toLowerCase().includes('sos');
             const isPenutupan = activity.title.toLowerCase().includes('penutupan');
+            const dayName = getDayName(activity.date);
 
-            // Find matching database schedule for speaker/materials
-            const dbMatch = dbSchedules.find(s => s.weekNumber === weekNum);
-            const materials = dbMatch?.materials ? JSON.parse(dbMatch.materials) as string[] : [];
+            // Convert dayName to dayType for matching (Minggu = Ahad in Indonesian calendar)
+            const dayType = dayName === 'Minggu' ? 'Minggu' : 'Sabtu';
+
+            // Find matching database schedule by week AND dayType
+            // This allows same topic/materials but different speakers for Sabtu vs Minggu
+            const dbMatch = dbSchedules.find(s =>
+                s.weekNumber === weekNum &&
+                (s.dayType === dayType || s.dayType === dayName)
+            );
+
+            // Also get a fallback match just by week (for materials)
+            const weekMatch = dbSchedules.find(s => s.weekNumber === weekNum);
+            const materials = dbMatch?.materials
+                ? JSON.parse(dbMatch.materials) as string[]
+                : (weekMatch?.materials ? JSON.parse(weekMatch.materials) as string[] : []);
 
             return {
                 week: weekNum || 1,
                 date: formatDateIndonesian(activity.date),
                 rawDate: activity.date,
-                dayName: getDayName(activity.date),
-                topic: dbMatch?.topic || formatTitle(activity.title),
-                speaker: dbMatch?.speaker || null,
-                materials: materials,
+                dayName: dayName,
+                dayType: dayType,
+                topic: dbMatch?.topic || weekMatch?.topic || formatTitle(activity.title),
+                speaker: dbMatch?.speaker || null, // Speaker is specific to dayType
+                materials: materials, // Materials shared within same week
                 location: "Masjid Al Furqon",
                 time: activity.time || "08.45 - 13.00 WIB",
                 category: activity.category,

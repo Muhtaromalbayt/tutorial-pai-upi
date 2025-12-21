@@ -11,7 +11,10 @@ export async function GET() {
         const { env } = getRequestContext();
         const db = createDb(env.DB);
 
-        const schedules = await db.select().from(kuliahDhuhaSchedule).orderBy(asc(kuliahDhuhaSchedule.weekNumber));
+        const schedules = await db.select().from(kuliahDhuhaSchedule).orderBy(
+            asc(kuliahDhuhaSchedule.weekNumber),
+            asc(kuliahDhuhaSchedule.dayType)
+        );
 
         return NextResponse.json({ schedules });
     } catch (error: unknown) {
@@ -32,13 +35,14 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json() as {
             weekNumber: number;
+            dayType?: string;
             date: string;
             topic: string;
             speaker?: string;
             materials?: string[];
             location?: string;
         };
-        const { weekNumber, date, topic, speaker, materials, location } = body;
+        const { weekNumber, dayType, date, topic, speaker, materials, location } = body;
 
         const id = `kd_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const now = new Date().toISOString();
@@ -48,11 +52,12 @@ export async function POST(req: NextRequest) {
             .values({
                 id,
                 weekNumber: Number(weekNumber),
+                dayType: dayType || "Sabtu",
                 date,
                 topic,
                 speaker: speaker || null,
                 materials: JSON.stringify(materials || []),
-                location: location || "Masjid Kampus UPI",
+                location: location || "Masjid Al Furqon",
                 createdAt: now,
                 updatedAt: now,
             })
@@ -78,13 +83,14 @@ export async function PUT(req: NextRequest) {
         const body = await req.json() as {
             id: string;
             weekNumber: number;
+            dayType?: string;
             date: string;
             topic: string;
             speaker?: string;
             materials?: string[];
             location?: string;
         };
-        const { id, weekNumber, date, topic, speaker, materials, location } = body;
+        const { id, weekNumber, dayType, date, topic, speaker, materials, location } = body;
 
         const now = new Date().toISOString();
 
@@ -92,6 +98,7 @@ export async function PUT(req: NextRequest) {
             .update(kuliahDhuhaSchedule)
             .set({
                 weekNumber: Number(weekNumber),
+                dayType: dayType || "Sabtu",
                 date,
                 topic,
                 speaker: speaker || null,

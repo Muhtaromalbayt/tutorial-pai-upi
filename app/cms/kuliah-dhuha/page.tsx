@@ -7,6 +7,7 @@ import Link from "next/link";
 interface Schedule {
     id: string;
     weekNumber: number;
+    dayType: string | null;
     date: string;
     topic: string;
     speaker: string | null;
@@ -16,6 +17,7 @@ interface Schedule {
 
 interface FormData {
     weekNumber: number;
+    dayType: string;
     date: string;
     topic: string;
     speaker: string;
@@ -25,6 +27,7 @@ interface FormData {
 
 const defaultFormData: FormData = {
     weekNumber: 1,
+    dayType: "Sabtu",
     date: "",
     topic: "",
     speaker: "",
@@ -102,6 +105,7 @@ export default function CMSKuliahDhuha() {
         const materials = schedule.materials ? JSON.parse(schedule.materials) as string[] : [""];
         setFormData({
             weekNumber: schedule.weekNumber,
+            dayType: schedule.dayType || "Sabtu",
             date: schedule.date,
             topic: schedule.topic,
             speaker: schedule.speaker || "",
@@ -200,8 +204,8 @@ export default function CMSKuliahDhuha() {
                         <div>
                             <h2 className="text-lg font-semibold mb-1">Jadwal Kuliah Dhuha</h2>
                             <p className="text-white/80 text-sm">
-                                Kelola jadwal pemateri dan materi Kuliah Dhuha. Data yang diinput di sini akan ditampilkan
-                                di halaman Kuliah Dhuha saat pengunjung mengklik expand pada jadwal pekan.
+                                Kelola jadwal pemateri dan materi Kuliah Dhuha. <strong>Sabtu</strong> untuk FPIPS & FPSD,
+                                <strong> Minggu</strong> untuk FIP, FK & FPEB. Materi bisa sama tapi pemateri berbeda per hari.
                             </p>
                         </div>
                     </div>
@@ -213,18 +217,19 @@ export default function CMSKuliahDhuha() {
                         <table className="w-full">
                             <thead className="bg-gray-50 border-b border-gray-200">
                                 <tr>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Pekan</th>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Topik</th>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Pemateri</th>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Materi</th>
-                                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+                                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Pekan</th>
+                                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Hari</th>
+                                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
+                                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Topik</th>
+                                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Pemateri</th>
+                                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Materi</th>
+                                    <th className="px-4 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                                 {schedules.length === 0 ? (
                                     <tr>
-                                        <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                                        <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                                             <div className="flex flex-col items-center">
                                                 <svg className="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -241,16 +246,24 @@ export default function CMSKuliahDhuha() {
                                         const materials = schedule.materials ? JSON.parse(schedule.materials) as string[] : [];
                                         return (
                                             <tr key={schedule.id} className="hover:bg-gray-50">
-                                                <td className="px-6 py-4">
+                                                <td className="px-4 py-4">
                                                     <span className="inline-flex items-center justify-center w-10 h-10 bg-[#055E5B] text-white font-bold rounded-lg">
                                                         {schedule.weekNumber}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-gray-900">{schedule.date}</td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-4 py-4">
+                                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${schedule.dayType === 'Minggu'
+                                                            ? 'bg-emerald-100 text-emerald-700'
+                                                            : 'bg-blue-100 text-blue-700'
+                                                        }`}>
+                                                        {schedule.dayType || 'Sabtu'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-4 py-4 text-sm text-gray-900">{schedule.date}</td>
+                                                <td className="px-4 py-4">
                                                     <span className="text-sm font-medium text-gray-900">{schedule.topic}</span>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-4 py-4">
                                                     {schedule.speaker ? (
                                                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
                                                             👤 {schedule.speaker}
@@ -259,7 +272,7 @@ export default function CMSKuliahDhuha() {
                                                         <span className="text-sm text-gray-400 italic">-</span>
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-4 py-4">
                                                     {materials.length > 0 ? (
                                                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
                                                             📎 {materials.length} file
@@ -268,7 +281,7 @@ export default function CMSKuliahDhuha() {
                                                         <span className="text-sm text-gray-400 italic">-</span>
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 text-right">
+                                                <td className="px-4 py-4 text-right">
                                                     <div className="flex items-center justify-end gap-2">
                                                         <button
                                                             onClick={() => handleEdit(schedule)}
@@ -321,7 +334,7 @@ export default function CMSKuliahDhuha() {
                         </div>
 
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-3 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Pekan</label>
                                     <select
@@ -333,6 +346,18 @@ export default function CMSKuliahDhuha() {
                                         {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                                             <option key={n} value={n}>Pekan {n}</option>
                                         ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Hari</label>
+                                    <select
+                                        value={formData.dayType}
+                                        onChange={(e) => setFormData({ ...formData, dayType: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#055E5B] focus:border-transparent"
+                                        required
+                                    >
+                                        <option value="Sabtu">Sabtu (FPIPS & FPSD)</option>
+                                        <option value="Minggu">Minggu (FIP, FK & FPEB)</option>
                                     </select>
                                 </div>
                                 <div>
@@ -361,6 +386,7 @@ export default function CMSKuliahDhuha() {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Nama Pemateri</label>
+                                <p className="text-xs text-gray-500 mb-1">Pemateri untuk hari {formData.dayType}</p>
                                 <input
                                     type="text"
                                     value={formData.speaker}

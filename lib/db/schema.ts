@@ -38,6 +38,7 @@ export const calendarEvents = sqliteTable('calendar_events', {
 export const kuliahDhuhaSchedule = sqliteTable('kuliah_dhuha_schedule', {
     id: text('id').primaryKey(),
     weekNumber: integer('week_number').notNull(),
+    dayType: text('day_type').default('Sabtu'), // 'Sabtu' or 'Minggu'
     date: text('date').notNull(),
     topic: text('topic').notNull(),
     speaker: text('speaker'),
