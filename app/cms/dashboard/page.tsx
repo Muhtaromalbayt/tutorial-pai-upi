@@ -242,6 +242,23 @@ export default function CMSDashboard() {
                         </Link>
 
                         <Link
+                            href="/cms/seminar-pai"
+                            className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-[#055E5B] hover:bg-[#055E5B]/5 transition-all group"
+                        >
+                            <div className="w-12 h-12 bg-rose-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-rose-200 transition-colors">
+                                <svg className="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-gray-900 group-hover:text-[#055E5B]">
+                                    Seminar PAI
+                                </h3>
+                                <p className="text-sm text-gray-600">Kelola jadwal & pemateri</p>
+                            </div>
+                        </Link>
+
+                        <Link
                             href="/cms/galeri"
                             className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-[#055E5B] hover:bg-[#055E5B]/5 transition-all group"
                         >

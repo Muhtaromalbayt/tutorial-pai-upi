@@ -52,6 +52,7 @@ export const kuliahDhuhaSchedule = sqliteTable('kuliah_dhuha_schedule', {
 export const seminarSchedule = sqliteTable('seminar_schedule', {
     id: text('id').primaryKey(),
     weekNumber: integer('week_number').notNull(),
+    dayType: text('day_type').default('Rabu'), // 'Rabu' or 'Jumat'
     date: text('date').notNull(),
     topic: text('topic').notNull(),
     speaker: text('speaker'),
