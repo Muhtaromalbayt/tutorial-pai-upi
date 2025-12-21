@@ -148,9 +148,25 @@ CREATE TABLE IF NOT EXISTS feedback (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Gallery / Photos (for CMS photo management)
+CREATE TABLE IF NOT EXISTS gallery (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  image_url TEXT NOT NULL,
+  category TEXT DEFAULT 'Kegiatan',
+  placeholder TEXT,
+  order_index INTEGER DEFAULT 0,
+  is_published INTEGER DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_calendar_date ON calendar_events(date);
 CREATE INDEX IF NOT EXISTS idx_calendar_category ON calendar_events(category);
 CREATE INDEX IF NOT EXISTS idx_news_published ON news(is_published, published_date);
 CREATE INDEX IF NOT EXISTS idx_kuliah_week ON kuliah_dhuha_schedule(week_number);
 CREATE INDEX IF NOT EXISTS idx_feedback_status ON feedback(status, created_at);
+CREATE INDEX IF NOT EXISTS idx_gallery_placeholder ON gallery(placeholder);
+CREATE INDEX IF NOT EXISTS idx_gallery_published ON gallery(is_published);

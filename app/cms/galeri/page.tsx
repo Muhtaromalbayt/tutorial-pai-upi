@@ -24,7 +24,8 @@ interface FormData {
     isPublished: boolean;
 }
 
-// Helper to convert Google Drive URL to FULL HD direct image URL
+// Helper to convert Google Drive URL to HIGH RESOLUTION image URL
+// Using thumbnail?sz=w2000 for reliable loading (uc?export=view has CORS issues)
 function getGoogleDrivePreviewUrl(url: string): string {
     if (!url) return "";
 
@@ -44,8 +45,9 @@ function getGoogleDrivePreviewUrl(url: string): string {
     }
 
     if (fileId) {
-        // Use uc?export=view for FULL RESOLUTION original quality
-        return `https://drive.google.com/uc?export=view&id=${fileId}`;
+        // Use thumbnail with sz=w2000 for high resolution (max supported)
+        // This format is more reliable than uc?export=view which has CORS issues
+        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
     }
 
     // Already a direct URL or other format
