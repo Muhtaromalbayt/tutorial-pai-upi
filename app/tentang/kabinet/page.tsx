@@ -1,7 +1,16 @@
+"use client";
+
 import Hero from "@/components/Hero";
 import Button from "@/components/Button";
+import { usePlaceholderPhoto } from "@/lib/use-placeholder-photo";
 
 export default function KabinetPage() {
+    // Fetch photo from gallery by placeholder
+    const { previewUrl: kabinetPhoto, loading: photoLoading } = usePlaceholderPhoto(
+        "hero_kabinet",
+        "" // no fallback - will show AL-FATH logo if no photo
+    );
+
     const coreValues = [
         {
             letter: "F",
@@ -64,18 +73,29 @@ export default function KabinetPage() {
                             </div>
                         </div>
                         <div className="relative animate-reveal delay-200">
-                            <div className="aspect-square bg-gradient-to-br from-neutral-900 to-neutral-800 rounded-3xl p-12 flex flex-col justify-center items-center text-center shadow-2xl overflow-hidden relative group">
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                                <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl -ml-32 -mb-32"></div>
+                            {/* Dynamic Photo from Gallery or AL-FATH Logo Fallback */}
+                            {kabinetPhoto ? (
+                                <div className="aspect-square rounded-3xl overflow-hidden shadow-2xl">
+                                    <img
+                                        src={kabinetPhoto}
+                                        alt="Kabinet AL-FATH"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="aspect-square bg-gradient-to-br from-neutral-900 to-neutral-800 rounded-3xl p-12 flex flex-col justify-center items-center text-center shadow-2xl overflow-hidden relative group">
+                                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl -ml-32 -mb-32"></div>
 
-                                <h3 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter">
-                                    AL-FATH
-                                </h3>
-                                <p className="text-xl md:text-2xl text-neutral-300 font-medium tracking-wide max-w-md">
-                                    <span className="text-primary-400">F</span>ostering <span className="text-primary-400">A</span>dab through <span className="text-primary-400">T</span>hought and <span className="text-primary-400">H</span>earth
-                                </p>
-                                <div className="mt-12 h-1 w-24 bg-primary-500 rounded-full"></div>
-                            </div>
+                                    <h3 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter">
+                                        AL-FATH
+                                    </h3>
+                                    <p className="text-xl md:text-2xl text-neutral-300 font-medium tracking-wide max-w-md">
+                                        <span className="text-primary-400">F</span>ostering <span className="text-primary-400">A</span>dab through <span className="text-primary-400">T</span>hought and <span className="text-primary-400">H</span>earth
+                                    </p>
+                                    <div className="mt-12 h-1 w-24 bg-primary-500 rounded-full"></div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
