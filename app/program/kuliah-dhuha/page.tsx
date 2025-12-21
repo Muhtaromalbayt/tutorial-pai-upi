@@ -132,9 +132,9 @@ export default function KuliahDhuhaPage() {
                         </div>
                     )}
 
-                    {/* Weekly Schedule - Timeline Style */}
+                    {/* Weekly Schedule - With Faculty Tabs */}
                     <div className="mb-12">
-                        <div className="flex items-center gap-3 mb-8">
+                        <div className="flex items-center gap-3 mb-6">
                             <div className="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
                                 <svg className="w-6 h-6 text-secondary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -143,6 +143,41 @@ export default function KuliahDhuhaPage() {
                             <h2 className="text-2xl font-bold text-neutral-900">
                                 Jadwal Tutorial PAI
                             </h2>
+                        </div>
+
+                        {/* Faculty Info Cards */}
+                        <div className="grid md:grid-cols-2 gap-4 mb-8">
+                            <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-5 text-white">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                        <span className="text-lg font-bold">S</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-lg">Sabtu</h3>
+                                        <p className="text-sm text-white/80">Setiap Pekan ke-2 s.d. 8</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">FPIPS</span>
+                                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">FPSD</span>
+                                </div>
+                            </div>
+                            <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl p-5 text-white">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                        <span className="text-lg font-bold">A</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-lg">Ahad</h3>
+                                        <p className="text-sm text-white/80">Setiap Pekan ke-2 s.d. 8</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">FIP</span>
+                                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">FK</span>
+                                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">FPEB</span>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Schedule Grid - Clean Cards */}
@@ -168,13 +203,24 @@ export default function KuliahDhuhaPage() {
                                                 <h4 className="font-semibold text-neutral-900 text-lg truncate">
                                                     {schedule.topic}
                                                 </h4>
-                                                <div className="flex items-center gap-4 mt-1 text-sm text-neutral-500">
-                                                    <span className="flex items-center gap-1">
+                                                <div className="flex flex-wrap items-center gap-2 mt-2">
+                                                    <span className="flex items-center gap-1 text-sm text-neutral-500">
                                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                         </svg>
                                                         {schedule.dayName}, {schedule.date}
                                                     </span>
+                                                    {/* Faculty Badge - only for week 2-8 */}
+                                                    {schedule.week >= 2 && schedule.dayName === "Sabtu" && (
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                                            FPIPS & FPSD
+                                                        </span>
+                                                    )}
+                                                    {schedule.week >= 2 && schedule.dayName === "Minggu" && (
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                                                            FIP, FK & FPEB
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </div>
 
