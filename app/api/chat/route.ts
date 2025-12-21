@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { createDb, news, kuliahDhuhaSchedule, cabinetMembers } from "@/lib/db/client";
-import { desc, gte, asc, eq } from "drizzle-orm";
+import { desc, asc, eq, sql } from "drizzle-orm";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const runtime = "edge";
@@ -43,12 +43,6 @@ export async function POST(req: NextRequest) {
             .limit(3);
 
         // 2. Kuliah Dhuha: 5 Upcoming
-        // Format current date for comparison if needed, or just fetch all and filter in prompt if dataset is small. 
-        // For efficiency, we rely on DB date comparison if format allows. 
-        // Schema date is text. Assuming ISO or sortable text. If not, we fetch extra and filter in JS.
-        // Given existing code, let's fetch upcoming based on ID or created_at if date column format is inconsistent. 
-        // But let's try sorting by id/weekNumber for now or just take latest added.
-        // User requested "closest schedules". 
         const schedules = await db.select({
             topic: kuliahDhuhaSchedule.topic,
             speaker: kuliahDhuhaSchedule.speaker,
@@ -56,13 +50,10 @@ export async function POST(req: NextRequest) {
             location: kuliahDhuhaSchedule.location
         })
             .from(kuliahDhuhaSchedule)
-            .orderBy(desc(kuliahDhuhaSchedule.date)) // Assuming recent first, or future? 
-            // Ideally we filter gte(kuliahDhuhaSchedule.date, new Date().toISOString()) but date format might be DD-MM-YYYY.
-            // Let's fetch top 5 items for now.
+            .orderBy(desc(kuliahDhuhaSchedule.date))
             .limit(5);
 
         // 3. Cabinet Members: "Data Inti" (Core Members)
-        // Taking first 10 ordered by orderIndex
         const cabinet = await db.select({
             name: cabinetMembers.name,
             position: cabinetMembers.position,
@@ -70,19 +61,49 @@ export async function POST(req: NextRequest) {
         })
             .from(cabinetMembers)
             .orderBy(asc(cabinetMembers.orderIndex))
-            .limit(10); // Adjust limit as needed for token budget
+            .limit(10);
+
+        // 4. RAG: Search knowledge chunks using FTS5
+        let relevantKnowledge: { content: string; sourceFile: string }[] = [];
+        try {
+            // Clean the search query for FTS5
+            const searchTerms = message
+                .replace(/[^\w\s]/g, ' ')
+                .split(/\s+/)
+                .filter(term => term.length > 2)
+                .join(' OR ');
+
+            if (searchTerms) {
+                const ftsResult = await env.DB.prepare(`
+                    SELECT kc.content, kc.source_file as sourceFile
+                    FROM knowledge_chunks kc
+                    JOIN knowledge_chunks_fts fts ON kc.rowid = fts.rowid
+                    WHERE knowledge_chunks_fts MATCH ?
+                    ORDER BY rank
+                    LIMIT 5
+                `).bind(searchTerms).all();
+
+                if (ftsResult.results) {
+                    relevantKnowledge = ftsResult.results as { content: string; sourceFile: string }[];
+                }
+            }
+        } catch (ftsError) {
+            // FTS table might not exist yet, continue without it
+            console.log("FTS search skipped (table may not exist yet):", ftsError);
+        }
 
         const contextData = {
             berita_terbaru: recentNews,
             jadwal_kuliah_dhuha: schedules,
-            pengurus_kabinet_inti: cabinet
+            pengurus_kabinet_inti: cabinet,
+            pengetahuan_dari_dokumen: relevantKnowledge.length > 0
+                ? relevantKnowledge.map(k => `[${k.sourceFile}]: ${k.content}`).join('\n\n')
+                : "Belum ada dokumen yang diupload."
         };
 
         // --- AI Configuration ---
 
         const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-        // User requested "gemini-2.5-flash". 
-        // Note: If 2.5 is not available, this might error. Fallback handling added in catch block.
         const model = genAI.getGenerativeModel({
             model: "gemini-2.5-flash",
             systemInstruction: `
@@ -94,14 +115,15 @@ Kamu adalah "Minral" (Media Info Ramah AL-Fath), asisten virtual dari organisasi
 - **Tone:** Islami (selalu menjawab salam jika disapa salam), Ceria, Sopan, dan Membantu.
 - **Role:** Asisten informatif yang siap membantu anggota dan mahasiswa.
 
-**Context Data (Fakta):**
+**Context Data (Fakta dari Database & Dokumen):**
 ${JSON.stringify(contextData, null, 2)}
 
 **Rules:**
-1. Jawab pertanyaan berdasarkan data di atas.
+1. Jawab pertanyaan berdasarkan data di atas (berita, jadwal, kabinet, dan dokumen).
 2. **JANGAN MENGARANG DATA.** Jika informasi tidak ada di context, katakan jujur dengan bahasa yang enak (Contoh: "Wah, data itu mah belum ada di catatan Minral euy, coba tanya pengurus langsung ya!").
 3. Jawab dengan ringkas namun ramah.
 4. Jika disapa "Assalamualaikum", wajib jawab "Waalaikumussalam".
+5. Jika ada info dari "pengetahuan_dari_dokumen", prioritaskan data tersebut untuk menjawab.
 
 **Contoh Gaya Bicara:**
 - "Siap Akang, mangga dicek jadwalnya!"
@@ -119,16 +141,17 @@ ${JSON.stringify(contextData, null, 2)}
 
         return NextResponse.json({ reply: responseText });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error in Minral Chat:", error);
 
         // Handle API Limit or Model Not Found specifically if possible
         let errorMessage = "Punten Akang/Teteh, Minral lagi error euy sistemnya. Coba lagi nanti ya!";
 
-        if (error.message?.includes("429")) {
+        const errorMsg = error instanceof Error ? error.message : String(error);
+
+        if (errorMsg.includes("429")) {
             errorMessage = "Waduh, Minral lagi banyak yang nanya nih (API Limit reached). Tunggu sebentar ya Teh/Kang!";
-        } else if (error.message?.includes("not found")) {
-            // Fallback if gemini-2.5-flash doesn't exist yet
+        } else if (errorMsg.includes("not found")) {
             errorMessage = "Model AI-nya lagi gak connect geuning (404 Model Not Found). Coba lapor admin.";
         }
 

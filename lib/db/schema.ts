@@ -179,6 +179,15 @@ export const gallery = sqliteTable('gallery', {
     updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
+// Knowledge Chunks for RAG (Minral AI)
+export const knowledgeChunks = sqliteTable('knowledge_chunks', {
+    id: text('id').primaryKey(),
+    sourceFile: text('source_file').notNull(), // Original PDF filename
+    chunkIndex: integer('chunk_index').notNull(), // Order within the document
+    content: text('content').notNull(), // The actual text content
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -197,3 +206,5 @@ export type Feedback = typeof feedback.$inferSelect;
 export type SiteSetting = typeof siteSettings.$inferSelect;
 export type Gallery = typeof gallery.$inferSelect;
 export type NewGallery = typeof gallery.$inferInsert;
+export type KnowledgeChunk = typeof knowledgeChunks.$inferSelect;
+
