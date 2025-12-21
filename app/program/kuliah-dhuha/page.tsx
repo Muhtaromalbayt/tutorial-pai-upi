@@ -1,44 +1,49 @@
+"use client";
+
 import Hero from "@/components/Hero";
+import { useMemo } from "react";
+import { ORGANIZATION_ACTIVITIES } from "@/lib/hijriah-calendar-data";
+
+// Format date to Indonesian format
+function formatDateIndonesian(dateStr: string): string {
+    const date = new Date(dateStr);
+    const months = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
 
 export default function KuliahDhuhaPage() {
-    const weeklySchedule = [
-        {
-            week: "Minggu 1",
-            date: "22 Februari 2026",
-            topic: "Adab Menuntut Ilmu",
-            speaker: "Dr. Ahmad Syafii, M.Pd.I",
-            location: "Auditorium UPI",
-            time: "07:30 - 09:00 WIB",
-            materials: "Materi-Kuliah-Dhuha-1.pdf"
-        },
-        {
-            week: "Minggu 2",
-            date: "29 Februari 2026",
-            topic: "Hikmah Puasa di Bulan Rajab",
-            speaker: "Ustadz Muhammad Iqbal, Lc",
-            location: "Auditorium UPI",
-            time: "07:30 - 09:00 WIB",
-            materials: "Materi-Kuliah-Dhuha-2.pdf"
-        },
-        {
-            week: "Minggu 3",
-            date: "7 Maret 2026",
-            topic: "Generasi Qurani",
-            speaker: "Dr. Hj. Siti Maryam, M.Ag",
-            location: "Auditorium UPI",
-            time: "07:30 - 09:00 WIB",
-            materials: "Materi-Kuliah-Dhuha-3.pdf"
-        },
-        {
-            week: "Minggu 4",
-            date: "14 Maret 2026",
-            topic: "Dakwah di Era Digital",
-            speaker: "Ustadz Fahmi Salim, M.Kom.I",
-            location: "Auditorium UPI",
-            time: "07:30 - 09:00 WIB",
-            materials: "Materi-Kuliah-Dhuha-4.pdf"
-        },
-    ];
+    // Get Tutorial PAI activities and Pembukaan
+    const weeklySchedule = useMemo(() => {
+        // Get Tutorial PAI activities and Pembukaan
+        const activities = ORGANIZATION_ACTIVITIES
+            .filter(activity =>
+                activity.category === "Tutorial PAI" ||
+                activity.title.includes("Pembukaan")
+            )
+            .reduce((acc, activity) => {
+                // Group by date to avoid duplicates
+                const existing = acc.find(a => a.date === activity.date);
+                if (!existing) {
+                    acc.push(activity);
+                }
+                return acc;
+            }, [] as typeof ORGANIZATION_ACTIVITIES)
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        // Map to schedule format with week numbers
+        return activities.map((activity, index) => ({
+            week: `Minggu ${index + 1}`,
+            date: formatDateIndonesian(activity.date),
+            rawDate: activity.date,
+            topic: activity.title,
+            location: activity.location || "Aula ITC",
+            time: activity.time || "08.45 - 13.00 WIB",
+            category: activity.category
+        }));
+    }, []);
 
     return (
         <div>
@@ -87,22 +92,30 @@ export default function KuliahDhuhaPage() {
                                             <div className="flex items-center space-x-4 mb-3">
                                                 <div className="w-20 h-20 bg-primary-600 rounded-lg flex flex-col items-center justify-center text-white flex-shrink-0">
                                                     <div className="text-xs font-semibold">{schedule.week}</div>
-                                                    <div className="text-lg font-bold">{new Date(schedule.date).getDate()}</div>
-                                                    <div className="text-xs">{new Date(schedule.date).toLocaleDateString('id-ID', { month: 'short' })}</div>
+                                                    <div className="text-lg font-bold">{new Date(schedule.rawDate).getDate()}</div>
+                                                    <div className="text-xs">{new Date(schedule.rawDate).toLocaleDateString('id-ID', { month: 'short' })}</div>
                                                 </div>
                                                 <div>
                                                     <h4 className="text-xl font-semibold text-neutral-900 mb-1">
                                                         {schedule.topic}
                                                     </h4>
-                                                    <div className="flex items-center text-sm text-neutral-600">
-                                                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                        </svg>
-                                                        {schedule.speaker}
+                                                    <div className="flex items-center text-sm">
+                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${schedule.category === 'Kajian'
+                                                            ? 'bg-accent-100 text-accent-800'
+                                                            : 'bg-primary-100 text-primary-800'
+                                                            }`}>
+                                                            {schedule.category}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="flex flex-wrap gap-4 text-sm text-neutral-600 pl-24">
+                                                <div className="flex items-center">
+                                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                    {schedule.date}
+                                                </div>
                                                 <div className="flex items-center">
                                                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -116,14 +129,6 @@ export default function KuliahDhuhaPage() {
                                                     {schedule.location}
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="flex items-center space-x-3">
-                                            <button className="btn-secondary text-sm py-2">
-                                                <svg className="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                </svg>
-                                                Materi
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
