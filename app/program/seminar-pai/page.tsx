@@ -1,68 +1,390 @@
+"use client";
+
 import Hero from "@/components/Hero";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { ORGANIZATION_ACTIVITIES } from "@/lib/hijriah-calendar-data";
+
+// Format date to Indonesian format
+function formatDateIndonesian(dateStr: string): string {
+    const date = new Date(dateStr);
+    const months = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+// Get day name in Indonesian
+function getDayName(dateStr: string): string {
+    const date = new Date(dateStr);
+    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    return days[date.getDay()];
+}
+
+// Extract week number from title
+function extractWeekNumber(title: string): number | null {
+    const weekMap: Record<string, number> = {
+        'pertama': 1, 'kedua': 2, 'ketiga': 3, 'keempat': 4,
+        'kelima': 5, 'keenam': 6, 'ketujuh': 7, 'kedelapan': 8,
+        'ke-dua': 2, 'ke-tiga': 3, 'ke-empat': 4, 'ke-lima': 5,
+        'ke-enam': 6, 'ke-tujuh': 7, 'ke-delapan': 8
+    };
+    const lowerTitle = title.toLowerCase();
+    for (const [word, num] of Object.entries(weekMap)) {
+        if (lowerTitle.includes(word)) return num;
+    }
+    return null;
+}
+
+// Format title to use proper Indonesian
+function formatTitle(title: string): string {
+    return title
+        .replace(/Ke-dua/gi, 'Kedua')
+        .replace(/Ke-tiga/gi, 'Ketiga')
+        .replace(/Ke-empat/gi, 'Keempat')
+        .replace(/Ke-lima/gi, 'Kelima')
+        .replace(/Ke-enam/gi, 'Keenam')
+        .replace(/Ke-tujuh/gi, 'Ketujuh')
+        .replace(/Ke-delapan/gi, 'Kedelapan');
+}
+
+type DayFilter = 'all' | 'Rabu' | 'Jumat';
 
 export default function SeminarPAIPage() {
+    const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+    const [selectedDay, setSelectedDay] = useState<DayFilter>('all');
+
+    // Get Tutorial SPAI activities
+    const weeklySchedule = useMemo(() => {
+        const activities = ORGANIZATION_ACTIVITIES
+            .filter(activity => activity.category === "Tutorial SPAI")
+            .reduce((acc, activity) => {
+                const existing = acc.find(a => a.date === activity.date);
+                if (!existing) {
+                    acc.push(activity);
+                }
+                return acc;
+            }, [] as typeof ORGANIZATION_ACTIVITIES)
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        return activities.map((activity, index) => {
+            const weekNum = extractWeekNumber(activity.title) || Math.floor(index / 2) + 2;
+            const isWoW = activity.title.toLowerCase().includes('wow') || activity.title.toLowerCase().includes('wonderful');
+            const isPenutupan = activity.title.toLowerCase().includes('penutupan');
+            const isPembukaan = index === 0; // First SPAI is considered pembukaan
+            return {
+                week: weekNum,
+                date: formatDateIndonesian(activity.date),
+                rawDate: activity.date,
+                dayName: getDayName(activity.date),
+                topic: formatTitle(activity.title),
+                location: "Masjid Al Furqon",
+                time: activity.time || "15.30 - 17.30 WIB",
+                category: activity.category,
+                isPembukaan: isPembukaan,
+                isWoW,
+                isPenutupan,
+                isSpecial: isPembukaan || isWoW || isPenutupan
+            };
+        });
+    }, []);
+
+    // Separate special events from regular schedule
+    const pembukaan = weeklySchedule[0]; // First is pembukaan
+    const wow = weeklySchedule.find(s => s.isWoW);
+    const penutupan = weeklySchedule[weeklySchedule.length - 1]; // Last is penutupan
+    const regularSchedule = weeklySchedule.filter((s, index) =>
+        index !== 0 && index !== weeklySchedule.length - 1 && !s.isWoW
+    );
+
     return (
-        <div>
+        <div className="min-h-screen bg-gradient-to-b from-neutral-50 to-white">
             <Hero
                 title="Seminar PAI"
-                subtitle="Forum diskusi ilmiah untuk mengembangkan wawasan pendidikan agama Islam"
+                subtitle="Program Tutorial SPAI untuk pengembangan spiritualitas mahasiswa UPI"
                 variant="gradient"
             />
 
-            <section className="section-academic">
-                <div className="container-upi max-w-6xl">
-                    <div className="max-w-3xl mx-auto text-center mb-16">
-                        <h2 className="text-3xl font-bold text-neutral-900 mb-6">
-                            Tentang Seminar PAI
-                        </h2>
-                        <p className="text-lg text-neutral-600 leading-relaxed">
-                            Seminar PAI adalah wadah diskusi interaktif tentang isu-isu kontemporer dalam pendidikan Islam. Program ini menghadirkan narasumber ahli dan memberikan ruang dialog untuk menemukan solusi berbasis nilai-nilai Islam.
-                        </p>
-                    </div>
+            {/* Main Content */}
+            <section className="py-16 px-4">
+                <div className="max-w-5xl mx-auto">
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-                        <div className="card-academic p-8">
-                            <h3 className="text-xl font-semibold text-neutral-900 mb-4">Tema Seminar Bulan Ini</h3>
-                            <div className="space-y-4">
-                                <div className="flex items-start space-x-3">
-                                    <div className="w-2 h-2 bg-primary-600 rounded-full mt-2"></div>
-                                    <div>
-                                        <h4 className="font-semibold text-neutral-900">AI dan Pendidikan Islam</h4>
-                                        <p className="text-sm text-neutral-600">Pemanfaatan kecerdasan buatan dalam pembelajaran PAI</p>
-                                        <p className="text-xs text-neutral-500 mt-1">25 Februari 2026, 13:00 WIB</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start space-x-3">
-                                    <div className="w-2 h-2 bg-primary-600 rounded-full mt-2"></div>
-                                    <div>
-                                        <h4 className="font-semibold text-neutral-900">Moderasi Beragama di Kampus</h4>
-                                        <p className="text-sm text-neutral-600">Membangun toleransi dalam keberagaman</p>
-                                        <p className="text-xs text-neutral-500 mt-1">10 Maret 2026, 13:00 WIB</p>
-                                    </div>
-                                </div>
+                    {/* About Section */}
+                    <div className="bg-white rounded-2xl shadow-lg border border-neutral-100 p-8 mb-12">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                                <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                </svg>
+                            </div>
+                            <h2 className="text-2xl font-bold text-neutral-900">
+                                Tentang Seminar PAI
+                            </h2>
+                        </div>
+                        <p className="text-neutral-600 leading-relaxed text-lg mb-4">
+                            <strong>Seminar PAI</strong> adalah salah satu rangkaian kegiatan dalam program <strong>Tutorial SPAI</strong>.
+                            Program Tutorial SPAI terdiri dari dua komponen utama:
+                        </p>
+                        <div className="grid md:grid-cols-2 gap-4 mb-6">
+                            <div className="p-4 bg-primary-50 rounded-xl border border-primary-100">
+                                <h4 className="font-semibold text-primary-700 mb-1">🎤 Seminar PAI</h4>
+                                <p className="text-sm text-neutral-600">Kajian tematik bersama seluruh peserta</p>
+                            </div>
+                            <Link href="/program/mentoring" className="p-4 bg-secondary-50 rounded-xl border border-secondary-100 hover:bg-secondary-100 transition-colors cursor-pointer">
+                                <h4 className="font-semibold text-secondary-700 mb-1">👥 Mentoring →</h4>
+                                <p className="text-sm text-neutral-600">Diskusi kelompok kecil dengan mentor</p>
+                            </Link>
+                        </div>
+                        <p className="text-neutral-600 leading-relaxed mb-8">
+                            Program ini bertujuan untuk mengembangkan spiritualitas dan wawasan keislaman mahasiswa dengan pendekatan yang inspiratif dan aplikatif.
+                        </p>
+
+                        {/* Stats Row */}
+                        <div className="grid grid-cols-3 gap-4">
+                            <div className="text-center p-4 bg-primary-50 rounded-xl">
+                                <div className="text-3xl font-bold text-primary-600 mb-1">8</div>
+                                <div className="text-sm text-neutral-600">Pekan</div>
+                            </div>
+                            <div className="text-center p-4 bg-secondary-50 rounded-xl">
+                                <div className="text-3xl font-bold text-secondary-600 mb-1">2</div>
+                                <div className="text-sm text-neutral-600">Jam/Pekan</div>
+                            </div>
+                            <div className="text-center p-4 bg-accent-50 rounded-xl">
+                                <div className="text-3xl font-bold text-accent-600 mb-1">4000+</div>
+                                <div className="text-sm text-neutral-600">Peserta/Semester</div>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="card-academic p-8">
-                            <h3 className="text-xl font-semibold text-neutral-900 mb-4">Narasumber</h3>
-                            <div className="space-y-4">
-                                {[
-                                    { nama: "Prof. Dr. Abdullah Hasan", expertise: "Ahli Pendidikan Islam" },
-                                    { nama: "Dr. Arifin Tahir, M.Pd", expertise: "Teknologi Pendidikan" },
-                                ].map((speaker, i) => (
-                                    <div key={i} className="flex items-center space-x-4">
-                                        <div className="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold">
-                                            {speaker.nama[0]}
+                    {/* Special Events Section */}
+                    <div className="mb-12">
+                        <h3 className="text-xl font-bold text-neutral-900 mb-6 flex items-center gap-2">
+                            <span>⭐</span> Kegiatan Spesial
+                        </h3>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            {/* Pembukaan */}
+                            {pembukaan && (
+                                <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-6 text-white shadow-lg">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-medium">
+                                            🎉 Pembukaan
+                                        </span>
+                                    </div>
+                                    <h4 className="font-bold text-lg mb-3">Pekan 1</h4>
+                                    <div className="space-y-2 text-sm text-white/90">
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span>{pembukaan.dayName}, {pembukaan.date}</span>
                                         </div>
-                                        <div>
-                                            <div className="font-semibold text-neutral-900">{speaker.nama}</div>
-                                            <div className="text-sm text-neutral-600">{speaker.expertise}</div>
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            </svg>
+                                            <span>{pembukaan.location}</span>
+                                        </div>
+                                    </div>
+                                    <p className="mt-3 text-xs text-white/70">Diikuti seluruh fakultas</p>
+                                </div>
+                            )}
+
+                            {/* Wonderful of Warriors */}
+                            {wow && (
+                                <div className="bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl p-6 text-white shadow-lg">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-medium">
+                                            ⚔️ Wonderful of Warriors
+                                        </span>
+                                    </div>
+                                    <h4 className="font-bold text-lg mb-3">Pekan 6 (WoW)</h4>
+                                    <div className="space-y-2 text-sm text-white/90">
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span>{wow.dayName}, {wow.date}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            </svg>
+                                            <span>{wow.location}</span>
+                                        </div>
+                                    </div>
+                                    <p className="mt-3 text-xs text-white/70">Diikuti seluruh fakultas</p>
+                                </div>
+                            )}
+
+                            {/* Penutupan */}
+                            {penutupan && (
+                                <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-medium">
+                                            🎓 Penutupan
+                                        </span>
+                                    </div>
+                                    <h4 className="font-bold text-lg mb-3">Pekan 8</h4>
+                                    <div className="space-y-2 text-sm text-white/90">
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span>{penutupan.dayName}, {penutupan.date}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            </svg>
+                                            <span>{penutupan.location}</span>
+                                        </div>
+                                    </div>
+                                    <p className="mt-3 text-xs text-white/70">Diikuti seluruh fakultas</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Weekly Schedule */}
+                    <div className="mb-12">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
+                                <svg className="w-6 h-6 text-secondary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <h2 className="text-2xl font-bold text-neutral-900">
+                                Jadwal Mingguan (Pekan 2-7)
+                            </h2>
+                        </div>
+
+                        {/* Faculty Filter Cards */}
+                        <div className="grid grid-cols-3 gap-3 mb-8">
+                            <button
+                                onClick={() => setSelectedDay('all')}
+                                className={`rounded-xl p-4 text-center transition-all duration-300 ${selectedDay === 'all'
+                                    ? 'bg-neutral-800 text-white shadow-lg scale-[1.02]'
+                                    : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                                    }`}
+                            >
+                                <span className="font-bold">Semua</span>
+                            </button>
+
+                            <button
+                                onClick={() => setSelectedDay('Rabu')}
+                                className={`rounded-xl p-4 transition-all duration-300 ${selectedDay === 'Rabu'
+                                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg scale-[1.02]'
+                                    : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+                                    }`}
+                            >
+                                <div className="font-bold">Rabu</div>
+                                <div className={`text-xs mt-1 ${selectedDay === 'Rabu' ? 'text-white/80' : 'text-blue-500'}`}>FPIPS & FPSD</div>
+                            </button>
+
+                            <button
+                                onClick={() => setSelectedDay('Jumat')}
+                                className={`rounded-xl p-4 transition-all duration-300 ${selectedDay === 'Jumat'
+                                    ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg scale-[1.02]'
+                                    : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                                    }`}
+                            >
+                                <div className="font-bold">Jumat</div>
+                                <div className={`text-xs mt-1 ${selectedDay === 'Jumat' ? 'text-white/80' : 'text-emerald-500'}`}>FIP, FK & FPEB</div>
+                            </button>
+                        </div>
+
+                        {/* Schedule Grid */}
+                        <div className="grid gap-4">
+                            {regularSchedule
+                                .filter(schedule => selectedDay === 'all' || schedule.dayName === selectedDay)
+                                .map((schedule, index) => (
+                                    <div
+                                        key={index}
+                                        className="bg-white rounded-xl border border-neutral-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
+                                    >
+                                        <div
+                                            className="p-5 cursor-pointer"
+                                            onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                {/* Week Number Badge */}
+                                                <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex flex-col items-center justify-center text-white shadow-md">
+                                                    <span className="text-xs font-medium opacity-80">Pekan</span>
+                                                    <span className="text-xl font-bold">{schedule.week}</span>
+                                                </div>
+
+                                                {/* Main Content */}
+                                                <div className="flex-1 min-w-0">
+                                                    <h4 className="font-semibold text-neutral-900 text-lg truncate">
+                                                        {schedule.topic}
+                                                    </h4>
+                                                    <div className="flex flex-wrap items-center gap-2 mt-2">
+                                                        <span className="flex items-center gap-1 text-sm text-neutral-500">
+                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                            </svg>
+                                                            {schedule.dayName}, {schedule.date}
+                                                        </span>
+                                                        {schedule.dayName === "Rabu" && (
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                                                FPIPS & FPSD
+                                                            </span>
+                                                        )}
+                                                        {schedule.dayName === "Jumat" && (
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                                                                FIP, FK & FPEB
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Expand Icon */}
+                                                <div className="flex-shrink-0">
+                                                    <svg
+                                                        className={`w-5 h-5 text-neutral-400 transition-transform duration-300 ${expandedIndex === index ? 'rotate-180' : ''}`}
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+
+                                            {/* Expanded Details */}
+                                            <div className={`overflow-hidden transition-all duration-300 ${expandedIndex === index ? 'max-h-40 mt-4 pt-4 border-t border-neutral-100' : 'max-h-0'}`}>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="flex items-center gap-2 text-neutral-600">
+                                                        <div className="w-8 h-8 bg-primary-50 rounded-lg flex items-center justify-center">
+                                                            <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-xs text-neutral-400">Waktu</div>
+                                                            <div className="font-medium text-sm">{schedule.time}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-neutral-600">
+                                                        <div className="w-8 h-8 bg-secondary-50 rounded-lg flex items-center justify-center">
+                                                            <svg className="w-4 h-4 text-secondary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-xs text-neutral-400">Lokasi</div>
+                                                            <div className="font-medium text-sm">{schedule.location}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
-                            </div>
                         </div>
                     </div>
+
                 </div>
             </section>
         </div>

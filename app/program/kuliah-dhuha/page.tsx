@@ -186,6 +186,7 @@ export default function KuliahDhuhaPage() {
                                             <span>{pembukaan.location}</span>
                                         </div>
                                     </div>
+                                    <p className="mt-3 text-xs text-white/70">Diikuti seluruh fakultas</p>
                                 </div>
                             )}
 
@@ -212,7 +213,7 @@ export default function KuliahDhuhaPage() {
                                             <span>{sos.location}</span>
                                         </div>
                                     </div>
-                                    <p className="mt-3 text-xs text-white/70">Khusus hari Ahad (semua fakultas)</p>
+                                    <p className="mt-3 text-xs text-white/70">Diikuti seluruh fakultas</p>
                                 </div>
                             )}
 
@@ -239,7 +240,7 @@ export default function KuliahDhuhaPage() {
                                             <span>{penutupan.location}</span>
                                         </div>
                                     </div>
-                                    <p className="mt-3 text-xs text-white/70">Khusus hari Sabtu (semua fakultas)</p>
+                                    <p className="mt-3 text-xs text-white/70">Diikuti seluruh fakultas</p>
                                 </div>
                             )}
                         </div>
@@ -263,8 +264,8 @@ export default function KuliahDhuhaPage() {
                             <button
                                 onClick={() => setSelectedDay('all')}
                                 className={`rounded-xl p-4 text-center transition-all duration-300 ${selectedDay === 'all'
-                                        ? 'bg-neutral-800 text-white shadow-lg scale-[1.02]'
-                                        : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                                    ? 'bg-neutral-800 text-white shadow-lg scale-[1.02]'
+                                    : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                                     }`}
                             >
                                 <span className="font-bold">Semua</span>
@@ -273,8 +274,8 @@ export default function KuliahDhuhaPage() {
                             <button
                                 onClick={() => setSelectedDay('Sabtu')}
                                 className={`rounded-xl p-4 transition-all duration-300 ${selectedDay === 'Sabtu'
-                                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg scale-[1.02]'
-                                        : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+                                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg scale-[1.02]'
+                                    : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
                                     }`}
                             >
                                 <div className="font-bold">Sabtu</div>
@@ -284,8 +285,8 @@ export default function KuliahDhuhaPage() {
                             <button
                                 onClick={() => setSelectedDay('Minggu')}
                                 className={`rounded-xl p-4 transition-all duration-300 ${selectedDay === 'Minggu'
-                                        ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg scale-[1.02]'
-                                        : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                                    ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg scale-[1.02]'
+                                    : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
                                     }`}
                             >
                                 <div className="font-bold">Ahad</div>
