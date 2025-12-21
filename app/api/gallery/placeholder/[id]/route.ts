@@ -1,9 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
-import { createDb, gallery } from "@/lib/db/client";
-import { eq, and } from "drizzle-orm";
 
 export const runtime = "edge";
+
+// Helper to convert Google Drive URL to high-res preview URL
+function getGoogleDrivePreviewUrl(url: string, size: number = 2000): string {
+    if (!url) return "";
+
+    let fileId = "";
+    const fileIdMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileIdMatch) {
+        fileId = fileIdMatch[1];
+    } else {
+        const openIdMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (openIdMatch) {
+            fileId = openIdMatch[1];
+        }
+    }
+
+    if (fileId) {
+        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w${size}`;
+    }
+
+    return url;
+}
 
 // GET photo by placeholder ID
 // Usage: /api/gallery/placeholder/hero_home
@@ -13,8 +33,6 @@ export async function GET(
 ) {
     try {
         const { env } = getRequestContext();
-        const db = createDb(env.DB);
-
         const placeholderId = params.id;
 
         if (!placeholderId) {
@@ -24,55 +42,65 @@ export async function GET(
             );
         }
 
-        // Get the first published photo with this placeholder
-        const result = await db
-            .select()
-            .from(gallery)
-            .where(
-                and(
-                    eq(gallery.placeholder, placeholderId),
-                    eq(gallery.isPublished, true)
-                )
-            )
-            .limit(1);
+        // Use raw SQL for reliability
+        const result = await env.DB.prepare(`
+            SELECT id, title, description, image_url, category, placeholder, is_published 
+            FROM gallery 
+            WHERE placeholder = ? AND is_published = 1
+            ORDER BY created_at DESC
+            LIMIT 1
+        `).bind(placeholderId).all();
 
-        if (result.length === 0) {
-            return NextResponse.json(
-                {
-                    photo: null,
-                    fallback: true,
-                    message: "No photo found for this placeholder"
-                }
-            );
+        if (!result.results || result.results.length === 0) {
+            return NextResponse.json({
+                photo: null,
+                previewUrl: null,
+                fallback: true,
+                message: "No photo found for this placeholder"
+            });
         }
 
-        // Convert Google Drive URL to preview URL
-        const photo = result[0];
-        let previewUrl = photo.imageUrl;
+        const photo = result.results[0] as {
+            id: string;
+            title: string;
+            description: string | null;
+            image_url: string;
+            category: string;
+            placeholder: string;
+            is_published: number;
+        };
 
-        // Convert Google Drive share link to direct image URL
-        const fileIdMatch = photo.imageUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-        if (fileIdMatch) {
-            previewUrl = `https://drive.google.com/thumbnail?id=${fileIdMatch[1]}&sz=w800`;
-        } else {
-            const openIdMatch = photo.imageUrl.match(/id=([a-zA-Z0-9_-]+)/);
-            if (openIdMatch) {
-                previewUrl = `https://drive.google.com/thumbnail?id=${openIdMatch[1]}&sz=w800`;
-            }
-        }
+        // Convert to high-res preview URL
+        const previewUrl = getGoogleDrivePreviewUrl(photo.image_url, 2000);
 
         return NextResponse.json({
             photo: {
-                ...photo,
-                previewUrl,
+                id: photo.id,
+                title: photo.title,
+                description: photo.description,
+                imageUrl: photo.image_url,
+                category: photo.category,
+                placeholder: photo.placeholder,
             },
+            previewUrl,
             fallback: false,
         });
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
         console.error("Error fetching photo by placeholder:", message);
+
+        // If table doesn't exist, return fallback
+        if (message.includes("no such table")) {
+            return NextResponse.json({
+                photo: null,
+                previewUrl: null,
+                fallback: true,
+                message: "Gallery table not found"
+            });
+        }
+
         return NextResponse.json(
-            { error: "Failed to fetch photo", details: message },
+            { error: "Failed to fetch photo", details: message, fallback: true },
             { status: 500 }
         );
     }

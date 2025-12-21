@@ -5,6 +5,7 @@ import HeroActivities from "@/components/HeroActivities";
 import Card from "@/components/Card";
 import Link from "next/link";
 import Image from "next/image";
+import { usePlaceholderPhoto } from "@/lib/use-placeholder-photo";
 
 interface NewsItem {
   id: string;
@@ -92,6 +93,12 @@ function NewsGrid() {
 export default function Home() {
   const [settings, setSettings] = useState<SiteSettings>({});
 
+  // Fetch photo from gallery by placeholder
+  const { previewUrl: programUnggulanPhoto, loading: photoLoading } = usePlaceholderPhoto(
+    "program_unggulan",
+    "/assets/kegiatan/program-unggulan.png" // fallback
+  );
+
   useEffect(() => {
     fetchSettings();
   }, []);
@@ -99,7 +106,7 @@ export default function Home() {
   const fetchSettings = async () => {
     try {
       const res = await fetch("/api/settings");
-      const data = await res.json();
+      const data = await res.json() as { settings?: SiteSettings };
       if (data.settings) {
         setSettings(data.settings);
       }
@@ -150,11 +157,11 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center gap-12">
             <div className="w-full md:w-1/2">
               <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
-                <Image
-                  src="/assets/kegiatan/program-unggulan.png"
+                {/* Dynamic photo from gallery or fallback */}
+                <img
+                  src={programUnggulanPhoto || "/assets/kegiatan/program-unggulan.png"}
                   alt="Program Tutorial"
-                  fill
-                  className="object-cover"
+                  className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
                   <div className="text-white">

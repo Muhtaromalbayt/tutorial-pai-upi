@@ -1,389 +1,364 @@
 "use client";
 
 import Hero from "@/components/Hero";
-import { useState, useEffect } from "react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, parseISO, isValid } from "date-fns";
-import { id } from "date-fns/locale";
-import { gregorianToHijri, formatHijriDate, HIJRI_MONTHS, getCurrentHijriMonthYear } from "@/lib/hijri-calendar";
-
-interface Event {
-    id: string;
-    title: string;
-    description: string;
-    date: string;
-    time: string;
-    location: string;
-    category: string;
-    timeline: string;
-    imageUrl: string;
-}
+import { useState, useMemo } from "react";
+import {
+    HIJRI_CALENDAR_1447,
+    ARABIC_NUMERALS,
+    DAY_NAMES,
+    HijriMonth,
+    SpecialDay,
+    getGregorianDateForHijriDay,
+    getDayOfWeek,
+    formatGregorianDate,
+    getCurrentHijriMonth,
+    getAllSpecialDaysForMonth,
+} from "@/lib/hijriah-calendar-data";
 
 export default function KalenderPage() {
-    const [currentMonth, setCurrentMonth] = useState(new Date());
-    const [selectedTimeline, setSelectedTimeline] = useState<string>("Semua");
-    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-    const [events, setEvents] = useState<Event[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [currentMonthIndex, setCurrentMonthIndex] = useState(() => {
+        // Find current month index based on today's date
+        const current = getCurrentHijriMonth();
+        return HIJRI_CALENDAR_1447.findIndex(m => m.hijriMonth === current.hijriMonth);
+    });
 
-    const categories = [
-        "Semua", "Kuliah Dhuha", "Mentoring", "Bina Mentor", "Bina Kader",
-        "Tutorial SPAI", "SoS", "WoW", "Kantin/Kamus", "PMM x PCM",
-        "PMT", "Pemdiktor", "Pengukuhan Binder", "Lainnya"
-    ];
+    const currentMonth = HIJRI_CALENDAR_1447[currentMonthIndex];
+    const specialDays = useMemo(() => getAllSpecialDaysForMonth(currentMonth), [currentMonth]);
 
-    const timelines = ["Semua", "Tutorial PAI", "Tutorial SPAI", "Bina Kader", "Kepengurusan"];
+    // Calculate calendar grid
+    const calendarGrid = useMemo(() => {
+        const grid: Array<{ hijriDay: number | null; gregorianDate: string; isSpecial: boolean; specialName?: string }> = [];
 
-    useEffect(() => {
-        fetchEvents();
-    }, []);
+        // Get day of week for first day of month (0 = Sunday/Ahad)
+        const firstDayOfWeek = getDayOfWeek(currentMonth, 1);
 
-    const fetchEvents = async () => {
-        try {
-            // New CMS API Endpoint
-            const response = await fetch('/api/calendar');
-            const result = await response.json() as {
-                events?: Array<{
-                    id: string;
-                    date: string;
-                    title: string;
-                    description?: string;
-                    time?: string;
-                    location?: string;
-                    category?: string;
-                    timeline?: string;
-                    image_url?: string;
-                }>
-            };
+        // Add empty cells before first day
+        for (let i = 0; i < firstDayOfWeek; i++) {
+            grid.push({ hijriDay: null, gregorianDate: "", isSpecial: false });
+        }
 
-            if (result.events && Array.isArray(result.events)) {
-                // Map API data (snake_case) to Event interface (camelCase)
-                const mappedEvents = result.events.map((item) => {
-                    // Validate date
-                    if (!item.date) return null;
+        // Add days of the month
+        for (let day = 1; day <= currentMonth.daysInMonth; day++) {
+            const gregDate = getGregorianDateForHijriDay(currentMonth, day);
+            const special = specialDays.find(s => s.hijriDay === day);
+            grid.push({
+                hijriDay: day,
+                gregorianDate: formatGregorianDate(gregDate),
+                isSpecial: !!special,
+                specialName: special?.name
+            });
+        }
 
-                    // Use new Date() to handle various formats (ISO or long string)
-                    const parsedDate = new Date(item.date);
+        return grid;
+    }, [currentMonth, specialDays]);
 
-                    if (!isValid(parsedDate)) {
-                        console.warn(`Invalid date for event: ${item.title}`, item.date);
-                        return null;
-                    }
-
-                    return {
-                        id: item.id,
-                        title: item.title,
-                        description: item.description || "",
-                        date: parsedDate.toISOString(),
-                        time: item.time || "",
-                        location: item.location || "",
-                        category: item.category || "Lainnya",
-                        timeline: item.timeline || "Umum",
-                        imageUrl: item.image_url || ""
-                    };
-                }).filter((event): event is Event => event !== null);
-
-                setEvents(mappedEvents);
-
-                // Auto-navigate to the month of the first upcoming event
-                const now = new Date();
-                const upcomingEvent = mappedEvents.find((e: Event) => new Date(e.date) >= now);
-                if (upcomingEvent) {
-                    setCurrentMonth(new Date(upcomingEvent.date));
-                } else if (mappedEvents.length > 0) {
-                    // If no upcoming events, go to the last event
-                    const lastEvent = mappedEvents[mappedEvents.length - 1];
-                    if (lastEvent) setCurrentMonth(new Date(lastEvent.date));
-                }
-            }
-        } catch (error) {
-            console.error("Error fetching events:", error);
-        } finally {
-            setLoading(false);
+    const nextMonth = () => {
+        if (currentMonthIndex < HIJRI_CALENDAR_1447.length - 1) {
+            setCurrentMonthIndex(prev => prev + 1);
         }
     };
 
-    const monthStart = startOfMonth(currentMonth);
-    const monthEnd = endOfMonth(currentMonth);
-    const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
-
-    const filteredEvents = selectedTimeline === "Semua"
-        ? events
-        : events.filter(event => event.timeline === selectedTimeline);
-
-    const getEventsForDay = (day: Date) => {
-        return filteredEvents.filter(event => {
-            try {
-                const eventDate = parseISO(event.date);
-                return isSameDay(eventDate, day);
-            } catch {
-                return false;
-            }
-        });
-    };
-
-    const nextMonth = () => {
-        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
-    };
-
     const prevMonth = () => {
-        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+        if (currentMonthIndex > 0) {
+            setCurrentMonthIndex(prev => prev - 1);
+        }
     };
+
+    // Check if today is within current displayed month
+    const isCurrentMonthActive = useMemo(() => {
+        const today = new Date();
+        const startDate = new Date(currentMonth.startGregorianDate);
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + currentMonth.daysInMonth - 1);
+        return today >= startDate && today <= endDate;
+    }, [currentMonth]);
+
+    // Get today's Hijri day if in current month
+    const todayHijriDay = useMemo(() => {
+        if (!isCurrentMonthActive) return null;
+        const today = new Date();
+        const startDate = new Date(currentMonth.startGregorianDate);
+        const diffTime = today.getTime() - startDate.getTime();
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        return diffDays >= 1 && diffDays <= currentMonth.daysInMonth ? diffDays : null;
+    }, [currentMonth, isCurrentMonthActive]);
 
     return (
         <div>
             <Hero
-                title="Kalender Tutorial PAI"
-                subtitle="Semester Genap 2025/2026"
+                title="Kalender Hijriah 1447 H"
+                subtitle="Kalender Hijriah Global Tunggal Muhammadiyah"
                 height="normal"
             />
 
             <section className="section-academic">
                 <div className="container-upi max-w-7xl">
-                    {/* Timeline Filter */}
-                    <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-neutral-900 mb-3">Timeline Kegiatan</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {timelines.map(timeline => (
-                                <button
-                                    key={timeline}
-                                    onClick={() => setSelectedTimeline(timeline)}
-                                    className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-sm ${selectedTimeline === timeline
-                                        ? "bg-primary-600 text-white shadow-md transform scale-105"
-                                        : "bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200"
-                                        }`}
-                                >
-                                    {timeline}
-                                </button>
-                            ))}
+                    {/* Year Selector */}
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-4">
+                            <span className="text-sm font-medium text-neutral-600">Tahun Hijriah:</span>
+                            <select
+                                className="px-4 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-900 font-semibold focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                value={1447}
+                                disabled
+                            >
+                                <option value={1447}>1447 H</option>
+                            </select>
                         </div>
+                        <a
+                            href="https://khgt.muhammadiyah.or.id/kalendar-hijriah"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-primary-600 hover:text-primary-700 flex items-center gap-1"
+                        >
+                            <span>Sumber: KHGT Muhammadiyah</span>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
                     </div>
 
-                    {loading ? (
-                        <div className="card-academic p-16 text-center mb-8">
-                            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary-600 mx-auto mb-4"></div>
-                            <p className="text-neutral-600 text-lg">Memuat kalender...</p>
-                        </div>
-                    ) : (
-                        <>
-                            {/* Calendar */}
-                            <div className="card-academic p-8 mb-8">
-                                {/* Hijri Month Banner */}
-                                <div className="bg-gradient-to-r from-emerald-600 to-teal-600 -m-8 mb-6 p-6 rounded-t-lg">
-                                    <div className="flex items-center justify-between text-white">
-                                        <div>
-                                            <div className="text-sm opacity-80">Kalender Hijriah Muhammadiyah</div>
-                                            <div className="text-2xl font-bold">
-                                                {(() => {
-                                                    const hijri = gregorianToHijri(currentMonth);
-                                                    return `${hijri.monthName} ${hijri.year} H`;
-                                                })()}
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="text-4xl">☪</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Calendar Header */}
-                                <div className="flex items-center justify-between mb-8">
-                                    <div>
-                                        <h2 className="text-2xl font-bold text-neutral-900">
-                                            {format(currentMonth, "MMMM yyyy", { locale: id })}
-                                        </h2>
-                                        <p className="text-sm text-neutral-500">
-                                            {formatHijriDate(currentMonth)}
-                                        </p>
-                                    </div>
-                                    <div className="flex space-x-2">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* Calendar Grid - Main Area */}
+                        <div className="lg:col-span-2">
+                            <div className="card-academic overflow-hidden">
+                                {/* Month Header */}
+                                <div className="bg-gradient-to-r from-primary-600 to-primary-700 p-6">
+                                    <div className="flex items-center justify-between">
                                         <button
                                             onClick={prevMonth}
-                                            className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                                            disabled={currentMonthIndex === 0}
+                                            className={`p-2 rounded-lg transition-all ${currentMonthIndex === 0
+                                                    ? "opacity-30 cursor-not-allowed"
+                                                    : "hover:bg-white/20 text-white"
+                                                }`}
                                         >
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                             </svg>
                                         </button>
+
+                                        <div className="text-center text-white">
+                                            <h2 className="text-2xl md:text-3xl font-bold">
+                                                {currentMonth.hijriMonthName} {currentMonth.hijriYear} H
+                                            </h2>
+                                            <p className="text-sm opacity-80 mt-1">
+                                                {currentMonth.gregorianRange}
+                                            </p>
+                                        </div>
+
                                         <button
                                             onClick={nextMonth}
-                                            className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                                            disabled={currentMonthIndex === HIJRI_CALENDAR_1447.length - 1}
+                                            className={`p-2 rounded-lg transition-all ${currentMonthIndex === HIJRI_CALENDAR_1447.length - 1
+                                                    ? "opacity-30 cursor-not-allowed"
+                                                    : "hover:bg-white/20 text-white"
+                                                }`}
                                         >
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                             </svg>
                                         </button>
                                     </div>
                                 </div>
 
-                                {/* Calendar Grid */}
-                                <div className="grid grid-cols-7 gap-2">
-                                    {/* Day Headers */}
-                                    {['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map(day => (
-                                        <div key={day} className="text-center font-semibold text-neutral-600 text-sm py-2">
+                                {/* Day Headers */}
+                                <div className="grid grid-cols-7 bg-neutral-50 border-b border-neutral-200">
+                                    {DAY_NAMES.map((day, idx) => (
+                                        <div
+                                            key={day}
+                                            className={`py-3 text-center text-sm font-semibold ${idx === 0 ? "text-primary-600" : "text-neutral-600"
+                                                }`}
+                                        >
                                             {day}
                                         </div>
                                     ))}
+                                </div>
 
-                                    {/* Empty cells for days before month starts */}
-                                    {Array.from({ length: monthStart.getDay() }).map((_, index) => (
-                                        <div key={`empty-${index}`} className="aspect-square"></div>
-                                    ))}
+                                {/* Calendar Grid */}
+                                <div className="grid grid-cols-7">
+                                    {calendarGrid.map((cell, idx) => (
+                                        <div
+                                            key={idx}
+                                            className={`min-h-[80px] md:min-h-[100px] p-2 border-b border-r border-neutral-100 last:border-r-0 transition-colors ${cell.hijriDay === null
+                                                    ? "bg-neutral-50"
+                                                    : cell.hijriDay === todayHijriDay
+                                                        ? "bg-primary-50 border-primary-200"
+                                                        : cell.isSpecial
+                                                            ? "bg-accent-50"
+                                                            : "hover:bg-neutral-50"
+                                                }`}
+                                        >
+                                            {cell.hijriDay !== null && (
+                                                <>
+                                                    {/* Hijri Day - Arabic Numeral */}
+                                                    <div className={`text-2xl md:text-3xl font-bold mb-1 ${cell.hijriDay === todayHijriDay
+                                                            ? "text-primary-600"
+                                                            : idx % 7 === 0
+                                                                ? "text-primary-500"
+                                                                : "text-neutral-800"
+                                                        }`}>
+                                                        {ARABIC_NUMERALS[cell.hijriDay]}
+                                                    </div>
 
-                                    {/* Calendar Days */}
-                                    {daysInMonth.map(day => {
-                                        const dayEvents = getEventsForDay(day);
-                                        const isCurrentDay = isToday(day);
+                                                    {/* Gregorian Date */}
+                                                    <div className="text-xs text-neutral-500">
+                                                        {cell.gregorianDate}
+                                                    </div>
 
-                                        return (
-                                            <div
-                                                key={day.toISOString()}
-                                                className={`aspect-square p-2 border rounded-lg transition-all cursor-pointer ${isCurrentDay
-                                                    ? "border-primary-600 bg-primary-50"
-                                                    : "border-neutral-200 hover:border-primary-300 hover:bg-neutral-50"
-                                                    }`}
-                                            >
-                                                <div className={`text-sm font-semibold mb-1 ${isCurrentDay ? "text-primary-700" : "text-neutral-900"
-                                                    }`}>
-                                                    {format(day, "d")}
-                                                </div>
-                                                <div className="space-y-1">
-                                                    {dayEvents.slice(0, 2).map(event => (
-                                                        <div
-                                                            key={event.id}
-                                                            onClick={() => setSelectedEvent(event)}
-                                                            className="text-xs px-1 py-0.5 bg-primary-600 text-white rounded truncate hover:bg-primary-700"
-                                                        >
-                                                            {event.title}
-                                                        </div>
-                                                    ))}
-                                                    {dayEvents.length > 2 && (
-                                                        <div className="text-xs text-neutral-500 px-1">
-                                                            +{dayEvents.length - 2} lainnya
+                                                    {/* Special Day Indicator */}
+                                                    {cell.isSpecial && (
+                                                        <div className="mt-1">
+                                                            <span className="inline-block w-2 h-2 rounded-full bg-accent-500" title={cell.specialName}></span>
                                                         </div>
                                                     )}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                                                </>
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
-                            </div>
 
-                            {/* Event List */}
-                            <div>
-                                <h3 className="text-2xl font-bold text-neutral-900 mb-6">
-                                    Event Mendatang ({filteredEvents.length})
-                                </h3>
-                                {filteredEvents.length === 0 ? (
-                                    <div className="card-academic p-12 text-center">
-                                        <p className="text-neutral-500">Belum ada event untuk kategori ini.</p>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-4">
-                                        {filteredEvents.map(event => (
-                                            <div
-                                                key={event.id}
-                                                onClick={() => setSelectedEvent(event)}
-                                                className="card-academic p-6 hover:shadow-xl transition-all cursor-pointer"
-                                            >
-                                                <div className="flex items-start space-x-4">
-                                                    <div className="flex-shrink-0">
-                                                        <div className="w-16 h-16 bg-primary-600 rounded-lg flex flex-col items-center justify-center text-white">
-                                                            <div className="text-2xl font-bold">{format(parseISO(event.date), "d")}</div>
-                                                            <div className="text-xs">{format(parseISO(event.date), "MMM", { locale: id })}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <div className="flex items-start justify-between mb-2">
-                                                            <h4 className="text-lg font-semibold text-neutral-900">{event.title}</h4>
-                                                            <span className="px-3 py-1 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full">
-                                                                {event.category}
-                                                            </span>
-                                                        </div>
-                                                        <p className="text-sm text-neutral-600 mb-3">{event.description}</p>
-                                                        <div className="flex flex-wrap gap-4 text-sm text-neutral-500">
-                                                            <div className="flex items-center">
-                                                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                </svg>
-                                                                {event.time}
-                                                            </div>
-                                                            <div className="flex items-center">
-                                                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                                </svg>
-                                                                {event.location}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </>
-                    )}
-
-                    {/* Event Detail Modal */}
-                    {selectedEvent && (
-                        <div
-                            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-                            onClick={() => setSelectedEvent(null)}
-                        >
-                            <div
-                                className="bg-white rounded-lg max-w-2xl w-full p-8 animate-fadeIn"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <div className="flex justify-between items-start mb-6">
-                                    <h3 className="text-2xl font-bold text-neutral-900">{selectedEvent.title}</h3>
-                                    <button
-                                        onClick={() => setSelectedEvent(null)}
-                                        className="text-neutral-400 hover:text-neutral-600"
-                                    >
-                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div className="space-y-4">
-                                    {selectedEvent.imageUrl && (
-                                        <div className="relative w-full h-64 mb-4 rounded-lg overflow-hidden">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img
-                                                src={selectedEvent.imageUrl}
-                                                alt={selectedEvent.title}
-                                                className="object-cover w-full h-full"
-                                            />
+                                {/* Legend */}
+                                <div className="p-4 bg-neutral-50 border-t border-neutral-200">
+                                    <div className="flex flex-wrap gap-4 text-sm">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-4 h-4 rounded bg-primary-50 border border-primary-200"></div>
+                                            <span className="text-neutral-600">Hari Ini</span>
                                         </div>
-                                    )}
-                                    <div>
-                                        <div className="text-sm font-semibold text-neutral-500 mb-1">Deskripsi</div>
-                                        <p className="text-neutral-700">{selectedEvent.description}</p>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <div className="text-sm font-semibold text-neutral-500 mb-1">Tanggal</div>
-                                            <p className="text-neutral-700">{format(parseISO(selectedEvent.date), "EEEE, d MMMM yyyy", { locale: id })}</p>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-4 h-4 rounded bg-accent-50 border border-accent-200"></div>
+                                            <span className="text-neutral-600">Hari Istimewa</span>
                                         </div>
-                                        <div>
-                                            <div className="text-sm font-semibold text-neutral-500 mb-1">Waktu</div>
-                                            <p className="text-neutral-700">{selectedEvent.time}</p>
-                                        </div>
-                                        <div>
-                                            <div className="text-sm font-semibold text-neutral-500 mb-1">Lokasi</div>
-                                            <p className="text-neutral-700">{selectedEvent.location}</p>
-                                        </div>
-                                        <div>
-                                            <div className="text-sm font-semibold text-neutral-500 mb-1">Kategori</div>
-                                            <span className="inline-block px-3 py-1 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full">
-                                                {selectedEvent.category}
-                                            </span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-primary-500 font-bold">٧</span>
+                                            <span className="text-neutral-600">Hari Ahad</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    )}
+
+                        {/* Sidebar - Special Days */}
+                        <div className="lg:col-span-1">
+                            <div className="card-academic overflow-hidden sticky top-4">
+                                <div className="bg-gradient-to-r from-accent-500 to-accent-600 p-4">
+                                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                        </svg>
+                                        Hari Istimewa
+                                    </h3>
+                                </div>
+
+                                <div className="divide-y divide-neutral-100 max-h-[500px] overflow-y-auto">
+                                    {specialDays.length === 0 ? (
+                                        <div className="p-4 text-center text-neutral-500">
+                                            Tidak ada hari istimewa bulan ini
+                                        </div>
+                                    ) : (
+                                        specialDays.map((day, idx) => (
+                                            <div key={idx} className="p-4 hover:bg-neutral-50 transition-colors">
+                                                <div className="flex items-start gap-3">
+                                                    <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${day.type === 'islamic'
+                                                            ? "bg-primary-100 text-primary-700"
+                                                            : "bg-accent-100 text-accent-700"
+                                                        }`}>
+                                                        <span className="font-bold text-lg">{day.hijriDay}</span>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className={`font-semibold text-sm ${day.type === 'islamic'
+                                                                ? "text-primary-700"
+                                                                : "text-accent-700"
+                                                            }`}>
+                                                            {day.hijriDay} {currentMonth.hijriMonthName} {currentMonth.hijriYear} H
+                                                        </p>
+                                                        <p className="text-xs text-neutral-500 mb-1">
+                                                            {day.gregorianDate}
+                                                        </p>
+                                                        <p className="text-sm font-medium text-neutral-800">
+                                                            {day.name}
+                                                        </p>
+                                                        {day.description && (
+                                                            <p className="text-xs text-neutral-600 mt-1">{day.description}</p>
+                                                        )}
+                                                        {day.time && (
+                                                            <p className="text-xs text-neutral-500 mt-1 flex items-center gap-1">
+                                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                </svg>
+                                                                {day.time}
+                                                            </p>
+                                                        )}
+                                                        {day.location && (
+                                                            <p className="text-xs text-neutral-500 mt-1 flex items-center gap-1">
+                                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                                </svg>
+                                                                {day.location}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+
+                                {/* Month Quick Navigation */}
+                                <div className="p-4 bg-neutral-50 border-t border-neutral-200">
+                                    <p className="text-xs text-neutral-500 mb-2 font-medium">Navigasi Bulan:</p>
+                                    <div className="grid grid-cols-4 gap-1">
+                                        {HIJRI_CALENDAR_1447.map((month, idx) => (
+                                            <button
+                                                key={month.hijriMonth}
+                                                onClick={() => setCurrentMonthIndex(idx)}
+                                                className={`p-1.5 text-xs rounded transition-colors ${idx === currentMonthIndex
+                                                        ? "bg-primary-600 text-white font-semibold"
+                                                        : "bg-white text-neutral-600 hover:bg-neutral-100 border border-neutral-200"
+                                                    }`}
+                                                title={month.hijriMonthName}
+                                            >
+                                                {month.hijriMonth}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Info Section */}
+                    <div className="mt-8 card-academic p-6">
+                        <h3 className="text-lg font-bold text-neutral-900 mb-4 flex items-center gap-2">
+                            <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Tentang Kalender Hijriah
+                        </h3>
+                        <div className="grid md:grid-cols-2 gap-6 text-sm text-neutral-600">
+                            <div>
+                                <p className="mb-3">
+                                    Kalender ini menggunakan <strong>Kalender Hijriah Global Tunggal (KHGT)</strong> yang ditetapkan
+                                    oleh Majelis Tarjih dan Tajdid Pimpinan Pusat Muhammadiyah berdasarkan metode Hisab Hakiki Wujudul Hilal.
+                                </p>
+                                <p>
+                                    Tanggal Hijriah ditampilkan dengan angka Arab (١, ٢, ٣, ...) dan disertai dengan tanggal Masehi
+                                    sebagai referensi.
+                                </p>
+                            </div>
+                            <div>
+                                <p className="font-semibold text-neutral-700 mb-2">Hari Istimewa dalam Islam:</p>
+                                <ul className="space-y-1">
+                                    <li>• <strong>Ayyamul Bidh</strong> - Hari ke-13, 14, 15 setiap bulan (puasa sunnah)</li>
+                                    <li>• <strong>Hari Tasua & Asyura</strong> - 9 & 10 Muharam</li>
+                                    <li>• <strong>Maulid Nabi</strong> - 12 Rabiulawal</li>
+                                    <li>• <strong>Isra Mi'raj</strong> - 27 Rajab</li>
+                                    <li>• <strong>Nuzulul Quran</strong> - 17 Ramadan</li>
+                                    <li>• <strong>Idul Fitri & Idul Adha</strong> - 1 Syawal & 10 Zulhijah</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
