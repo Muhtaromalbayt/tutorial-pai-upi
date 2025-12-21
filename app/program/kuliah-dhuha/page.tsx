@@ -21,6 +21,33 @@ function getDayName(dateStr: string): string {
     return days[date.getDay()];
 }
 
+// Extract week number from title like "Tutorial PAI Pekan Kedua"
+function extractWeekNumber(title: string): number | null {
+    const weekMap: Record<string, number> = {
+        'pertama': 1, 'kedua': 2, 'ketiga': 3, 'keempat': 4,
+        'kelima': 5, 'keenam': 6, 'ketujuh': 7, 'kedelapan': 8,
+        'ke-dua': 2, 'ke-tiga': 3, 'ke-empat': 4, 'ke-lima': 5,
+        'ke-enam': 6, 'ke-tujuh': 7, 'ke-delapan': 8
+    };
+    const lowerTitle = title.toLowerCase();
+    for (const [word, num] of Object.entries(weekMap)) {
+        if (lowerTitle.includes(word)) return num;
+    }
+    return null;
+}
+
+// Format title to use proper Indonesian (Kedua instead of Ke-dua)
+function formatTitle(title: string): string {
+    return title
+        .replace(/Ke-dua/gi, 'Kedua')
+        .replace(/Ke-tiga/gi, 'Ketiga')
+        .replace(/Ke-empat/gi, 'Keempat')
+        .replace(/Ke-lima/gi, 'Kelima')
+        .replace(/Ke-enam/gi, 'Keenam')
+        .replace(/Ke-tujuh/gi, 'Ketujuh')
+        .replace(/Ke-delapan/gi, 'Kedelapan');
+}
+
 type DayFilter = 'all' | 'Sabtu' | 'Minggu';
 
 export default function KuliahDhuhaPage() {
@@ -43,17 +70,20 @@ export default function KuliahDhuhaPage() {
             }, [] as typeof ORGANIZATION_ACTIVITIES)
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-        return activities.map((activity, index) => ({
-            week: index + 1,
-            date: formatDateIndonesian(activity.date),
-            rawDate: activity.date,
-            dayName: getDayName(activity.date),
-            topic: activity.title,
-            location: activity.location || "Aula ITC",
-            time: activity.time || "08.45 - 13.00 WIB",
-            category: activity.category,
-            isPembukaan: activity.title.includes("Pembukaan")
-        }));
+        return activities.map((activity) => {
+            const weekNum = extractWeekNumber(activity.title);
+            return {
+                week: weekNum || 1,
+                date: formatDateIndonesian(activity.date),
+                rawDate: activity.date,
+                dayName: getDayName(activity.date),
+                topic: formatTitle(activity.title),
+                location: activity.location || "Aula ITC",
+                time: activity.time || "08.45 - 13.00 WIB",
+                category: activity.category,
+                isPembukaan: activity.title.includes("Pembukaan")
+            };
+        });
     }, []);
 
     // Separate pembukaan from regular schedule
@@ -81,13 +111,25 @@ export default function KuliahDhuhaPage() {
                                 </svg>
                             </div>
                             <h2 className="text-2xl font-bold text-neutral-900">
-                                Tentang Program
+                                Tentang Kuliah Dhuha
                             </h2>
                         </div>
-                        <p className="text-neutral-600 leading-relaxed text-lg mb-8">
-                            Tutorial PAI adalah program kajian rutin yang diselenggarakan setiap pekan.
-                            Program ini bertujuan untuk meningkatkan pemahaman keislaman mahasiswa dengan
-                            materi yang relevan, inspiratif, dan aplikatif.
+                        <p className="text-neutral-600 leading-relaxed text-lg mb-4">
+                            <strong>Kuliah Dhuha</strong> adalah salah satu rangkaian kegiatan dalam program <strong>Tutorial PAI</strong>.
+                            Program Tutorial PAI sendiri terdiri dari dua komponen utama:
+                        </p>
+                        <div className="grid md:grid-cols-2 gap-4 mb-6">
+                            <div className="p-4 bg-primary-50 rounded-xl border border-primary-100">
+                                <h4 className="font-semibold text-primary-700 mb-1">📖 Kuliah Dhuha</h4>
+                                <p className="text-sm text-neutral-600">Kajian umum bersama seluruh peserta</p>
+                            </div>
+                            <div className="p-4 bg-secondary-50 rounded-xl border border-secondary-100">
+                                <h4 className="font-semibold text-secondary-700 mb-1">👥 Mentoring</h4>
+                                <p className="text-sm text-neutral-600">Diskusi kelompok kecil dengan mentor</p>
+                            </div>
+                        </div>
+                        <p className="text-neutral-600 leading-relaxed mb-8">
+                            Program ini bertujuan untuk meningkatkan pemahaman keislaman mahasiswa dengan materi yang relevan, inspiratif, dan aplikatif dalam kehidupan sehari-hari.
                         </p>
 
                         {/* Stats Row */}
@@ -101,8 +143,8 @@ export default function KuliahDhuhaPage() {
                                 <div className="text-sm text-neutral-600">Jam/Pekan</div>
                             </div>
                             <div className="text-center p-4 bg-accent-50 rounded-xl">
-                                <div className="text-3xl font-bold text-accent-600 mb-1">200+</div>
-                                <div className="text-sm text-neutral-600">Peserta</div>
+                                <div className="text-3xl font-bold text-accent-600 mb-1">4000+</div>
+                                <div className="text-sm text-neutral-600">Peserta/Semester</div>
                             </div>
                         </div>
                     </div>
@@ -154,8 +196,8 @@ export default function KuliahDhuhaPage() {
                             <button
                                 onClick={() => setSelectedDay('all')}
                                 className={`rounded-xl p-4 text-center transition-all duration-300 ${selectedDay === 'all'
-                                        ? 'bg-neutral-800 text-white shadow-lg scale-[1.02]'
-                                        : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                                    ? 'bg-neutral-800 text-white shadow-lg scale-[1.02]'
+                                    : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                                     }`}
                             >
                                 <span className="font-bold">Semua</span>
@@ -165,8 +207,8 @@ export default function KuliahDhuhaPage() {
                             <button
                                 onClick={() => setSelectedDay('Sabtu')}
                                 className={`rounded-xl p-4 transition-all duration-300 ${selectedDay === 'Sabtu'
-                                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg scale-[1.02]'
-                                        : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+                                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg scale-[1.02]'
+                                    : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
                                     }`}
                             >
                                 <div className="font-bold">Sabtu</div>
@@ -177,8 +219,8 @@ export default function KuliahDhuhaPage() {
                             <button
                                 onClick={() => setSelectedDay('Minggu')}
                                 className={`rounded-xl p-4 transition-all duration-300 ${selectedDay === 'Minggu'
-                                        ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg scale-[1.02]'
-                                        : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                                    ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg scale-[1.02]'
+                                    : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
                                     }`}
                             >
                                 <div className="font-bold">Ahad</div>
