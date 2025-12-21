@@ -150,7 +150,6 @@ const Header = () => {
 
                                     {activeTentangDropdown && (
                                         <div className="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-neutral-100 py-2 text-neutral-800 animate-fadeIn z-50">
-                                            <Link href="/tentang/visi" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Visi & Misi</Link>
                                             <Link href="/tentang/struktur" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Struktur Kepengurusan</Link>
                                             <Link href="/tentang/kabinet" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Kabinet AL-FATH</Link>
                                             <div className="border-t border-neutral-100 my-2"></div>
@@ -159,7 +158,6 @@ const Header = () => {
                                             <Link href="/tentang/program-pengurus/project-mini" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Project Mini Tutorial</Link>
                                             <div className="border-t border-neutral-100 my-2"></div>
                                             <Link href="/tentang/dosen" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Dosen Penyelenggara</Link>
-                                            <Link href="/tentang/sejarah" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Sejarah</Link>
                                         </div>
                                     )}
                                 </div>
@@ -244,10 +242,6 @@ const Header = () => {
                         </Link>
 
                         <div className="px-6 py-3 mt-2 text-xs font-bold text-neutral-400 uppercase tracking-wider">Tentang</div>
-                        <Link href="/tentang/visi" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                            <EyeIcon />
-                            <span>Visi & Misi</span>
-                        </Link>
                         <Link href="/tentang/struktur" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
                             <UsersIcon />
                             <span>Struktur Kepengurusan</span>
@@ -255,10 +249,6 @@ const Header = () => {
                         <Link href="/tentang/kabinet" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
                             <BuildingIcon />
                             <span>Kabinet AL-FATH</span>
-                        </Link>
-                        <Link href="/tentang/sejarah" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                            <BookIcon />
-                            <span>Sejarah</span>
                         </Link>
 
                         <div className="px-6 py-3 mt-4 text-xs font-bold text-neutral-400 uppercase tracking-wider">Program</div>
