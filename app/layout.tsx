@@ -3,6 +3,7 @@ import { Inter, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ChatWidget from "@/components/ai/ChatWidget";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -45,6 +46,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <ChatWidget />
       </body>
     </html>
   );
