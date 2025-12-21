@@ -1,6 +1,7 @@
 "use client";
 
 import Hero from "@/components/Hero";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ORGANIZATION_ACTIVITIES } from "@/lib/hijriah-calendar-data";
 
@@ -21,7 +22,7 @@ function getDayName(dateStr: string): string {
     return days[date.getDay()];
 }
 
-// Extract week number from title like "Tutorial PAI Pekan Kedua"
+// Extract week number from title
 function extractWeekNumber(title: string): number | null {
     const weekMap: Record<string, number> = {
         'pertama': 1, 'kedua': 2, 'ketiga': 3, 'keempat': 4,
@@ -36,7 +37,7 @@ function extractWeekNumber(title: string): number | null {
     return null;
 }
 
-// Format title to use proper Indonesian (Kedua instead of Ke-dua)
+// Format title to use proper Indonesian
 function formatTitle(title: string): string {
     return title
         .replace(/Ke-dua/gi, 'Kedua')
@@ -72,23 +73,30 @@ export default function KuliahDhuhaPage() {
 
         return activities.map((activity) => {
             const weekNum = extractWeekNumber(activity.title);
+            const isSoS = activity.title.toLowerCase().includes('shine on sunday') || activity.title.toLowerCase().includes('sos');
+            const isPenutupan = activity.title.toLowerCase().includes('penutupan');
             return {
                 week: weekNum || 1,
                 date: formatDateIndonesian(activity.date),
                 rawDate: activity.date,
                 dayName: getDayName(activity.date),
                 topic: formatTitle(activity.title),
-                location: activity.location || "Aula ITC",
+                location: "Masjid Al Furqon", // All locations are Masjid Al Furqon
                 time: activity.time || "08.45 - 13.00 WIB",
                 category: activity.category,
-                isPembukaan: activity.title.includes("Pembukaan")
+                isPembukaan: activity.title.includes("Pembukaan"),
+                isSoS,
+                isPenutupan,
+                isSpecial: activity.title.includes("Pembukaan") || isSoS || isPenutupan
             };
         });
     }, []);
 
-    // Separate pembukaan from regular schedule
+    // Separate special events from regular schedule
     const pembukaan = weeklySchedule.find(s => s.isPembukaan);
-    const regularSchedule = weeklySchedule.filter(s => !s.isPembukaan);
+    const sos = weeklySchedule.find(s => s.isSoS);
+    const penutupan = weeklySchedule.find(s => s.isPenutupan);
+    const regularSchedule = weeklySchedule.filter(s => !s.isSpecial);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-neutral-50 to-white">
@@ -102,7 +110,7 @@ export default function KuliahDhuhaPage() {
             <section className="py-16 px-4">
                 <div className="max-w-5xl mx-auto">
 
-                    {/* About Section - Clean Card */}
+                    {/* About Section */}
                     <div className="bg-white rounded-2xl shadow-lg border border-neutral-100 p-8 mb-12">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
@@ -123,10 +131,10 @@ export default function KuliahDhuhaPage() {
                                 <h4 className="font-semibold text-primary-700 mb-1">📖 Kuliah Dhuha</h4>
                                 <p className="text-sm text-neutral-600">Kajian umum bersama seluruh peserta</p>
                             </div>
-                            <div className="p-4 bg-secondary-50 rounded-xl border border-secondary-100">
-                                <h4 className="font-semibold text-secondary-700 mb-1">👥 Mentoring</h4>
+                            <Link href="/program/mentoring" className="p-4 bg-secondary-50 rounded-xl border border-secondary-100 hover:bg-secondary-100 transition-colors cursor-pointer">
+                                <h4 className="font-semibold text-secondary-700 mb-1">👥 Mentoring →</h4>
                                 <p className="text-sm text-neutral-600">Diskusi kelompok kecil dengan mentor</p>
-                            </div>
+                            </Link>
                         </div>
                         <p className="text-neutral-600 leading-relaxed mb-8">
                             Program ini bertujuan untuk meningkatkan pemahaman keislaman mahasiswa dengan materi yang relevan, inspiratif, dan aplikatif dalam kehidupan sehari-hari.
@@ -149,35 +157,95 @@ export default function KuliahDhuhaPage() {
                         </div>
                     </div>
 
-                    {/* Pembukaan Highlight */}
-                    {pembukaan && (
-                        <div className="mb-12">
-                            <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-8 text-white shadow-xl">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">
-                                        🎉 Pembukaan
-                                    </span>
-                                </div>
-                                <h3 className="text-2xl font-bold mb-2">{pembukaan.topic}</h3>
-                                <div className="flex flex-wrap gap-6 mt-4 text-white/90">
-                                    <div className="flex items-center gap-2">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <span>{pembukaan.dayName}, {pembukaan.date}</span>
+                    {/* Special Events Section - Pembukaan, SoS, Penutupan */}
+                    <div className="mb-12">
+                        <h3 className="text-xl font-bold text-neutral-900 mb-6 flex items-center gap-2">
+                            <span>⭐</span> Kegiatan Spesial
+                        </h3>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            {/* Pembukaan */}
+                            {pembukaan && (
+                                <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-6 text-white shadow-lg">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-medium">
+                                            🎉 Pembukaan
+                                        </span>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        </svg>
-                                        <span>{pembukaan.location}</span>
+                                    <h4 className="font-bold text-lg mb-3">Pekan 1</h4>
+                                    <div className="space-y-2 text-sm text-white/90">
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span>{pembukaan.dayName}, {pembukaan.date}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            </svg>
+                                            <span>{pembukaan.location}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    )}
+                            )}
 
-                    {/* Weekly Schedule - With Faculty Tabs */}
+                            {/* Shine on Sunday */}
+                            {sos && (
+                                <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-6 text-white shadow-lg">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-medium">
+                                            ☀️ Shine on Sunday
+                                        </span>
+                                    </div>
+                                    <h4 className="font-bold text-lg mb-3">Pekan 5 (SoS)</h4>
+                                    <div className="space-y-2 text-sm text-white/90">
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span>{sos.dayName}, {sos.date}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            </svg>
+                                            <span>{sos.location}</span>
+                                        </div>
+                                    </div>
+                                    <p className="mt-3 text-xs text-white/70">Khusus hari Ahad (semua fakultas)</p>
+                                </div>
+                            )}
+
+                            {/* Penutupan */}
+                            {penutupan && (
+                                <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-medium">
+                                            🎓 Penutupan
+                                        </span>
+                                    </div>
+                                    <h4 className="font-bold text-lg mb-3">Pekan 8</h4>
+                                    <div className="space-y-2 text-sm text-white/90">
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span>{penutupan.dayName}, {penutupan.date}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            </svg>
+                                            <span>{penutupan.location}</span>
+                                        </div>
+                                    </div>
+                                    <p className="mt-3 text-xs text-white/70">Khusus hari Sabtu (semua fakultas)</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Weekly Schedule */}
                     <div className="mb-12">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
@@ -186,41 +254,38 @@ export default function KuliahDhuhaPage() {
                                 </svg>
                             </div>
                             <h2 className="text-2xl font-bold text-neutral-900">
-                                Jadwal Tutorial PAI
+                                Jadwal Mingguan (Pekan 2-7)
                             </h2>
                         </div>
 
                         {/* Faculty Filter Cards */}
                         <div className="grid grid-cols-3 gap-3 mb-8">
-                            {/* All Button */}
                             <button
                                 onClick={() => setSelectedDay('all')}
                                 className={`rounded-xl p-4 text-center transition-all duration-300 ${selectedDay === 'all'
-                                    ? 'bg-neutral-800 text-white shadow-lg scale-[1.02]'
-                                    : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                                        ? 'bg-neutral-800 text-white shadow-lg scale-[1.02]'
+                                        : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                                     }`}
                             >
                                 <span className="font-bold">Semua</span>
                             </button>
 
-                            {/* Sabtu Button */}
                             <button
                                 onClick={() => setSelectedDay('Sabtu')}
                                 className={`rounded-xl p-4 transition-all duration-300 ${selectedDay === 'Sabtu'
-                                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg scale-[1.02]'
-                                    : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+                                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg scale-[1.02]'
+                                        : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
                                     }`}
                             >
                                 <div className="font-bold">Sabtu</div>
                                 <div className={`text-xs mt-1 ${selectedDay === 'Sabtu' ? 'text-white/80' : 'text-blue-500'}`}>FPIPS & FPSD</div>
                             </button>
 
-                            {/* Ahad Button */}
                             <button
                                 onClick={() => setSelectedDay('Minggu')}
                                 className={`rounded-xl p-4 transition-all duration-300 ${selectedDay === 'Minggu'
-                                    ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg scale-[1.02]'
-                                    : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                                        ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg scale-[1.02]'
+                                        : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
                                     }`}
                             >
                                 <div className="font-bold">Ahad</div>
@@ -228,7 +293,7 @@ export default function KuliahDhuhaPage() {
                             </button>
                         </div>
 
-                        {/* Schedule Grid - Filtered */}
+                        {/* Schedule Grid */}
                         <div className="grid gap-4">
                             {regularSchedule
                                 .filter(schedule => selectedDay === 'all' || schedule.dayName === selectedDay)
@@ -260,7 +325,6 @@ export default function KuliahDhuhaPage() {
                                                             </svg>
                                                             {schedule.dayName}, {schedule.date}
                                                         </span>
-                                                        {/* Faculty Badge - only for week 2-8 */}
                                                         {schedule.week >= 2 && schedule.dayName === "Sabtu" && (
                                                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
                                                                 FPIPS & FPSD
@@ -317,25 +381,6 @@ export default function KuliahDhuhaPage() {
                                         </div>
                                     </div>
                                 ))}
-                        </div>
-                    </div>
-
-                    {/* Info Card */}
-                    <div className="bg-gradient-to-r from-accent-50 to-accent-100 rounded-2xl p-6 border border-accent-200">
-                        <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 bg-accent-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 className="font-semibold text-neutral-900 mb-1">Informasi Penting</h4>
-                                <p className="text-neutral-600 text-sm leading-relaxed">
-                                    Tutorial PAI dilaksanakan secara hybrid (offline & online).
-                                    Pastikan untuk membawa Al-Quran dan alat tulis.
-                                    Link Zoom akan dibagikan H-1 melalui grup WhatsApp.
-                                </p>
-                            </div>
                         </div>
                     </div>
 
