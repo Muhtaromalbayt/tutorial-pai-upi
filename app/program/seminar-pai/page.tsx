@@ -1,7 +1,6 @@
 "use client";
 
 import Hero from "@/components/Hero";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ORGANIZATION_ACTIVITIES } from "@/lib/hijriah-calendar-data";
 
@@ -68,11 +67,23 @@ export default function SeminarPAIPage() {
             }, [] as typeof ORGANIZATION_ACTIVITIES)
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-        return activities.map((activity, index) => {
-            const weekNum = extractWeekNumber(activity.title) || Math.floor(index / 2) + 2;
+        // Calculate week numbers based on schedule
+        let currentWeek = 2; // Start from week 2 (week 1 is Pembukaan)
+        let lastWeekDate = '';
+
+        return activities.map((activity) => {
+            const weekNum = extractWeekNumber(activity.title) || currentWeek;
             const isWoW = activity.title.toLowerCase().includes('wow') || activity.title.toLowerCase().includes('wonderful');
             const isPenutupan = activity.title.toLowerCase().includes('penutupan');
-            const isPembukaan = index === 0; // First SPAI is considered pembukaan
+
+            // Track week progression
+            const dateWeek = activity.date.substring(0, 10);
+            if (lastWeekDate && dateWeek !== lastWeekDate) {
+                const dayDiff = Math.abs(new Date(dateWeek).getTime() - new Date(lastWeekDate).getTime()) / (1000 * 60 * 60 * 24);
+                if (dayDiff > 5) currentWeek++;
+            }
+            lastWeekDate = dateWeek;
+
             return {
                 week: weekNum,
                 date: formatDateIndonesian(activity.date),
@@ -82,20 +93,43 @@ export default function SeminarPAIPage() {
                 location: "Masjid Al Furqon",
                 time: activity.time || "15.30 - 17.30 WIB",
                 category: activity.category,
-                isPembukaan: isPembukaan,
+                isPembukaan: false,
                 isWoW,
                 isPenutupan,
-                isSpecial: isPembukaan || isWoW || isPenutupan
+                isSpecial: isWoW || isPenutupan
             };
         });
     }, []);
 
+    // Get Pembukaan from Tutorial PAI (same date)
+    const pembukaan = useMemo(() => {
+        const pembukaanActivity = ORGANIZATION_ACTIVITIES.find(a =>
+            a.title.includes("Pembukaan") && a.category === "Tutorial"
+        );
+        if (pembukaanActivity) {
+            return {
+                week: 1,
+                date: formatDateIndonesian(pembukaanActivity.date),
+                rawDate: pembukaanActivity.date,
+                dayName: getDayName(pembukaanActivity.date),
+                topic: "Pembukaan Tutorial",
+                location: "Masjid Al Furqon",
+                time: "08.45 - 13.00 WIB",
+                category: "Tutorial",
+                isPembukaan: true,
+                isWoW: false,
+                isPenutupan: false,
+                isSpecial: true
+            };
+        }
+        return null;
+    }, []);
+
     // Separate special events from regular schedule
-    const pembukaan = weeklySchedule[0]; // First is pembukaan
     const wow = weeklySchedule.find(s => s.isWoW);
     const penutupan = weeklySchedule[weeklySchedule.length - 1]; // Last is penutupan
     const regularSchedule = weeklySchedule.filter((s, index) =>
-        index !== 0 && index !== weeklySchedule.length - 1 && !s.isWoW
+        index !== weeklySchedule.length - 1 && !s.isWoW
     );
 
     return (
@@ -122,22 +156,9 @@ export default function SeminarPAIPage() {
                                 Tentang Seminar PAI
                             </h2>
                         </div>
-                        <p className="text-neutral-600 leading-relaxed text-lg mb-4">
-                            <strong>Seminar PAI</strong> adalah salah satu rangkaian kegiatan dalam program <strong>Tutorial SPAI</strong>.
-                            Program Tutorial SPAI terdiri dari dua komponen utama:
-                        </p>
-                        <div className="grid md:grid-cols-2 gap-4 mb-6">
-                            <div className="p-4 bg-primary-50 rounded-xl border border-primary-100">
-                                <h4 className="font-semibold text-primary-700 mb-1">🎤 Seminar PAI</h4>
-                                <p className="text-sm text-neutral-600">Kajian tematik bersama seluruh peserta</p>
-                            </div>
-                            <Link href="/program/mentoring" className="p-4 bg-secondary-50 rounded-xl border border-secondary-100 hover:bg-secondary-100 transition-colors cursor-pointer">
-                                <h4 className="font-semibold text-secondary-700 mb-1">👥 Mentoring →</h4>
-                                <p className="text-sm text-neutral-600">Diskusi kelompok kecil dengan mentor</p>
-                            </Link>
-                        </div>
-                        <p className="text-neutral-600 leading-relaxed mb-8">
-                            Program ini bertujuan untuk mengembangkan spiritualitas dan wawasan keislaman mahasiswa dengan pendekatan yang inspiratif dan aplikatif.
+                        <p className="text-neutral-600 leading-relaxed text-lg mb-6">
+                            <strong>Seminar PAI</strong> adalah program kajian tematik dalam rangkaian <strong>Tutorial SPAI</strong>.
+                            Program ini fokus pada pengembangan spiritualitas dan wawasan keislaman mahasiswa melalui kajian yang inspiratif dan aplikatif.
                         </p>
 
                         {/* Stats Row */}
