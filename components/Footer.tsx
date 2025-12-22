@@ -8,7 +8,7 @@ import {
 
 const Footer = () => {
     return (
-        <footer className="bg-neutral-900 text-white">
+        <footer className="bg-gradient-to-b from-neutral-900 to-ocean-950 text-white border-t border-ocean-900/30">
             {/* Main Footer */}
             <div className="container-upi py-12">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

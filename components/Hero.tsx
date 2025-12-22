@@ -25,11 +25,11 @@ const Hero = ({ title, subtitle, backgroundImage, children, height = "normal", v
             {/* Background - Either Image or Gradient */}
             {useGradient ? (
                 <>
-                    {/* Beautiful gradient background matching website theme */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary-700 via-primary-600 to-primary-800" />
+                    {/* Beautiful gradient background matching website theme - Updated to Ocean/Blue */}
+                    <div className="absolute inset-0 bg-gradient-ocean" />
                     {/* Decorative elements */}
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-primary-400/20 rounded-full blur-3xl -mr-48 -mt-48" />
-                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent-500/20 rounded-full blur-3xl -ml-48 -mb-48" />
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-ocean-400/20 rounded-full blur-3xl -mr-48 -mt-48" />
+                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-warm-500/20 rounded-full blur-3xl -ml-48 -mb-48" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl" />
                     {/* Subtle pattern overlay */}
                     <div className="absolute inset-0 opacity-10 bg-pattern-academic" />

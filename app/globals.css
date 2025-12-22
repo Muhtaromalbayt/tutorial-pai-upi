@@ -15,6 +15,11 @@
     --upi-primary: #dc2626;
     --upi-primary-dark: #991b1b;
     --upi-accent: #eab308;
+    /* Ocean palette - Bina Kader inspired */
+    --upi-ocean: #0ea5e9;
+    --upi-ocean-dark: #0c4a6e;
+    --upi-ocean-light: #e0f2fe;
+    --upi-warm: #f59e0b;
   }
 
   * {
@@ -183,6 +188,15 @@
 
   .text-lime {
     color: #ccff00;
+  }
+
+  /* Ocean Theme Utilities */
+  .bg-gradient-ocean {
+    @apply bg-gradient-to-br from-ocean-900 via-ocean-800 to-ocean-900;
+  }
+
+  .text-gradient-ocean {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-ocean-400 to-ocean-200;
   }
 }
 

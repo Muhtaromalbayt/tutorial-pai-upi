@@ -22,6 +22,20 @@ const config: Config = {
                     800: "#991b1b",
                     900: "#7f1d1d",
                 },
+                // Ocean palette (sky/blue) - inspired by Bina Kader page
+                ocean: {
+                    50: "#f0f9ff",
+                    100: "#e0f2fe",
+                    200: "#bae6fd",
+                    300: "#7dd3fc",
+                    400: "#38bdf8",
+                    500: "#0ea5e9",
+                    600: "#0284c7",
+                    700: "#0369a1",
+                    800: "#075985",
+                    900: "#0c4a6e",
+                    950: "#082f49",
+                },
                 secondary: {
                     50: "#f8fafc",
                     100: "#f1f5f9",
@@ -45,6 +59,19 @@ const config: Config = {
                     700: "#a16207",
                     800: "#854d0e",
                     900: "#713f12",
+                },
+                // Warm amber for highlights (used in Bina Kader)
+                warm: {
+                    50: "#fffbeb",
+                    100: "#fef3c7",
+                    200: "#fde68a",
+                    300: "#fcd34d",
+                    400: "#fbbf24",
+                    500: "#f59e0b",
+                    600: "#d97706",
+                    700: "#b45309",
+                    800: "#92400e",
+                    900: "#78350f",
                 },
                 neutral: {
                     50: "#fafafa",
