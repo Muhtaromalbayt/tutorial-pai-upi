@@ -56,7 +56,10 @@ interface DBSchedule {
     dayType: string | null;
     date: string;
     topic: string;
-    speaker: string | null;
+    facilitator: string | null;
+    presenter1: string | null;
+    presenter2: string | null;
+    presenter3: string | null;
     materials: string | null;
     location: string | null;
 }
@@ -135,9 +138,12 @@ export default function SeminarPAIPage() {
                 dayName: dayName,
                 dayType: dayType,
                 topic: dbMatch?.topic || weekMatch?.topic || formatTitle(activity.title),
-                speaker: dbMatch?.speaker || null,
+                facilitator: dbMatch?.facilitator || null,
+                presenter1: dbMatch?.presenter1 || null,
+                presenter2: dbMatch?.presenter2 || null,
+                presenter3: dbMatch?.presenter3 || null,
                 materials: materials,
-                location: "Masjid Al Furqon",
+                location: activity.location || "Masjid Al Furqon",
                 time: activity.time || "15.30 - 17.30 WIB",
                 category: activity.category,
                 isPembukaan: false,
@@ -341,7 +347,7 @@ export default function SeminarPAIPage() {
                                     <h2 className="text-2xl font-bold text-neutral-900">
                                         Jadwal Pekanan
                                     </h2>
-                                    <p className="text-sm text-neutral-500">Klik untuk melihat detail pemateri</p>
+                                    <p className="text-sm text-neutral-500">Klik untuk melihat detail fasilitator dan penyaji</p>
                                 </div>
                             </div>
                         </div>
@@ -432,9 +438,9 @@ export default function SeminarPAIPage() {
                                                                     FIP, FK & FPEB
                                                                 </span>
                                                             )}
-                                                            {schedule.speaker && (
+                                                            {schedule.facilitator && (
                                                                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
-                                                                    👤 {schedule.speaker}
+                                                                    👨‍🏫 {schedule.facilitator}
                                                                 </span>
                                                             )}
                                                         </div>
@@ -460,7 +466,7 @@ export default function SeminarPAIPage() {
                                                 {/* Expanded Details */}
                                                 <div className={`overflow-hidden transition-all duration-300 ${expandedIndex === index ? 'max-h-96 mt-5 pt-5 border-t border-neutral-100' : 'max-h-0'}`}>
                                                     <div className="grid md:grid-cols-2 gap-4">
-                                                        {/* Pemateri */}
+                                                        {/* Dosen Fasilitator */}
                                                         <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-amber-50 to-white rounded-xl border border-amber-100">
                                                             <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                                                 <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -468,10 +474,31 @@ export default function SeminarPAIPage() {
                                                                 </svg>
                                                             </div>
                                                             <div>
-                                                                <div className="text-xs text-amber-600 font-medium mb-1">Pemateri</div>
+                                                                <div className="text-xs text-amber-600 font-medium mb-1">Dosen Fasilitator</div>
                                                                 <div className="font-semibold text-neutral-800">
-                                                                    {schedule.speaker || <span className="text-neutral-400 italic">Belum ditentukan</span>}
+                                                                    {schedule.facilitator || <span className="text-neutral-400 italic">Belum ditentukan</span>}
                                                                 </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Penyaji (3 Mahasiswa) */}
+                                                        <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-purple-50 to-white rounded-xl border border-purple-100">
+                                                            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                                </svg>
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <div className="text-xs text-purple-600 font-medium mb-2">Penyaji (Mahasiswa)</div>
+                                                                {(schedule.presenter1 || schedule.presenter2 || schedule.presenter3) ? (
+                                                                    <div className="space-y-1">
+                                                                        {schedule.presenter1 && <div className="text-sm font-medium text-neutral-800">1. {schedule.presenter1}</div>}
+                                                                        {schedule.presenter2 && <div className="text-sm font-medium text-neutral-800">2. {schedule.presenter2}</div>}
+                                                                        {schedule.presenter3 && <div className="text-sm font-medium text-neutral-800">3. {schedule.presenter3}</div>}
+                                                                    </div>
+                                                                ) : (
+                                                                    <span className="text-neutral-400 italic text-sm">Belum ditentukan</span>
+                                                                )}
                                                             </div>
                                                         </div>
 

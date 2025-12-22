@@ -38,11 +38,14 @@ export async function POST(req: NextRequest) {
             dayType?: string;
             date: string;
             topic: string;
-            speaker?: string;
+            facilitator?: string;
+            presenter1?: string;
+            presenter2?: string;
+            presenter3?: string;
             materials?: string[];
             location?: string;
         };
-        const { weekNumber, dayType, date, topic, speaker, materials, location } = body;
+        const { weekNumber, dayType, date, topic, facilitator, presenter1, presenter2, presenter3, materials, location } = body;
 
         const id = `sem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const now = new Date().toISOString();
@@ -55,7 +58,10 @@ export async function POST(req: NextRequest) {
                 dayType: dayType || "Rabu",
                 date,
                 topic,
-                speaker: speaker || null,
+                facilitator: facilitator || null,
+                presenter1: presenter1 || null,
+                presenter2: presenter2 || null,
+                presenter3: presenter3 || null,
                 materials: JSON.stringify(materials || []),
                 location: location || "Masjid Al Furqon",
                 createdAt: now,
@@ -86,11 +92,14 @@ export async function PUT(req: NextRequest) {
             dayType?: string;
             date: string;
             topic: string;
-            speaker?: string;
+            facilitator?: string;
+            presenter1?: string;
+            presenter2?: string;
+            presenter3?: string;
             materials?: string[];
             location?: string;
         };
-        const { id, weekNumber, dayType, date, topic, speaker, materials, location } = body;
+        const { id, weekNumber, dayType, date, topic, facilitator, presenter1, presenter2, presenter3, materials, location } = body;
 
         const now = new Date().toISOString();
 
@@ -101,7 +110,10 @@ export async function PUT(req: NextRequest) {
                 dayType: dayType || "Rabu",
                 date,
                 topic,
-                speaker: speaker || null,
+                facilitator: facilitator || null,
+                presenter1: presenter1 || null,
+                presenter2: presenter2 || null,
+                presenter3: presenter3 || null,
                 materials: JSON.stringify(materials || []),
                 location: location || null,
                 updatedAt: now,

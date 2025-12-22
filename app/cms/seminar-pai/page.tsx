@@ -10,7 +10,10 @@ interface Schedule {
     dayType: string | null;
     date: string;
     topic: string;
-    speaker: string | null;
+    facilitator: string | null;
+    presenter1: string | null;
+    presenter2: string | null;
+    presenter3: string | null;
     materials: string | null;
     location: string | null;
 }
@@ -20,7 +23,10 @@ interface FormData {
     dayType: string;
     date: string;
     topic: string;
-    speaker: string;
+    facilitator: string;
+    presenter1: string;
+    presenter2: string;
+    presenter3: string;
     materials: string[];
     location: string;
 }
@@ -30,7 +36,10 @@ const defaultFormData: FormData = {
     dayType: "Rabu",
     date: "",
     topic: "",
-    speaker: "",
+    facilitator: "",
+    presenter1: "",
+    presenter2: "",
+    presenter3: "",
     materials: [""],
     location: "Masjid Al Furqon",
 };
@@ -108,7 +117,10 @@ export default function CMSSeminarPAI() {
             dayType: schedule.dayType || "Rabu",
             date: schedule.date,
             topic: schedule.topic,
-            speaker: schedule.speaker || "",
+            facilitator: schedule.facilitator || "",
+            presenter1: schedule.presenter1 || "",
+            presenter2: schedule.presenter2 || "",
+            presenter3: schedule.presenter3 || "",
             materials: materials.length > 0 ? materials : [""],
             location: schedule.location || "Masjid Al Furqon",
         });
@@ -204,8 +216,8 @@ export default function CMSSeminarPAI() {
                         <div>
                             <h2 className="text-lg font-semibold mb-1">Jadwal Seminar PAI</h2>
                             <p className="text-white/80 text-sm">
-                                Kelola jadwal pemateri dan materi Seminar PAI. <strong>Rabu</strong> untuk FPIPS & FPSD,
-                                <strong> Jumat</strong> untuk FIP, FK & FPEB. Materi bisa sama tapi pemateri berbeda per hari.
+                                Kelola jadwal fasilitator dan penyaji Seminar PAI. Setiap sesi memiliki 1 <strong>Dosen Fasilitator</strong> dan <strong>3 Penyaji Mahasiswa</strong>.
+                                <strong> Rabu</strong> untuk FPIPS & FPSD, <strong>Jumat</strong> untuk FIP, FK & FPEB.
                             </p>
                         </div>
                     </div>
@@ -221,7 +233,8 @@ export default function CMSSeminarPAI() {
                                     <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Hari</th>
                                     <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
                                     <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Topik</th>
-                                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Pemateri</th>
+                                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Fasilitator</th>
+                                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Penyaji</th>
                                     <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Materi</th>
                                     <th className="px-4 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
                                 </tr>
@@ -229,7 +242,7 @@ export default function CMSSeminarPAI() {
                             <tbody className="divide-y divide-gray-200">
                                 {schedules.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                                        <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
                                             <div className="flex flex-col items-center">
                                                 <svg className="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -253,8 +266,8 @@ export default function CMSSeminarPAI() {
                                                 </td>
                                                 <td className="px-4 py-4">
                                                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${schedule.dayType === 'Jumat'
-                                                            ? 'bg-emerald-100 text-emerald-700'
-                                                            : 'bg-blue-100 text-blue-700'
+                                                        ? 'bg-emerald-100 text-emerald-700'
+                                                        : 'bg-blue-100 text-blue-700'
                                                         }`}>
                                                         {schedule.dayType || 'Rabu'}
                                                     </span>
@@ -264,10 +277,21 @@ export default function CMSSeminarPAI() {
                                                     <span className="text-sm font-medium text-gray-900">{schedule.topic}</span>
                                                 </td>
                                                 <td className="px-4 py-4">
-                                                    {schedule.speaker ? (
+                                                    {schedule.facilitator ? (
                                                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
-                                                            👤 {schedule.speaker}
+                                                            👨‍🏫 {schedule.facilitator}
                                                         </span>
+                                                    ) : (
+                                                        <span className="text-sm text-gray-400 italic">-</span>
+                                                    )}
+                                                </td>
+                                                <td className="px-4 py-4">
+                                                    {(schedule.presenter1 || schedule.presenter2 || schedule.presenter3) ? (
+                                                        <div className="space-y-1">
+                                                            {schedule.presenter1 && <div className="text-xs text-purple-700">1. {schedule.presenter1}</div>}
+                                                            {schedule.presenter2 && <div className="text-xs text-purple-700">2. {schedule.presenter2}</div>}
+                                                            {schedule.presenter3 && <div className="text-xs text-purple-700">3. {schedule.presenter3}</div>}
+                                                        </div>
                                                     ) : (
                                                         <span className="text-sm text-gray-400 italic">-</span>
                                                     )}
@@ -385,15 +409,50 @@ export default function CMSSeminarPAI() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Pemateri</label>
-                                <p className="text-xs text-gray-500 mb-1">Pemateri untuk hari {formData.dayType}</p>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Dosen Fasilitator</label>
                                 <input
                                     type="text"
-                                    value={formData.speaker}
-                                    onChange={(e) => setFormData({ ...formData, speaker: e.target.value })}
-                                    placeholder="Contoh: Ustadz Ahmad, S.Pd.I"
+                                    value={formData.facilitator}
+                                    onChange={(e) => setFormData({ ...formData, facilitator: e.target.value })}
+                                    placeholder="Contoh: Dr. Ahmad, M.Pd."
                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
                                 />
+                            </div>
+
+                            <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
+                                <label className="block text-sm font-medium text-purple-700 mb-3">Penyaji (3 Mahasiswa)</label>
+                                <div className="space-y-3">
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">Penyaji 1</label>
+                                        <input
+                                            type="text"
+                                            value={formData.presenter1}
+                                            onChange={(e) => setFormData({ ...formData, presenter1: e.target.value })}
+                                            placeholder="Nama Mahasiswa 1"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">Penyaji 2</label>
+                                        <input
+                                            type="text"
+                                            value={formData.presenter2}
+                                            onChange={(e) => setFormData({ ...formData, presenter2: e.target.value })}
+                                            placeholder="Nama Mahasiswa 2"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">Penyaji 3</label>
+                                        <input
+                                            type="text"
+                                            value={formData.presenter3}
+                                            onChange={(e) => setFormData({ ...formData, presenter3: e.target.value })}
+                                            placeholder="Nama Mahasiswa 3"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
                             <div>

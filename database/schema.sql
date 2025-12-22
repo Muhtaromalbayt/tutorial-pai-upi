@@ -41,9 +41,13 @@ CREATE TABLE IF NOT EXISTS kuliah_dhuha_schedule (
 CREATE TABLE IF NOT EXISTS seminar_schedule (
   id TEXT PRIMARY KEY,
   week_number INTEGER NOT NULL,
+  day_type TEXT DEFAULT 'Rabu', -- 'Rabu' or 'Jumat'
   date DATE NOT NULL,
   topic TEXT NOT NULL,
-  speaker TEXT,
+  facilitator TEXT, -- Dosen Fasilitator
+  presenter1 TEXT, -- Penyaji Mahasiswa 1
+  presenter2 TEXT, -- Penyaji Mahasiswa 2
+  presenter3 TEXT, -- Penyaji Mahasiswa 3
   materials TEXT, -- JSON array
   location TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

@@ -55,7 +55,10 @@ export const seminarSchedule = sqliteTable('seminar_schedule', {
     dayType: text('day_type').default('Rabu'), // 'Rabu' or 'Jumat'
     date: text('date').notNull(),
     topic: text('topic').notNull(),
-    speaker: text('speaker'),
+    facilitator: text('facilitator'), // Dosen Fasilitator
+    presenter1: text('presenter1'), // Penyaji Mahasiswa 1
+    presenter2: text('presenter2'), // Penyaji Mahasiswa 2
+    presenter3: text('presenter3'), // Penyaji Mahasiswa 3
     materials: text('materials'),
     location: text('location'),
     createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
