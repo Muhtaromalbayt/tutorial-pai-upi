@@ -35,7 +35,7 @@ export default function KabinetPage() {
     return (
         <div className="bg-neutral-50 min-h-screen">
             <Hero
-                title="Kabinet AL-FATH"
+                title="Tutorial PAI SPAI Universitas Pendidikan Indonesia"
                 subtitle="Menumbuhkan Adab, Menggerakkan Peradaban"
                 height="normal"
                 backgroundImage="/assets/kabinet/hero.png"
@@ -104,18 +104,13 @@ export default function KabinetPage() {
 
             {/* Section 2: 4 Core Values (FATH) */}
             <section className="py-24 bg-white relative overflow-hidden">
-                {/* Background decoration using the generated 3D abstract image blurred */}
-                <div className="absolute -left-64 top-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-5 pointer-events-none">
-                    <img src="/assets/kabinet/values.png" alt="" className="w-full h-full object-contain" />
-                </div>
-
                 <div className="container-upi relative z-10">
                     <div className="flex flex-col md:flex-row gap-12 items-center mb-16">
-                        <div className="flex-1 animate-fade-in-up">
+                        <div className="flex-1 animate-fade-in-up text-center md:text-left">
                             <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-6">
                                 4 Core Values (FATH)
                             </h2>
-                            <p className="text-lg text-neutral-600 max-w-2xl">
+                            <p className="text-lg text-neutral-600 max-w-2xl mx-auto md:mx-0">
                                 Nilai-nilai utama yang menjadi pondasi kokoh (Foundation) dan sarana bertumbuh (Growth) bagi setiap elemen di Kabinet Al Fath.
                             </p>
                         </div>
