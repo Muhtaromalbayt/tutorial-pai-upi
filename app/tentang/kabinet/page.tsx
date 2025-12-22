@@ -106,23 +106,13 @@ export default function KabinetPage() {
             <section className="py-24 bg-white relative overflow-hidden">
                 <div className="container-upi relative z-10">
                     <div className="flex flex-col md:flex-row gap-12 items-center mb-16">
-                        <div className="flex-1 animate-fade-in-up text-center md:text-left">
+                        <div className="flex-1 animate-fade-in-up text-center w-full">
                             <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-6">
                                 4 Core Values (FATH)
                             </h2>
-                            <p className="text-lg text-neutral-600 max-w-2xl mx-auto md:mx-0">
+                            <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
                                 Nilai-nilai utama yang menjadi pondasi kokoh (Foundation) dan sarana bertumbuh (Growth) bagi setiap elemen di Kabinet Al Fath.
                             </p>
-                        </div>
-                        {/* 3D Visual for Values */}
-                        <div className="w-full md:w-1/3 flex justify-center md:justify-end animate-fade-in-up delay-100">
-                            <div className="w-48 h-48 md:w-64 md:h-64 relative">
-                                <img
-                                    src="/assets/kabinet/values.png"
-                                    alt="Core Values Illustration"
-                                    className="w-full h-full object-contain drop-shadow-2xl"
-                                />
-                            </div>
                         </div>
                     </div>
 
