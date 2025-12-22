@@ -52,21 +52,28 @@ const MemberCard = ({
         <div className={`flex flex-col items-center text-center group ${sizeClasses[size]} mx-auto`}>
             <div className={`relative w-full ${imageSizes[size]} mb-3 rounded-xl overflow-hidden shadow-lg bg-gradient-to-br from-neutral-100 to-neutral-200 transform transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl`}>
                 {photoUrl ? (
-                    <Image
+                    <img
                         src={photoUrl}
                         alt={name}
-                        fill
-                        sizes="(max-width: 640px) 160px, (max-width: 768px) 180px, 220px"
-                        className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                        className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        onError={(e) => {
+                            // Hide broken image and show fallback
+                            e.currentTarget.style.display = 'none';
+                            const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                            if (fallback) fallback.style.display = 'flex';
+                        }}
                     />
-                ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 text-primary-400">
-                        <svg className="w-12 h-12 mb-2" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                        <span className="text-xs font-medium text-primary-500">Foto Belum Tersedia</span>
-                    </div>
-                )}
+                ) : null}
+                {/* Fallback - shown when no photo or on error */}
+                <div
+                    className={`absolute inset-0 flex-col items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 text-primary-400 ${photoUrl ? 'hidden' : 'flex'}`}
+                >
+                    <svg className="w-12 h-12 mb-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <span className="text-xs font-medium text-primary-500">Foto Belum Tersedia</span>
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
 

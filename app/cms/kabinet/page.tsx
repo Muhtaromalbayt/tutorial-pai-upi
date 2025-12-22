@@ -259,19 +259,55 @@ export default function KabinetCMSPage() {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">URL Foto (HD)</label>
-                                <input
-                                    type="text"
-                                    value={formData.photoUrl}
-                                    onChange={(e) => setFormData({ ...formData, photoUrl: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#055E5B] focus:border-[#055E5B]"
-                                    placeholder="https://lh3.googleusercontent.com/d/FILE_ID atau URL lainnya"
-                                />
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        value={formData.photoUrl}
+                                        onChange={(e) => {
+                                            let url = e.target.value;
+                                            // Auto-convert Google Drive share link to direct image URL
+                                            const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+                                            if (driveMatch) {
+                                                url = `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
+                                            }
+                                            setFormData({ ...formData, photoUrl: url });
+                                        }}
+                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#055E5B] focus:border-[#055E5B]"
+                                        placeholder="Paste link Google Drive atau URL foto langsung"
+                                    />
+                                </div>
+
+                                {/* Photo Preview */}
+                                {formData.photoUrl && (
+                                    <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                        <p className="text-xs text-gray-500 mb-2">Preview Foto:</p>
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-24 h-32 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                                                <img
+                                                    src={formData.photoUrl}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover object-top"
+                                                    onError={(e) => {
+                                                        e.currentTarget.src = '';
+                                                        e.currentTarget.alt = 'Gagal memuat foto';
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="flex-1 text-xs">
+                                                <p className="text-gray-600 break-all">{formData.photoUrl}</p>
+                                                {formData.photoUrl.includes('lh3.googleusercontent.com') && (
+                                                    <p className="text-green-600 mt-1">✓ Format Google Drive HD sudah benar</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="mt-2 p-3 bg-blue-50 rounded-lg text-xs text-blue-800">
                                     <p className="font-medium mb-1">💡 Tips foto Google Drive HD:</p>
                                     <ol className="list-decimal list-inside space-y-1">
                                         <li>Buka foto di Google Drive → Klik kanan → Bagikan → Siapa saja yang memiliki link</li>
-                                        <li>Salin link: <code className="bg-blue-100 px-1 rounded">https://drive.google.com/file/d/FILE_ID/view</code></li>
-                                        <li>Ubah ke format: <code className="bg-blue-100 px-1 rounded">https://lh3.googleusercontent.com/d/FILE_ID</code></li>
+                                        <li>Paste link langsung di atas, akan otomatis dikonversi ke format HD!</li>
                                     </ol>
                                 </div>
                             </div>
