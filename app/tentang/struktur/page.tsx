@@ -4,15 +4,15 @@ import Hero from "@/components/Hero";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-// Types
+// Types - camelCase to match Drizzle ORM response
 interface Member {
     id: string;
     name: string;
     position: string;
     division: string;
-    program_studi?: string;
-    photo_url?: string;
-    order_index?: number;
+    programStudi?: string;
+    photoUrl?: string;
+    orderIndex?: number;
 }
 
 interface Department {
@@ -157,8 +157,8 @@ const DepartmentSection = ({ dept, isOpen, onToggle }: {
                                         key={member.id}
                                         name={member.name}
                                         position={member.position}
-                                        programStudi={member.program_studi}
-                                        photoUrl={member.photo_url}
+                                        programStudi={member.programStudi}
+                                        photoUrl={member.photoUrl}
                                         isLeader={true}
                                         size="normal"
                                     />
@@ -177,8 +177,8 @@ const DepartmentSection = ({ dept, isOpen, onToggle }: {
                                 {members.map((member) => (
                                     <div key={member.id} className="bg-neutral-50 p-3 rounded-xl text-center hover:bg-white hover:shadow-sm transition-all border border-neutral-100">
                                         <div className="font-medium text-neutral-800 text-sm line-clamp-2">{member.name}</div>
-                                        {member.program_studi && (
-                                            <div className="text-xs text-neutral-500 mt-1 line-clamp-1">{member.program_studi}</div>
+                                        {member.programStudi && (
+                                            <div className="text-xs text-neutral-500 mt-1 line-clamp-1">{member.programStudi}</div>
                                         )}
                                     </div>
                                 ))}
@@ -336,8 +336,8 @@ export default function StrukturPage() {
                                         <MemberCard
                                             name={topLeaders[0].name}
                                             position={topLeaders[0].position}
-                                            programStudi={topLeaders[0].program_studi}
-                                            photoUrl={topLeaders[0].photo_url}
+                                            programStudi={topLeaders[0].programStudi}
+                                            photoUrl={topLeaders[0].photoUrl}
                                             isLeader={true}
                                             size="large"
                                         />
@@ -352,8 +352,8 @@ export default function StrukturPage() {
                                                 key={leader.id}
                                                 name={leader.name}
                                                 position={leader.position}
-                                                programStudi={leader.program_studi}
-                                                photoUrl={leader.photo_url}
+                                                programStudi={leader.programStudi}
+                                                photoUrl={leader.photoUrl}
                                                 isLeader={true}
                                                 size="normal"
                                             />
