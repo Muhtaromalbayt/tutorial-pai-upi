@@ -34,13 +34,14 @@ export async function POST(req: NextRequest) {
             name: string;
             position: string;
             division?: string;
+            programStudi?: string;
             photoUrl?: string;
             email?: string;
             phone?: string;
             bio?: string;
             orderIndex?: number;
         };
-        const { name, position, division, photoUrl, email, phone, bio, orderIndex } = body;
+        const { name, position, division, programStudi, photoUrl, email, phone, bio, orderIndex } = body;
 
         if (!name || !position) {
             return NextResponse.json(
@@ -57,6 +58,7 @@ export async function POST(req: NextRequest) {
             name,
             position,
             division: division || null,
+            programStudi: programStudi || null,
             photoUrl: photoUrl || null,
             email: email || null,
             phone: phone || null,
@@ -88,13 +90,14 @@ export async function PUT(req: NextRequest) {
             name: string;
             position: string;
             division?: string;
+            programStudi?: string;
             photoUrl?: string;
             email?: string;
             phone?: string;
             bio?: string;
             orderIndex?: number;
         };
-        const { id, name, position, division, photoUrl, email, phone, bio, orderIndex } = body;
+        const { id, name, position, division, programStudi, photoUrl, email, phone, bio, orderIndex } = body;
 
         if (!id) {
             return NextResponse.json(
@@ -110,6 +113,7 @@ export async function PUT(req: NextRequest) {
                 name,
                 position,
                 division: division || null,
+                programStudi: programStudi || null,
                 photoUrl: photoUrl || null,
                 email: email || null,
                 phone: phone || null,

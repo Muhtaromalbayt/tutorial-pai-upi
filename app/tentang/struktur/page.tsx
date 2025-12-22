@@ -9,10 +9,10 @@ interface Member {
     id: string;
     name: string;
     position: string;
-    division: string; // "BPH" for top leaders, or specific division name
-    image_url?: string; // Should be photo_url from DB, need mapping or adjust here
-    photo_url?: string; // DB field name
-    order?: number; // Optional sorting order
+    division: string;
+    program_studi?: string;
+    photo_url?: string;
+    order_index?: number;
 }
 
 interface Department {
@@ -20,108 +20,158 @@ interface Department {
     members: Member[];
 }
 
-const PengurusCard = ({ name, position, division, isLeader = false, image }: { name: string, position: string, division?: string, isLeader?: boolean, image?: string }) => (
-    <div className="flex flex-col items-center text-center group w-[240px] mx-auto transform hover:-translate-y-2 transition-transform duration-300">
-        <div className="relative w-full aspect-[3/4] mb-4 rounded-2xl overflow-hidden shadow-md bg-neutral-100">
-            {image ? (
-                <Image
-                    src={image}
-                    alt={name}
-                    fill
-                    sizes="240px"
-                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                />
-            ) : (
-                <div className="absolute inset-0 flex items-center justify-center bg-neutral-200 text-neutral-400">
-                    <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                </div>
+// Responsive Member Card Component
+const MemberCard = ({
+    name,
+    position,
+    programStudi,
+    photoUrl,
+    isLeader = false,
+    size = "normal"
+}: {
+    name: string;
+    position: string;
+    programStudi?: string;
+    photoUrl?: string;
+    isLeader?: boolean;
+    size?: "small" | "normal" | "large";
+}) => {
+    const sizeClasses = {
+        small: "w-full max-w-[160px]",
+        normal: "w-full max-w-[200px]",
+        large: "w-full max-w-[240px]"
+    };
+
+    const imageSizes = {
+        small: "aspect-[3/4]",
+        normal: "aspect-[3/4]",
+        large: "aspect-[3/4]"
+    };
+
+    return (
+        <div className={`flex flex-col items-center text-center group ${sizeClasses[size]} mx-auto`}>
+            <div className={`relative w-full ${imageSizes[size]} mb-3 rounded-xl overflow-hidden shadow-lg bg-gradient-to-br from-neutral-100 to-neutral-200 transform transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl`}>
+                {photoUrl ? (
+                    <Image
+                        src={photoUrl}
+                        alt={name}
+                        fill
+                        sizes="(max-width: 640px) 160px, (max-width: 768px) 180px, 220px"
+                        className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    />
+                ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 text-primary-400">
+                        <svg className="w-12 h-12 mb-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span className="text-xs font-medium text-primary-500">Foto Belum Tersedia</span>
+                    </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
+
+            {/* Position Badge */}
+            {isLeader && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-100 text-primary-700 mb-2">
+                    {position}
+                </span>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+            <h3 className={`${isLeader ? 'text-base sm:text-lg font-bold' : 'text-sm sm:text-base font-semibold'} text-neutral-900 leading-tight line-clamp-2`}>
+                {name}
+            </h3>
+
+            {!isLeader && position && position !== "Anggota" && (
+                <p className="text-xs font-medium text-primary-600 mt-1">{position}</p>
+            )}
+
+            {programStudi && (
+                <p className="text-xs text-neutral-500 mt-1 line-clamp-1">{programStudi}</p>
+            )}
         </div>
-        <h3 className={`${isLeader ? 'text-xl font-extrabold' : 'text-lg font-bold'} text-neutral-900 leading-tight min-h-[3.5rem] flex items-center justify-center`}>{name}</h3>
-        <p className="text-sm font-medium text-primary-600 mt-1">{position}</p>
-        {division && <p className="text-xs text-neutral-500 uppercase tracking-wide mt-1">{division}</p>}
-    </div>
-);
+    );
+};
 
-const DepartmentAccordion = ({ dept, index }: { dept: Department, index: number }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    // Sort logic within department: Ketua -> Wakil -> Anggota
-    // Using simple heuristic matches
+// Department Section with Accordion
+const DepartmentSection = ({ dept, isOpen, onToggle }: {
+    dept: Department;
+    isOpen: boolean;
+    onToggle: () => void;
+}) => {
+    // Sort members: Ketua Bidang -> Wakil Ketua -> Anggota
     const sortedMembers = [...dept.members].sort((a, b) => {
         const getScore = (pos: string) => {
             const p = pos.toLowerCase();
-            if (p.includes("ketua") && !p.includes("wakil")) return 1;
-            if (p.includes("wakil ketua") || p.includes("sekretaris") || p.includes("bendahara")) return 2;
-            return 3;
+            if (p.includes("ketua bidang") && !p.includes("wakil")) return 1;
+            if (p.includes("wakil ketua bidang")) return 2;
+            if (p.includes("ketua") && !p.includes("wakil")) return 3;
+            if (p.includes("wakil")) return 4;
+            return 5;
         };
         return getScore(a.position) - getScore(b.position);
     });
 
-    const leaders = sortedMembers.filter(m =>
-        m.position.toLowerCase().includes("ketua") ||
-        m.position.toLowerCase().includes("wakil") ||
-        m.position.toLowerCase().includes("sekretaris") ||
-        m.position.toLowerCase().includes("bendahara")
-    );
-    const staff = sortedMembers.filter(m => !leaders.includes(m));
+    const leaders = sortedMembers.filter(m => {
+        const p = m.position.toLowerCase();
+        return p.includes("ketua") || p.includes("wakil");
+    });
+    const members = sortedMembers.filter(m => !leaders.includes(m));
 
     return (
-        <div className="relative">
-            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                <div className="w-full border-t border-neutral-200"></div>
-            </div>
-
-            <div className="relative flex justify-center mb-4">
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="group px-6 py-3 bg-white text-lg font-bold text-neutral-900 uppercase tracking-wider border-2 border-neutral-100 rounded-full shadow-sm hover:shadow-md hover:border-primary-200 transition-all duration-300 flex items-center gap-3"
+        <div className="border-b border-neutral-200 last:border-b-0">
+            <button
+                onClick={onToggle}
+                className="w-full py-4 px-4 sm:px-6 flex items-center justify-between bg-white hover:bg-neutral-50 transition-colors"
+            >
+                <div className="flex items-center gap-3">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-100 text-primary-600 text-sm font-bold">
+                        {dept.members.length}
+                    </span>
+                    <span className="text-base sm:text-lg font-bold text-neutral-900">{dept.name}</span>
+                </div>
+                <svg
+                    className={`w-5 h-5 text-neutral-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                 >
-                    <span>{dept.name}</span>
-                    <svg
-                        className={`w-5 h-5 text-primary-600 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-            </div>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
 
-            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100 mb-12' : 'max-h-0 opacity-0'
-                }`}>
-                <div className="pt-8 pb-4">
-                    {/* Leaders */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-3xl mx-auto justify-items-center mb-12">
-                        {leaders.length > 0 ? (
-                            leaders.map((member) => (
-                                <PengurusCard
-                                    key={member.id}
-                                    name={member.name}
-                                    position={member.position}
-                                    division={dept.name}
-                                    image={member.photo_url || member.image_url}
-                                />
-                            ))
-                        ) : (
-                            <div className="col-span-2 text-center text-neutral-500 italic">Belum ada pimpinan bidang ini.</div>
-                        )}
-                    </div>
+            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className="px-4 sm:px-6 pb-6 pt-2">
+                    {/* Leaders Grid */}
+                    {leaders.length > 0 && (
+                        <div className="mb-6">
+                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
+                                {leaders.map((member) => (
+                                    <MemberCard
+                                        key={member.id}
+                                        name={member.name}
+                                        position={member.position}
+                                        programStudi={member.program_studi}
+                                        photoUrl={member.photo_url}
+                                        isLeader={true}
+                                        size="normal"
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
-                    {/* Staff Members */}
-                    {staff.length > 0 && (
-                        <div className="max-w-5xl mx-auto px-4">
-                            <h4 className="text-center text-lg font-semibold text-neutral-500 mb-6 uppercase tracking-wide">Anggota Bidang</h4>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                {staff.map((member) => (
-                                    <div key={member.id} className="bg-neutral-50 p-4 rounded-xl text-center hover:bg-white hover:shadow-sm transition-all border border-neutral-100">
-                                        <div className="font-medium text-neutral-800">{member.name}</div>
-                                        {member.position && member.position !== "Anggota" && (
-                                            <div className="text-xs text-primary-600 mt-1">{member.position}</div>
+                    {/* Members Grid */}
+                    {members.length > 0 && (
+                        <div>
+                            <h4 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4 text-center">
+                                Anggota ({members.length})
+                            </h4>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                                {members.map((member) => (
+                                    <div key={member.id} className="bg-neutral-50 p-3 rounded-xl text-center hover:bg-white hover:shadow-sm transition-all border border-neutral-100">
+                                        <div className="font-medium text-neutral-800 text-sm line-clamp-2">{member.name}</div>
+                                        {member.program_studi && (
+                                            <div className="text-xs text-neutral-500 mt-1 line-clamp-1">{member.program_studi}</div>
                                         )}
                                     </div>
                                 ))}
@@ -138,6 +188,7 @@ export default function StrukturPage() {
     const [departments, setDepartments] = useState<Department[]>([]);
     const [topLeaders, setTopLeaders] = useState<Member[]>([]);
     const [loading, setLoading] = useState(true);
+    const [openDepts, setOpenDepts] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         fetchMembers();
@@ -146,34 +197,38 @@ export default function StrukturPage() {
     const fetchMembers = async () => {
         try {
             const res = await fetch("/api/cabinet");
-            const data = await res.json() as any;
+            const data = await res.json() as { members?: Member[] };
 
             if (data.members) {
                 const allMembers: Member[] = data.members;
 
-                // 1. Extract Top Leaders (BPH Inti usually)
-                // Assuming "Ketua Umum" and "Wakil Ketua Umum" are top leaders irrespective of division, 
-                // OR they are in a specific division like "BPH" or "Inti".
-                // Let's rely on position names for top leaders logic for now.
-
-                const isTopLeader = (pos: string) => {
+                // Extract Top Leaders (TriCore: Ketua Umum, Wakil Ketua Umum)
+                const isTopLeader = (pos: string, div: string) => {
                     const low = pos.toLowerCase();
-                    return low.includes("ketua umum") || low.includes("wakil ketua umum");
+                    const divLow = div?.toLowerCase() || "";
+                    return low.includes("ketua umum") ||
+                        (divLow.includes("tricore") && (low.includes("ketua") || low.includes("wakil")));
                 };
 
-                const tops = allMembers.filter(m => isTopLeader(m.position));
+                const tops = allMembers.filter(m => isTopLeader(m.position, m.division));
 
-                // Sort tops: Ketua Umum first, then Waketums
+                // Sort: Ketua Umum first, then Wakil Ketua Umum I, then II
                 tops.sort((a, b) => {
-                    if (a.position.toLowerCase().includes("ketua umum") && !a.position.toLowerCase().includes("wakil")) return -1;
-                    if (b.position.toLowerCase().includes("ketua umum") && !b.position.toLowerCase().includes("wakil")) return 1;
-                    return 0;
+                    const getOrder = (pos: string) => {
+                        const low = pos.toLowerCase();
+                        if (low.includes("ketua umum") && !low.includes("wakil")) return 1;
+                        if (low.includes("wakil ketua umum i") && !low.includes("ii")) return 2;
+                        if (low.includes("wakil ketua umum ii")) return 3;
+                        if (low.includes("wakil ketua umum")) return 2;
+                        return 4;
+                    };
+                    return getOrder(a.position) - getOrder(b.position);
                 });
 
                 setTopLeaders(tops);
 
-                // 2. Group the rest by Division
-                const nonTops = allMembers.filter(m => !isTopLeader(m.position));
+                // Group rest by Division
+                const nonTops = allMembers.filter(m => !isTopLeader(m.position, m.division));
 
                 const grouped = nonTops.reduce((acc, member) => {
                     if (!member.division) return acc;
@@ -184,13 +239,33 @@ export default function StrukturPage() {
                     return acc;
                 }, {} as Record<string, Member[]>);
 
-                const deptArray: Department[] = Object.keys(grouped).map(key => ({
-                    name: key,
-                    members: grouped[key]
-                }));
+                // Custom sort order for departments
+                const deptOrder = [
+                    "Sekretaris Umum",
+                    "Bendahara Umum",
+                    "Pelaksana PAI",
+                    "Pelaksana SPAI",
+                    "PSDI",
+                    "Kepesertaan",
+                    "Media Kreatif Informasi",
+                    "Ketutoran",
+                    "Penjaminan Mutu"
+                ];
 
-                // Sort departments alphabetically or custom order if needed
-                deptArray.sort((a, b) => a.name.localeCompare(b.name));
+                const deptArray: Department[] = Object.keys(grouped)
+                    .filter(key => key.toLowerCase() !== "tricore")
+                    .map(key => ({
+                        name: key,
+                        members: grouped[key]
+                    }))
+                    .sort((a, b) => {
+                        const aIdx = deptOrder.findIndex(d => d.toLowerCase() === a.name.toLowerCase());
+                        const bIdx = deptOrder.findIndex(d => d.toLowerCase() === b.name.toLowerCase());
+                        if (aIdx === -1 && bIdx === -1) return a.name.localeCompare(b.name);
+                        if (aIdx === -1) return 1;
+                        if (bIdx === -1) return -1;
+                        return aIdx - bIdx;
+                    });
 
                 setDepartments(deptArray);
             }
@@ -201,15 +276,28 @@ export default function StrukturPage() {
         }
     };
 
+    const toggleDept = (deptName: string) => {
+        setOpenDepts(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(deptName)) {
+                newSet.delete(deptName);
+            } else {
+                newSet.add(deptName);
+            }
+            return newSet;
+        });
+    };
+
     if (loading) {
         return (
             <main>
-                <Hero title="Struktur Kepengurusan" subtitle="Loading..." variant="gradient" />
-                <div className="py-20 text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+                <Hero title="Struktur Kepengurusan" subtitle="Memuat data..." variant="gradient" />
+                <div className="py-20 flex flex-col items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
+                    <p className="text-neutral-500">Mengambil data pengurus...</p>
                 </div>
             </main>
-        )
+        );
     }
 
     return (
@@ -220,42 +308,113 @@ export default function StrukturPage() {
                 variant="gradient"
             />
 
-            <section className="section-academic bg-white py-20">
+            <section className="bg-white py-12 sm:py-16 lg:py-20">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-                    {/* Top Leaders */}
+
+                    {/* Top Leaders - TriCore Section */}
                     {topLeaders.length > 0 && (
-                        <div className="flex flex-col items-center mb-24 space-y-12">
-                            {/* Generic render for Top Leaders, assuming 1 Ketua and others below */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl justify-items-center items-end">
-                                {/* Rough layout logic: Try to center the Chief */}
-                                {topLeaders.map((leader, idx) => (
-                                    <div key={leader.id} className={topLeaders.length === 1 ? "col-span-3" : (idx === 0 ? "col-span-3 md:col-start-2 -mb-8 z-10 scale-110" : "col-span-3 md:col-span-1")}>
-                                        <PengurusCard
-                                            name={leader.name}
-                                            position={leader.position}
+                        <div className="mb-16">
+                            <div className="text-center mb-8">
+                                <span className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-semibold bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25">
+                                    TriCore
+                                </span>
+                                <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 mt-4">Pimpinan Utama</h2>
+                            </div>
+
+                            {/* Pyramid Layout for Top Leaders */}
+                            <div className="flex flex-col items-center gap-8">
+                                {/* Ketua Umum - Top of pyramid */}
+                                {topLeaders.length >= 1 && (
+                                    <div className="flex justify-center">
+                                        <MemberCard
+                                            name={topLeaders[0].name}
+                                            position={topLeaders[0].position}
+                                            programStudi={topLeaders[0].program_studi}
+                                            photoUrl={topLeaders[0].photo_url}
                                             isLeader={true}
-                                            image={leader.photo_url || leader.image_url}
+                                            size="large"
                                         />
                                     </div>
-                                ))}
+                                )}
+
+                                {/* Wakil Ketua Umum - Bottom of pyramid */}
+                                {topLeaders.length > 1 && (
+                                    <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
+                                        {topLeaders.slice(1).map((leader) => (
+                                            <MemberCard
+                                                key={leader.id}
+                                                name={leader.name}
+                                                position={leader.position}
+                                                programStudi={leader.program_studi}
+                                                photoUrl={leader.photo_url}
+                                                isLeader={true}
+                                                size="normal"
+                                            />
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
 
-                    {/* Bidang-Bidang with Accordion */}
-                    <div className="space-y-8">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold text-neutral-900 mb-2">Bidang Kepengurusan</h2>
-                            <p className="text-neutral-600">Klik nama bidang untuk melihat anggota</p>
+                    {/* Bidang-Bidang Section */}
+                    <div>
+                        <div className="text-center mb-8">
+                            <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900">Bidang Kepengurusan</h2>
+                            <p className="text-neutral-600 mt-2">Klik nama bidang untuk melihat detail anggota</p>
                         </div>
-                        {departments.length > 0 ? (
-                            departments.map((dept, index) => (
-                                <DepartmentAccordion key={index} dept={dept} index={index} />
-                            ))
-                        ) : (
-                            <div className="text-center text-neutral-500">Belum ada data bidang.</div>
-                        )}
+
+                        <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 overflow-hidden">
+                            {departments.length > 0 ? (
+                                departments.map((dept) => (
+                                    <DepartmentSection
+                                        key={dept.name}
+                                        dept={dept}
+                                        isOpen={openDepts.has(dept.name)}
+                                        onToggle={() => toggleDept(dept.name)}
+                                    />
+                                ))
+                            ) : (
+                                <div className="py-12 text-center text-neutral-500">
+                                    <svg className="w-16 h-16 mx-auto mb-4 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    <p className="text-lg font-medium">Belum ada data bidang</p>
+                                    <p className="text-sm mt-1">Data pengurus akan muncul setelah ditambahkan melalui CMS</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
+
+                    {/* Stats Summary */}
+                    {(topLeaders.length > 0 || departments.length > 0) && (
+                        <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-4 text-center">
+                                <div className="text-2xl sm:text-3xl font-bold text-primary-600">
+                                    {topLeaders.length + departments.reduce((acc, d) => acc + d.members.length, 0)}
+                                </div>
+                                <div className="text-sm text-primary-700 mt-1">Total Pengurus</div>
+                            </div>
+                            <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4 text-center">
+                                <div className="text-2xl sm:text-3xl font-bold text-emerald-600">
+                                    {departments.length + (topLeaders.length > 0 ? 1 : 0)}
+                                </div>
+                                <div className="text-sm text-emerald-700 mt-1">Bidang</div>
+                            </div>
+                            <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-4 text-center">
+                                <div className="text-2xl sm:text-3xl font-bold text-amber-600">
+                                    {topLeaders.length}
+                                </div>
+                                <div className="text-sm text-amber-700 mt-1">TriCore</div>
+                            </div>
+                            <div className="bg-gradient-to-br from-violet-50 to-violet-100 rounded-xl p-4 text-center">
+                                <div className="text-2xl sm:text-3xl font-bold text-violet-600">
+                                    2025/2026
+                                </div>
+                                <div className="text-sm text-violet-700 mt-1">Periode</div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </section>
         </main>

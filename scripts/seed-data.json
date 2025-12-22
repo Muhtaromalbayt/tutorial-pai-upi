@@ -1,0 +1,1834 @@
+[
+  {
+    "id": "cab_seed_1",
+    "name": "Muhtarom Nur Rasyid",
+    "position": "Ketua Umum",
+    "division": "TriCore",
+    "programStudi": "Pendidikan Matematika 2023",
+    "orderIndex": 1
+  },
+  {
+    "id": "cab_seed_2",
+    "name": "Dika Rahman Firmansyah",
+    "position": "Wakil Ketua Umum I",
+    "division": "TriCore",
+    "programStudi": "Pendidikan Teknik Otomotif 2023",
+    "orderIndex": 2
+  },
+  {
+    "id": "cab_seed_3",
+    "name": "Adinda Zakiyah Ramadanti",
+    "position": "Wakil Ketua Umum II",
+    "division": "TriCore",
+    "programStudi": "Pendidikan Masyarakat 2023",
+    "orderIndex": 3
+  },
+  {
+    "id": "cab_seed_4",
+    "name": "Nina Wulandari",
+    "position": "Ketua Bidang Sekretaris Umum",
+    "division": "Sekretaris Umum",
+    "programStudi": "Ilmu Komputer 2023",
+    "orderIndex": 4
+  },
+  {
+    "id": "cab_seed_5",
+    "name": "Frans Fernando Aji Soko",
+    "position": "Wakil Ketua Bidang Sekretaris Umum",
+    "division": "Sekretaris Umum",
+    "programStudi": "Keperawatan A 2024",
+    "orderIndex": 5
+  },
+  {
+    "id": "cab_seed_6",
+    "name": "Muhammad Fajril Abdurrobbi",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Desain Komunikasi Visual 2024",
+    "orderIndex": 6
+  },
+  {
+    "id": "cab_seed_7",
+    "name": "Fathiyah Rahmah",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Sains Informasi Geografi 2024",
+    "orderIndex": 7
+  },
+  {
+    "id": "cab_seed_8",
+    "name": "Nabila",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Pendidikan Sosiologi 2024",
+    "orderIndex": 8
+  },
+  {
+    "id": "cab_seed_9",
+    "name": "Inayah Ghaista Nurlatifah",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Pendidikan Guru Pendidikan Anak Usia Dini 2024",
+    "orderIndex": 9
+  },
+  {
+    "id": "cab_seed_10",
+    "name": "Syifa Nabila Salma",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Pendidikan Bahasa Dan Sastra Indonesia 2024",
+    "orderIndex": 10
+  },
+  {
+    "id": "cab_seed_11",
+    "name": "Dian Puspita Sari",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Pendidikan Kimia 2023",
+    "orderIndex": 11
+  },
+  {
+    "id": "cab_seed_12",
+    "name": "Shalsavina Aprilianny",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Psikologi 2023",
+    "orderIndex": 12
+  },
+  {
+    "id": "cab_seed_13",
+    "name": "Muhammad Zalalludin",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Pendidikan Fisika 2024",
+    "orderIndex": 13
+  },
+  {
+    "id": "cab_seed_14",
+    "name": "Muhammad Azri Nurfadhilah",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Pendidikan Fisika 2025",
+    "orderIndex": 14
+  },
+  {
+    "id": "cab_seed_15",
+    "name": "Muhammad Zidane",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Fisika 2025",
+    "orderIndex": 15
+  },
+  {
+    "id": "cab_seed_16",
+    "name": "Pandu Insan Firdaus",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Pendidikan Bahasa dan Sastra Indonesia 2025",
+    "orderIndex": 16
+  },
+  {
+    "id": "cab_seed_17",
+    "name": "Rheine Auliyaa",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Bahasa dan Sastra Inggris 2025",
+    "orderIndex": 17
+  },
+  {
+    "id": "cab_seed_18",
+    "name": "Risma Yuniar",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Pendidikan Bahasa dan Sastra Indonesia 2025",
+    "orderIndex": 18
+  },
+  {
+    "id": "cab_seed_19",
+    "name": "Seni Septiani",
+    "position": "Anggota",
+    "division": "Sekretaris Umum",
+    "programStudi": "Pendidikan Tata Busana 2025",
+    "orderIndex": 19
+  },
+  {
+    "id": "cab_seed_20",
+    "name": "Rachma Cantika Damayanti",
+    "position": "Ketua Bidang Bendahara Umum",
+    "division": "Bendahara Umum",
+    "programStudi": "Pendidikan Matematika 2023",
+    "orderIndex": 20
+  },
+  {
+    "id": "cab_seed_21",
+    "name": "Dela Sari",
+    "position": "Wakil Ketua Bidang Bendahara Umum",
+    "division": "Bendahara Umum",
+    "programStudi": "Pendidikan Guru Pendidikan Anak Usia Dini 2024",
+    "orderIndex": 21
+  },
+  {
+    "id": "cab_seed_22",
+    "name": "Alifia Salsabila",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Pendidikan Matematika 2023",
+    "orderIndex": 22
+  },
+  {
+    "id": "cab_seed_23",
+    "name": "Nazhwa Praditha Budiman",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Pendidikan Kimia 2023",
+    "orderIndex": 23
+  },
+  {
+    "id": "cab_seed_24",
+    "name": "Yulia Rahma",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Teknologi Pendidikan 202",
+    "orderIndex": 24
+  },
+  {
+    "id": "cab_seed_25",
+    "name": "Shyti Fatimah",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Pendidikan Bisnis 2023",
+    "orderIndex": 25
+  },
+  {
+    "id": "cab_seed_26",
+    "name": "Delia Puspitasari",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Ilmu Ekonomi Dan Keuangan Islam 2024",
+    "orderIndex": 26
+  },
+  {
+    "id": "cab_seed_27",
+    "name": "Ija Miatul Islam",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Pendidikan Khusus 2024",
+    "orderIndex": 27
+  },
+  {
+    "id": "cab_seed_28",
+    "name": "Mutiara M. K.",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2024",
+    "orderIndex": 28
+  },
+  {
+    "id": "cab_seed_29",
+    "name": "Aliefía Isyatin Rodhiah",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Keperawatan 2025",
+    "orderIndex": 29
+  },
+  {
+    "id": "cab_seed_30",
+    "name": "Gina Nursalima",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Fisika 2025",
+    "orderIndex": 30
+  },
+  {
+    "id": "cab_seed_31",
+    "name": "Helena Anjela Putri",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Matematika 2025",
+    "orderIndex": 31
+  },
+  {
+    "id": "cab_seed_32",
+    "name": "Muhammad Fahroji",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Pendidikan Bahasa jepang 2025",
+    "orderIndex": 32
+  },
+  {
+    "id": "cab_seed_33",
+    "name": "Yaseer Alfalah Ahmad",
+    "position": "Anggota",
+    "division": "Bendahara Umum",
+    "programStudi": "Biologi 2025",
+    "orderIndex": 33
+  },
+  {
+    "id": "cab_seed_34",
+    "name": "Nabilah Naila Nurrohmah",
+    "position": "Ketua Bidang Pelaksana PAI",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Kesejahteraan Keluarga 2023",
+    "orderIndex": 34
+  },
+  {
+    "id": "cab_seed_35",
+    "name": "Tazkiyya Alfitri Salam",
+    "position": "Wakil Ketua Bidang Pelaksana PAI",
+    "division": "Pelaksana PAI",
+    "programStudi": "Teknik Energi Terbarukan 2024",
+    "orderIndex": 35
+  },
+  {
+    "id": "cab_seed_36",
+    "name": "Fatimah Nur Khairiah",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Survei Pemetaan Dan Informasi Geografis 2024",
+    "orderIndex": 36
+  },
+  {
+    "id": "cab_seed_37",
+    "name": "Nur Laila Rahma Chairunnisa",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Psikologi 2024",
+    "orderIndex": 37
+  },
+  {
+    "id": "cab_seed_38",
+    "name": "Hafizh Bahrul Hayat",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Manajemen Perkantoran 2024",
+    "orderIndex": 38
+  },
+  {
+    "id": "cab_seed_39",
+    "name": "Siti Lulu Awaliah",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Sosiologi 2024",
+    "orderIndex": 39
+  },
+  {
+    "id": "cab_seed_40",
+    "name": "Afina Hanifan",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Masyarakat 2023",
+    "orderIndex": 40
+  },
+  {
+    "id": "cab_seed_41",
+    "name": "Alya Zahran",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2023",
+    "orderIndex": 41
+  },
+  {
+    "id": "cab_seed_42",
+    "name": "Rahma Aulia",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Sains Informasi Geografi 2023",
+    "orderIndex": 42
+  },
+  {
+    "id": "cab_seed_43",
+    "name": "Siti Salamah Mutmainnah",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Tata Busana 2023",
+    "orderIndex": 43
+  },
+  {
+    "id": "cab_seed_44",
+    "name": "Irfan Setiawan",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Kimia 2023",
+    "orderIndex": 44
+  },
+  {
+    "id": "cab_seed_45",
+    "name": "Muhammad Raihan Bahtiar",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Bahasa Dan Sastra Indonesia B 2024",
+    "orderIndex": 45
+  },
+  {
+    "id": "cab_seed_46",
+    "name": "Muhammad Atsal Haitami",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Teknik Otomasi Industri Dan Robotika 2024",
+    "orderIndex": 46
+  },
+  {
+    "id": "cab_seed_47",
+    "name": "Zahra Muthmainah Hidayat",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Teknik Otomasi Industri Dan Robotika A 2024",
+    "orderIndex": 47
+  },
+  {
+    "id": "cab_seed_48",
+    "name": "Asri Nihasmara",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Teknologi Agroindustri 2025",
+    "orderIndex": 48
+  },
+  {
+    "id": "cab_seed_49",
+    "name": "Faqih Aqillah Fauzi",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Gizi 2025",
+    "orderIndex": 49
+  },
+  {
+    "id": "cab_seed_50",
+    "name": "Muhammad Gaza Alfathar",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Gizi 2025",
+    "orderIndex": 50
+  },
+  {
+    "id": "cab_seed_51",
+    "name": "R Mohammad Fikry Mushoffa S",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Ilmu Komputer 2025",
+    "orderIndex": 51
+  },
+  {
+    "id": "cab_seed_52",
+    "name": "Vie Izzati",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "International Program on Science Education 2025",
+    "orderIndex": 52
+  },
+  {
+    "id": "cab_seed_53",
+    "name": "Zilfa Haqi Andini",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Kimia 2025",
+    "orderIndex": 53
+  },
+  {
+    "id": "cab_seed_54",
+    "name": "Zuleyka Nurul Aisyah",
+    "position": "Anggota",
+    "division": "Pelaksana PAI",
+    "programStudi": "Pendidikan Bahasa Inggris 2025",
+    "orderIndex": 54
+  },
+  {
+    "id": "cab_seed_55",
+    "name": "Ahmad Solihin",
+    "position": "Ketua Bidang Pelaksana SPAI",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Teknik Mesin 2023",
+    "orderIndex": 55
+  },
+  {
+    "id": "cab_seed_56",
+    "name": "Nabila Hakim Az-Zahra",
+    "position": "Wakil Ketua Bidang Pelaksana SPAI",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Gizi 2024",
+    "orderIndex": 56
+  },
+  {
+    "id": "cab_seed_57",
+    "name": "Muhammad Hamonangan Tanjung",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Kedokteran 2024",
+    "orderIndex": 57
+  },
+  {
+    "id": "cab_seed_58",
+    "name": "Normalasari",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Bimbingan Dan Konseling 2024",
+    "orderIndex": 58
+  },
+  {
+    "id": "cab_seed_59",
+    "name": "Siti Syaripah Maspupah",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Pancasila Dan Kewarganegaraan 2024",
+    "orderIndex": 59
+  },
+  {
+    "id": "cab_seed_60",
+    "name": "Nasywa Nurjihan Albarty",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Desain Komunikasi Visual 2024",
+    "orderIndex": 60
+  },
+  {
+    "id": "cab_seed_61",
+    "name": "Riswaty Nurazizah",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Ilmu Pendidikan Agama Islam 2024",
+    "orderIndex": 61
+  },
+  {
+    "id": "cab_seed_62",
+    "name": "Firane Larasyifa",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Teknik Elektro 2023",
+    "orderIndex": 62
+  },
+  {
+    "id": "cab_seed_63",
+    "name": "Tajrian Akasyah",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Fisika 2023",
+    "orderIndex": 63
+  },
+  {
+    "id": "cab_seed_64",
+    "name": "Tangguh Rakha Haidar",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Kimia 2024",
+    "orderIndex": 64
+  },
+  {
+    "id": "cab_seed_65",
+    "name": "Laras Hidayatul Alifah",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Jasmani Kesehatan Dan Rekreasi 2024",
+    "orderIndex": 65
+  },
+  {
+    "id": "cab_seed_66",
+    "name": "Ginaia Neizka Atallah",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Teknik Mesin 2024",
+    "orderIndex": 66
+  },
+  {
+    "id": "cab_seed_67",
+    "name": "Riffaldo Bayu Rohman",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Kimia 2024",
+    "orderIndex": 67
+  },
+  {
+    "id": "cab_seed_68",
+    "name": "Annisa Nurjanah",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Teknik Bangunan 2024",
+    "orderIndex": 68
+  },
+  {
+    "id": "cab_seed_69",
+    "name": "Wildan Syakir Mubarok",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Bahasa Prancis 2023",
+    "orderIndex": 69
+  },
+  {
+    "id": "cab_seed_70",
+    "name": "Shierlyvio Liberti NP",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Biologi 2023",
+    "orderIndex": 70
+  },
+  {
+    "id": "cab_seed_71",
+    "name": "Neila Kholilatus Tsania",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Khusus 2023",
+    "orderIndex": 71
+  },
+  {
+    "id": "cab_seed_72",
+    "name": "Muhammad Rizal",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Bahasa Jerman 2023",
+    "orderIndex": 72
+  },
+  {
+    "id": "cab_seed_73",
+    "name": "Khofifah Fitriani Nur Sya'ban",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Teknk Elektro 2025",
+    "orderIndex": 73
+  },
+  {
+    "id": "cab_seed_74",
+    "name": "Muhamad Rafi Alfarizi",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Bahasa Inggris 2025",
+    "orderIndex": 74
+  },
+  {
+    "id": "cab_seed_75",
+    "name": "Raihan Muhammad Naja Al'fadillah",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Matematika 2025",
+    "orderIndex": 75
+  },
+  {
+    "id": "cab_seed_76",
+    "name": "Salsa Nabila",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Tata Boga 2025",
+    "orderIndex": 76
+  },
+  {
+    "id": "cab_seed_77",
+    "name": "Yuki Fauzi Rahadian",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Keperawatan 2025",
+    "orderIndex": 77
+  },
+  {
+    "id": "cab_seed_78",
+    "name": "Allyza Ayunis",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Teknik Energi Terbarukan 2025",
+    "orderIndex": 78
+  },
+  {
+    "id": "cab_seed_79",
+    "name": "Octavia Ramadani",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Biologi 2025",
+    "orderIndex": 79
+  },
+  {
+    "id": "cab_seed_80",
+    "name": "Zara Sajidah Iman",
+    "position": "Anggota",
+    "division": "Pelaksana SPAI",
+    "programStudi": "Pendidikan Bahasa Inggris 2025",
+    "orderIndex": 80
+  },
+  {
+    "id": "cab_seed_81",
+    "name": "Fatimah Amir",
+    "position": "Ketua Bidang PSDI",
+    "division": "PSDI",
+    "programStudi": "Teknologi Pendidikan 2023",
+    "orderIndex": 81
+  },
+  {
+    "id": "cab_seed_82",
+    "name": "Ilfa Hanna Nurkholisoh",
+    "position": "Wakil Ketua Bidang PSDI",
+    "division": "PSDI",
+    "programStudi": "Administrasi Pendidikan 2023",
+    "orderIndex": 82
+  },
+  {
+    "id": "cab_seed_83",
+    "name": "Faisal sihabudin",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Geografi 2024",
+    "orderIndex": 83
+  },
+  {
+    "id": "cab_seed_84",
+    "name": "Lailul Rofi'i",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2024",
+    "orderIndex": 84
+  },
+  {
+    "id": "cab_seed_85",
+    "name": "Syafarudin",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Ekonomi 2024",
+    "orderIndex": 85
+  },
+  {
+    "id": "cab_seed_86",
+    "name": "Nurul Hikmah Pratiwi",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2024",
+    "orderIndex": 86
+  },
+  {
+    "id": "cab_seed_87",
+    "name": "Diva Ferliana Rohmah",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Geografi 2024",
+    "orderIndex": 87
+  },
+  {
+    "id": "cab_seed_88",
+    "name": "Meylia Salvezza",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Teknologi Pendidikan 2024",
+    "orderIndex": 88
+  },
+  {
+    "id": "cab_seed_89",
+    "name": "Muthi Annisa",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Teknologi Pendidikan 2024",
+    "orderIndex": 89
+  },
+  {
+    "id": "cab_seed_90",
+    "name": "Yuli Nur Faridah",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Ilmu Pendidikan Agama Islam 2024",
+    "orderIndex": 90
+  },
+  {
+    "id": "cab_seed_91",
+    "name": "Fadillah Rahmania",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2024",
+    "orderIndex": 91
+  },
+  {
+    "id": "cab_seed_92",
+    "name": "Fauzan Saeful Pattah",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Ilmu Pengetahuan Sosial 2024",
+    "orderIndex": 92
+  },
+  {
+    "id": "cab_seed_93",
+    "name": "Muhammad Faiz Ubaidillah",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Bahasa Inggris 2024",
+    "orderIndex": 93
+  },
+  {
+    "id": "cab_seed_94",
+    "name": "Dedih Priatna",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Gizi 2024",
+    "orderIndex": 94
+  },
+  {
+    "id": "cab_seed_95",
+    "name": "Alfry Nurhattah Rasya",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Matematika 2024",
+    "orderIndex": 95
+  },
+  {
+    "id": "cab_seed_96",
+    "name": "Dilla Amalia Nurkhotimah",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Bahasa Dan Sastra Indonesia 2024",
+    "orderIndex": 96
+  },
+  {
+    "id": "cab_seed_97",
+    "name": "Muhamad Ilham",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Bahasa Inggris 2024",
+    "orderIndex": 97
+  },
+  {
+    "id": "cab_seed_98",
+    "name": "Kayla Hasna Ramadhina",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Ilmu Hukum 2024",
+    "orderIndex": 98
+  },
+  {
+    "id": "cab_seed_99",
+    "name": "Nesti Prameswari",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Matematika 2024",
+    "orderIndex": 99
+  },
+  {
+    "id": "cab_seed_100",
+    "name": "Aisyah Putri Nanggala",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Matematika 2024",
+    "orderIndex": 100
+  },
+  {
+    "id": "cab_seed_101",
+    "name": "Silmi Asy-Syifaa",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Akuntansi 2023",
+    "orderIndex": 101
+  },
+  {
+    "id": "cab_seed_102",
+    "name": "Aghnia Ilmi Diniyati",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Akuntansi 2023",
+    "orderIndex": 102
+  },
+  {
+    "id": "cab_seed_103",
+    "name": "Bintang Aditya Akbar",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Gizi 2023",
+    "orderIndex": 103
+  },
+  {
+    "id": "cab_seed_104",
+    "name": "Nisrina Urfi Nuraisy Rahman",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2023",
+    "orderIndex": 104
+  },
+  {
+    "id": "cab_seed_105",
+    "name": "Aisyah Miftahusy Syahidah Al Firdausy",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Bahasa Arab 2023",
+    "orderIndex": 105
+  },
+  {
+    "id": "cab_seed_106",
+    "name": "Thia Zachra Thipani",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Bahasa Dan Sastra Indonesia 2023",
+    "orderIndex": 106
+  },
+  {
+    "id": "cab_seed_107",
+    "name": "Riska Anggraeni",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Akuntansi 2023",
+    "orderIndex": 107
+  },
+  {
+    "id": "cab_seed_108",
+    "name": "Acha Izzati Dasyen",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Ilmu Komputer 2025",
+    "orderIndex": 108
+  },
+  {
+    "id": "cab_seed_109",
+    "name": "Alifah Nur Hasanah",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Tata Busana 2025",
+    "orderIndex": 109
+  },
+  {
+    "id": "cab_seed_110",
+    "name": "Almaidah Humaira Kamila",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Bahasa dan Sastra Indonesia 2025",
+    "orderIndex": 110
+  },
+  {
+    "id": "cab_seed_111",
+    "name": "Annisa Oktaviana Putri",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Teknik Otomasi Industri dan Robotika 2025",
+    "orderIndex": 111
+  },
+  {
+    "id": "cab_seed_112",
+    "name": "Arifah Hadiyati Salama",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Jasmani Kesehatan dan Rekreasi 2025",
+    "orderIndex": 112
+  },
+  {
+    "id": "cab_seed_113",
+    "name": "Arrabela",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Teknik Otomotif 2025",
+    "orderIndex": 113
+  },
+  {
+    "id": "cab_seed_114",
+    "name": "Fiona Aulia",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Teknik Otomasi Industri dan Robotika 2025",
+    "orderIndex": 114
+  },
+  {
+    "id": "cab_seed_115",
+    "name": "Hilyatur Rahmah",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Gizi 2025",
+    "orderIndex": 115
+  },
+  {
+    "id": "cab_seed_116",
+    "name": "Miftahul Hasanah",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Matematika 2025",
+    "orderIndex": 116
+  },
+  {
+    "id": "cab_seed_117",
+    "name": "Muhammad Rhadil Alfaiz",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Teknologi Pangan 2025",
+    "orderIndex": 117
+  },
+  {
+    "id": "cab_seed_118",
+    "name": "Raditya Hadaya Setyono",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Kepelatihan Olahraga 2025",
+    "orderIndex": 118
+  },
+  {
+    "id": "cab_seed_119",
+    "name": "Tiara Nurlatifah",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Pendidikan Teknik Mesin 2025",
+    "orderIndex": 119
+  },
+  {
+    "id": "cab_seed_120",
+    "name": "Tri Arya Pawana",
+    "position": "Anggota",
+    "division": "PSDI",
+    "programStudi": "Teknik Energi Terbarukan 2025",
+    "orderIndex": 120
+  },
+  {
+    "id": "cab_seed_121",
+    "name": "Adnan Azizi",
+    "position": "Ketua Bidang Kepesertaan",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Teknik Elektro 2023",
+    "orderIndex": 121
+  },
+  {
+    "id": "cab_seed_122",
+    "name": "I'zaz Dzul Fahmi",
+    "position": "Wakil Ketua Bidang Kepesertaan",
+    "division": "Kepesertaan",
+    "programStudi": "Teknik Elektro 2024",
+    "orderIndex": 122
+  },
+  {
+    "id": "cab_seed_123",
+    "name": "Surya Fadhlurrahman",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2024",
+    "orderIndex": 123
+  },
+  {
+    "id": "cab_seed_124",
+    "name": "Ani Nurhayati",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Ilmu Pengetahuan Sosial 2024",
+    "orderIndex": 124
+  },
+  {
+    "id": "cab_seed_125",
+    "name": "Salwa Syakila",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Bahasa Dan Sastra Indonesia 2024",
+    "orderIndex": 125
+  },
+  {
+    "id": "cab_seed_126",
+    "name": "Rima Rahma Aulia",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Pariwisata 2024",
+    "orderIndex": 126
+  },
+  {
+    "id": "cab_seed_127",
+    "name": "Allika Maulya Nuryani",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Teknik Logistik 2024",
+    "orderIndex": 127
+  },
+  {
+    "id": "cab_seed_128",
+    "name": "Reyvan Putra Hadian",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Matematika 2024",
+    "orderIndex": 128
+  },
+  {
+    "id": "cab_seed_129",
+    "name": "Nafis Asyakir Anjar",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Ilmu Komputer 2024",
+    "orderIndex": 129
+  },
+  {
+    "id": "cab_seed_130",
+    "name": "Riani Anggraeni",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Bahasa Jepang 2024",
+    "orderIndex": 130
+  },
+  {
+    "id": "cab_seed_131",
+    "name": "Fauziana Safira",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2023",
+    "orderIndex": 131
+  },
+  {
+    "id": "cab_seed_132",
+    "name": "Farhan Garindesta Adithia",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Teknik Otomasi Industri Dan Robotika 2023",
+    "orderIndex": 132
+  },
+  {
+    "id": "cab_seed_133",
+    "name": "Muhammad Radhi Maulana",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Ilmu Komputer 2023",
+    "orderIndex": 133
+  },
+  {
+    "id": "cab_seed_134",
+    "name": "Arifin Ilham",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Bahasa Jepang 2023",
+    "orderIndex": 134
+  },
+  {
+    "id": "cab_seed_135",
+    "name": "Muhammad Izral Maulana",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Bahasa Jepang 2023",
+    "orderIndex": 135
+  },
+  {
+    "id": "cab_seed_136",
+    "name": "Calvin Triyoga Nugraha",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Ekonomi 2023",
+    "orderIndex": 136
+  },
+  {
+    "id": "cab_seed_137",
+    "name": "Rizkya Abadya",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Fisika 2023",
+    "orderIndex": 137
+  },
+  {
+    "id": "cab_seed_138",
+    "name": "Salsa Khoerunnisa",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Kesejahteraan Keluarga 2023",
+    "orderIndex": 138
+  },
+  {
+    "id": "cab_seed_139",
+    "name": "Nada Balqis Tsabitha",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Khusus 2023",
+    "orderIndex": 139
+  },
+  {
+    "id": "cab_seed_140",
+    "name": "Salsabila Riezki Aiska",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Arsitektur 2024",
+    "orderIndex": 140
+  },
+  {
+    "id": "cab_seed_141",
+    "name": "Afif Fadilah Rahman",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Ilmu Komputer 2025",
+    "orderIndex": 141
+  },
+  {
+    "id": "cab_seed_142",
+    "name": "Intan Ayu Purnama",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Kepelatihan Fisik Olahraga 2025",
+    "orderIndex": 142
+  },
+  {
+    "id": "cab_seed_143",
+    "name": "Muhammad Ghiyyast Fauzan",
+    "position": "Anggota",
+    "division": "Kepesertaan",
+    "programStudi": "Pendidikan Teknik Otomasi Industri dan Robotika 2025",
+    "orderIndex": 143
+  },
+  {
+    "id": "cab_seed_144",
+    "name": "Rafli Permana",
+    "position": "Ketua Bidang Media Kreatif Informasi",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Bahasa Dan Sastra Indonesia 2023",
+    "orderIndex": 144
+  },
+  {
+    "id": "cab_seed_145",
+    "name": "Najwa Futhana Ramadhani",
+    "position": "Wakil Ketua Bidang Media Kreatif Informasi",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Desain Komunikasi Visual 2023",
+    "orderIndex": 145
+  },
+  {
+    "id": "cab_seed_146",
+    "name": "Yulistya Wening Gusno",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Seni Rupa 2024",
+    "orderIndex": 146
+  },
+  {
+    "id": "cab_seed_147",
+    "name": "Sativa Rahmah",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Teknologi Pendidikan 2024",
+    "orderIndex": 147
+  },
+  {
+    "id": "cab_seed_148",
+    "name": "Nadia Nalani Syaefudin",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Teknologi Pendidikan 2024",
+    "orderIndex": 148
+  },
+  {
+    "id": "cab_seed_149",
+    "name": "M Fadhil Uluum",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Manajemen Industri Katering 2024",
+    "orderIndex": 149
+  },
+  {
+    "id": "cab_seed_150",
+    "name": "Naely Saniy",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Teknologi Pendidikan 2024",
+    "orderIndex": 150
+  },
+  {
+    "id": "cab_seed_151",
+    "name": "Anne Rufaidah",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2024",
+    "orderIndex": 151
+  },
+  {
+    "id": "cab_seed_152",
+    "name": "Salman Qoulan Ma'rufa",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Guru Sekolah Dasar Pendidikan Jasmani B 2024",
+    "orderIndex": 152
+  },
+  {
+    "id": "cab_seed_153",
+    "name": "Hakika Syauqiya Imani",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Biologi C 2024",
+    "orderIndex": 153
+  },
+  {
+    "id": "cab_seed_154",
+    "name": "Nailah Hajidah",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Teknologi Agroindustri A 2024",
+    "orderIndex": 154
+  },
+  {
+    "id": "cab_seed_155",
+    "name": "Salma Khairun Nisa",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Tata Busana B 2024",
+    "orderIndex": 155
+  },
+  {
+    "id": "cab_seed_156",
+    "name": "Bimo Rahman Fauzan",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Teknik Elektro A 2024",
+    "orderIndex": 156
+  },
+  {
+    "id": "cab_seed_157",
+    "name": "Candra Putra Budianto",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Biologi 2023",
+    "orderIndex": 157
+  },
+  {
+    "id": "cab_seed_158",
+    "name": "Nabil Hafidz Khairi",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Ilmu Pengetahuan Sosial 2023",
+    "orderIndex": 158
+  },
+  {
+    "id": "cab_seed_159",
+    "name": "Nasywa",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Desain Komunikasi Visual 2023",
+    "orderIndex": 159
+  },
+  {
+    "id": "cab_seed_160",
+    "name": "Sheila Rolekta",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Keperawatan 2023",
+    "orderIndex": 160
+  },
+  {
+    "id": "cab_seed_161",
+    "name": "Marisa Savida R",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Desain Komunikasi Visual 2023",
+    "orderIndex": 161
+  },
+  {
+    "id": "cab_seed_162",
+    "name": "Danang Darudriyo",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Bahasa dan Sastra Inggris 2024",
+    "orderIndex": 162
+  },
+  {
+    "id": "cab_seed_163",
+    "name": "Asma Fihifdzillah",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Bahasa Jepang 2025",
+    "orderIndex": 163
+  },
+  {
+    "id": "cab_seed_164",
+    "name": "Gendis Julianita",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Fisika 2025",
+    "orderIndex": 164
+  },
+  {
+    "id": "cab_seed_165",
+    "name": "Rizqi Rifandi",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Bahasa Jepang 2025",
+    "orderIndex": 165
+  },
+  {
+    "id": "cab_seed_166",
+    "name": "Rosita Dewi",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Pendidikan Biologi 2025",
+    "orderIndex": 166
+  },
+  {
+    "id": "cab_seed_167",
+    "name": "Salsabila Ayudia Budiman",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Kimia 2025",
+    "orderIndex": 167
+  },
+  {
+    "id": "cab_seed_168",
+    "name": "Shopi Fatwa Nabillah",
+    "position": "Anggota",
+    "division": "Media Kreatif Informasi",
+    "programStudi": "Bahasa dan Sastra Inggris 2025",
+    "orderIndex": 168
+  },
+  {
+    "id": "cab_seed_169",
+    "name": "Nelsya Winanda",
+    "position": "Ketua Bidang Ketutoran",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2023",
+    "orderIndex": 169
+  },
+  {
+    "id": "cab_seed_170",
+    "name": "Dika Fihara",
+    "position": "Wakil Ketua Bidang Ketutoran",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Bahasa Sunda 2024",
+    "orderIndex": 170
+  },
+  {
+    "id": "cab_seed_171",
+    "name": "Salwa Fauziah",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Bahasa Dan Sastra Indonesia 2024",
+    "orderIndex": 171
+  },
+  {
+    "id": "cab_seed_172",
+    "name": "Salsa Sabilah Sephiani",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2022",
+    "orderIndex": 172
+  },
+  {
+    "id": "cab_seed_173",
+    "name": "Abyan Fathoni Rizdkiyo",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Teknik Bangunan A 2024",
+    "orderIndex": 173
+  },
+  {
+    "id": "cab_seed_174",
+    "name": "Indri Maysarohmah",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2023",
+    "orderIndex": 174
+  },
+  {
+    "id": "cab_seed_175",
+    "name": "Raysa Dwi Ananda",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Teknik Otomotif A 2024",
+    "orderIndex": 175
+  },
+  {
+    "id": "cab_seed_176",
+    "name": "Kalimatus Sya'diah",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Guru Pendidikan Anak Usia Dini 2024",
+    "orderIndex": 176
+  },
+  {
+    "id": "cab_seed_177",
+    "name": "Nanda Cahyani Lusia",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Administrasi Pendidikan 2024",
+    "orderIndex": 177
+  },
+  {
+    "id": "cab_seed_178",
+    "name": "Tresna Alya Balebat Madyadewi",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Guru Pendidikan Anak Usia Dini 2023",
+    "orderIndex": 178
+  },
+  {
+    "id": "cab_seed_179",
+    "name": "Muhammad Gazi Al Gifari",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Jasmani Kesehatan Dan Rekreasi 2023",
+    "orderIndex": 179
+  },
+  {
+    "id": "cab_seed_180",
+    "name": "Muhammad Farhan Febrian",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Sejarah 2023",
+    "orderIndex": 180
+  },
+  {
+    "id": "cab_seed_181",
+    "name": "Rina Nazilah",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Ilmu Pendidikan Agama Islam 2024",
+    "orderIndex": 181
+  },
+  {
+    "id": "cab_seed_182",
+    "name": "Octa Salman Ramdani",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Ilmu Pendidikan Agama Islam 2024",
+    "orderIndex": 182
+  },
+  {
+    "id": "cab_seed_183",
+    "name": "Imam Safii",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Ilmu Pendidikan Agama Islam 2024",
+    "orderIndex": 183
+  },
+  {
+    "id": "cab_seed_184",
+    "name": "Robby Setya Ramadhani",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Ilmu Pendidikan Agama Islam 2024",
+    "orderIndex": 184
+  },
+  {
+    "id": "cab_seed_185",
+    "name": "Elda Putri Azkiya",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Kesejahteraan Keluarga 2023",
+    "orderIndex": 185
+  },
+  {
+    "id": "cab_seed_186",
+    "name": "Deandra Novita Rani",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Bahasa dan Sastra Indonesia 2024",
+    "orderIndex": 186
+  },
+  {
+    "id": "cab_seed_187",
+    "name": "Mia Masruroh",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Bahasa Sunda 2024",
+    "orderIndex": 187
+  },
+  {
+    "id": "cab_seed_188",
+    "name": "Salsabila Khairina Alfi Syahrin",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Ilmu Ekonomi dan Keuangan Islam 2024",
+    "orderIndex": 188
+  },
+  {
+    "id": "cab_seed_189",
+    "name": "Arif Rahmatullah",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Biologi 2025",
+    "orderIndex": 189
+  },
+  {
+    "id": "cab_seed_190",
+    "name": "Asep Sapna Nurdiansyah",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Ilmu Hukum 2025",
+    "orderIndex": 190
+  },
+  {
+    "id": "cab_seed_191",
+    "name": "Muhamad Rafi Baruna",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Teknik Energi Terbarukan 2025",
+    "orderIndex": 191
+  },
+  {
+    "id": "cab_seed_192",
+    "name": "Naurah Adani Busyra",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Matematika 2025",
+    "orderIndex": 192
+  },
+  {
+    "id": "cab_seed_193",
+    "name": "Salma Nabila",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Ilmu Komputer 2025",
+    "orderIndex": 193
+  },
+  {
+    "id": "cab_seed_194",
+    "name": "Salma Nadira",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Pendidikan Bahasa dan Sastra Indonesia 2025",
+    "orderIndex": 194
+  },
+  {
+    "id": "cab_seed_195",
+    "name": "Sumayyah Naailatul Jannah Firdaus",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Ilmu Komputer 2025",
+    "orderIndex": 195
+  },
+  {
+    "id": "cab_seed_196",
+    "name": "Taqiyan Azzarah Warits Al Haqq",
+    "position": "Anggota",
+    "division": "Ketutoran",
+    "programStudi": "Gizi 2025",
+    "orderIndex": 196
+  },
+  {
+    "id": "cab_seed_197",
+    "name": "Muhammad Fathan Mubina",
+    "position": "Ketua Bidang Penjaminan Mutu",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Sejarah 2023",
+    "orderIndex": 197
+  },
+  {
+    "id": "cab_seed_198",
+    "name": "Muhammad Nashruddin Ash Shiddiq",
+    "position": "Wakil Ketua Bidang Penjaminan Mutu",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Bahasa Dan Sastra Indonesia C 2024",
+    "orderIndex": 198
+  },
+  {
+    "id": "cab_seed_199",
+    "name": "Naila Habibah Khoiruddin",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Seni Rupa 2024",
+    "orderIndex": 199
+  },
+  {
+    "id": "cab_seed_200",
+    "name": "Sahrul Hadiana",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Fisika 2024",
+    "orderIndex": 200
+  },
+  {
+    "id": "cab_seed_201",
+    "name": "Az-Zahra Awwalu An-Nisa Pramuji",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Bimbingan Dan Konseling 2024",
+    "orderIndex": 201
+  },
+  {
+    "id": "cab_seed_202",
+    "name": "Jessie Kusuma Rianto",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2024",
+    "orderIndex": 202
+  },
+  {
+    "id": "cab_seed_203",
+    "name": "Nayla Lulu Nandhiya",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Keperawatan 2024",
+    "orderIndex": 203
+  },
+  {
+    "id": "cab_seed_204",
+    "name": "Najwa Salsabila",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Guru Sekolah Dasar 2024",
+    "orderIndex": 204
+  },
+  {
+    "id": "cab_seed_205",
+    "name": "Nabila saskia",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Pancasila Dan Kewarganegaraan 2024",
+    "orderIndex": 205
+  },
+  {
+    "id": "cab_seed_206",
+    "name": "Shizuka Maula Everlin",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Fisika 2023",
+    "orderIndex": 206
+  },
+  {
+    "id": "cab_seed_207",
+    "name": "Reni Lestari",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Bahasa Dan Sastra Indonesia 2024",
+    "orderIndex": 207
+  },
+  {
+    "id": "cab_seed_208",
+    "name": "Andika Haditya",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Manajemen Perkantoran 2024",
+    "orderIndex": 208
+  },
+  {
+    "id": "cab_seed_209",
+    "name": "Yumna Sabilal Huda",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Teknologi Pendidikan 2023",
+    "orderIndex": 209
+  },
+  {
+    "id": "cab_seed_210",
+    "name": "Dini Amalia Salsabila",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Ilmu Pendidikan Agama Islam 2023",
+    "orderIndex": 210
+  },
+  {
+    "id": "cab_seed_211",
+    "name": "A Embun Nurani Dwi Sari Heryanto",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Bahasa Dan Sastra Indonesia 2023",
+    "orderIndex": 211
+  },
+  {
+    "id": "cab_seed_212",
+    "name": "Dimas Maulana Firdaus",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Bahasa Dan Sastra Inggris 2024",
+    "orderIndex": 212
+  },
+  {
+    "id": "cab_seed_213",
+    "name": "Putri Aulia Nur Sa'adah",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Kepelatihan Olahraga 2024",
+    "orderIndex": 213
+  },
+  {
+    "id": "cab_seed_214",
+    "name": "R. Ahmad Faiz Abhinaya",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Teknik Elektro 2024",
+    "orderIndex": 214
+  },
+  {
+    "id": "cab_seed_215",
+    "name": "Deden Aditia Mulyasapah",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Jasmani Kesehatan Dan Rekreasi 2024",
+    "orderIndex": 215
+  },
+  {
+    "id": "cab_seed_216",
+    "name": "Widi Manda Sabila",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Sejarah 2023",
+    "orderIndex": 216
+  },
+  {
+    "id": "cab_seed_217",
+    "name": "Muhammad Rizal Maulana",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Kimia 2023",
+    "orderIndex": 217
+  },
+  {
+    "id": "cab_seed_218",
+    "name": "Fauzaan Dwi Putra",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Bahasa Arab 2024",
+    "orderIndex": 218
+  },
+  {
+    "id": "cab_seed_219",
+    "name": "Widia Multiani",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Keperawatan 2022",
+    "orderIndex": 219
+  },
+  {
+    "id": "cab_seed_220",
+    "name": "Devi Eliviani",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Fisika 2022",
+    "orderIndex": 220
+  },
+  {
+    "id": "cab_seed_221",
+    "name": "Lutfi Muhammad Fauzi",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Ilmu Pendidikan Agama Islam 2022",
+    "orderIndex": 221
+  },
+  {
+    "id": "cab_seed_222",
+    "name": "Ahmad Maulana Mansur",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidkan Jasmani, Kesehatan dan Rekreasi 2025",
+    "orderIndex": 222
+  },
+  {
+    "id": "cab_seed_223",
+    "name": "Andrean Rivaldi",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendikan Bahasa Arab 2025",
+    "orderIndex": 223
+  },
+  {
+    "id": "cab_seed_224",
+    "name": "Azzahra Azkiya Mutmainah",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Tata Busana 2025",
+    "orderIndex": 224
+  },
+  {
+    "id": "cab_seed_225",
+    "name": "Kholisna Jahrotunnisa",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Tata Boga 2025",
+    "orderIndex": 225
+  },
+  {
+    "id": "cab_seed_226",
+    "name": "Nabila Mutiara Azahra",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "PGSD Penjas 2025",
+    "orderIndex": 226
+  },
+  {
+    "id": "cab_seed_227",
+    "name": "R. Denisa Aulia Hanifa",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Bahasa dan Sastra Indonesia 2025",
+    "orderIndex": 227
+  },
+  {
+    "id": "cab_seed_228",
+    "name": "Riska",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Biologi 2025",
+    "orderIndex": 228
+  },
+  {
+    "id": "cab_seed_229",
+    "name": "Zianka Lubnaa Tsabita",
+    "position": "Anggota",
+    "division": "Penjaminan Mutu",
+    "programStudi": "Pendidikan Tata Busana 2025",
+    "orderIndex": 229
+  }
+]

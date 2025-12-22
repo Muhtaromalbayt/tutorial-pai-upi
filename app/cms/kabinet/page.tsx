@@ -9,6 +9,7 @@ interface CabinetMember {
     name: string;
     position: string;
     division?: string;
+    program_studi?: string;
     photo_url?: string;
     email?: string;
     phone?: string;
@@ -20,6 +21,7 @@ interface FormData {
     name: string;
     position: string;
     division: string;
+    programStudi: string;
     photoUrl: string;
     email: string;
     phone: string;
@@ -38,6 +40,7 @@ export default function KabinetCMSPage() {
         name: "",
         position: "",
         division: "",
+        programStudi: "",
         photoUrl: "",
         email: "",
         phone: "",
@@ -77,6 +80,7 @@ export default function KabinetCMSPage() {
                 name: formData.name,
                 position: formData.position,
                 division: formData.division || null,
+                programStudi: formData.programStudi || null,
                 photoUrl: formData.photoUrl || null,
                 email: formData.email || null,
                 phone: formData.phone || null,
@@ -110,6 +114,7 @@ export default function KabinetCMSPage() {
             name: member.name,
             position: member.position,
             division: member.division || "",
+            programStudi: member.program_studi || "",
             photoUrl: member.photo_url || "",
             email: member.email || "",
             phone: member.phone || "",
@@ -141,6 +146,7 @@ export default function KabinetCMSPage() {
             name: "",
             position: "",
             division: "",
+            programStudi: "",
             photoUrl: "",
             email: "",
             phone: "",
@@ -224,6 +230,19 @@ export default function KabinetCMSPage() {
                                     />
                                 </div>
                                 <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Program Studi/Angkatan</label>
+                                    <input
+                                        type="text"
+                                        value={formData.programStudi}
+                                        onChange={(e) => setFormData({ ...formData, programStudi: e.target.value })}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#055E5B] focus:border-[#055E5B]"
+                                        placeholder="Pendidikan Matematika 2023"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Urutan</label>
                                     <input
                                         type="number"
@@ -233,18 +252,28 @@ export default function KabinetCMSPage() {
                                         placeholder="0"
                                     />
                                 </div>
+                                <div className="flex items-end">
+                                    <p className="text-xs text-gray-500">Urutan menentukan posisi tampilan. Semakin kecil angka, semakin di atas.</p>
+                                </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">URL Foto</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">URL Foto (HD)</label>
                                 <input
                                     type="text"
                                     value={formData.photoUrl}
                                     onChange={(e) => setFormData({ ...formData, photoUrl: e.target.value })}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#055E5B] focus:border-[#055E5B]"
-                                    placeholder="https://example.com/foto.jpg atau /assets/kabinet/nama.jpg"
+                                    placeholder="https://lh3.googleusercontent.com/d/FILE_ID atau URL lainnya"
                                 />
-                                <p className="text-xs text-gray-500 mt-1">Gunakan URL gambar dari internet atau path lokal</p>
+                                <div className="mt-2 p-3 bg-blue-50 rounded-lg text-xs text-blue-800">
+                                    <p className="font-medium mb-1">💡 Tips foto Google Drive HD:</p>
+                                    <ol className="list-decimal list-inside space-y-1">
+                                        <li>Buka foto di Google Drive → Klik kanan → Bagikan → Siapa saja yang memiliki link</li>
+                                        <li>Salin link: <code className="bg-blue-100 px-1 rounded">https://drive.google.com/file/d/FILE_ID/view</code></li>
+                                        <li>Ubah ke format: <code className="bg-blue-100 px-1 rounded">https://lh3.googleusercontent.com/d/FILE_ID</code></li>
+                                    </ol>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

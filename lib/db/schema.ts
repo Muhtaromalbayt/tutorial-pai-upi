@@ -154,6 +154,7 @@ export const cabinetMembers = sqliteTable('cabinet_members', {
     name: text('name').notNull(),
     position: text('position').notNull(),
     division: text('division'),
+    programStudi: text('program_studi'), // Program studi/angkatan (e.g., "Pendidikan Matematika 2023")
     photoUrl: text('photo_url'),
     email: text('email'),
     phone: text('phone'),
