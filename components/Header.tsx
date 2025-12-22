@@ -14,7 +14,6 @@ import {
     MenuIcon,
     CloseIcon,
     HomeIcon,
-    EyeIcon,
     UsersIcon,
     BuildingIcon,
     BookIcon,
@@ -28,40 +27,55 @@ import {
 
 const Header = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [activeTentangDropdown, setActiveTentangDropdown] = useState(false);
-    const [activeProgramDropdown, setActiveProgramDropdown] = useState(false);
+    const [activeKepengurusanDropdown, setActiveKepengurusanDropdown] = useState(false);
+    const [activeTutorialPAIDropdown, setActiveTutorialPAIDropdown] = useState(false);
+    const [activeTutorialSPAIDropdown, setActiveTutorialSPAIDropdown] = useState(false);
     const pathname = usePathname();
 
-    const tentangTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const programTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const kepengurusanTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const tutorialPAITimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const tutorialSPAITimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // Close mobile menu when route changes
     useEffect(() => {
         setIsMobileMenuOpen(false);
     }, [pathname]);
 
-    const handleTentangMouseEnter = () => {
-        if (tentangTimeoutRef.current) clearTimeout(tentangTimeoutRef.current);
-        setActiveTentangDropdown(true);
+    // Kepengurusan dropdown handlers
+    const handleKepengurusanMouseEnter = () => {
+        if (kepengurusanTimeoutRef.current) clearTimeout(kepengurusanTimeoutRef.current);
+        setActiveKepengurusanDropdown(true);
     };
 
-    const handleTentangMouseLeave = () => {
-        tentangTimeoutRef.current = setTimeout(() => setActiveTentangDropdown(false), 200);
+    const handleKepengurusanMouseLeave = () => {
+        kepengurusanTimeoutRef.current = setTimeout(() => setActiveKepengurusanDropdown(false), 200);
     };
 
-    const handleProgramMouseEnter = () => {
-        if (programTimeoutRef.current) clearTimeout(programTimeoutRef.current);
-        setActiveProgramDropdown(true);
+    // Tutorial PAI dropdown handlers
+    const handleTutorialPAIMouseEnter = () => {
+        if (tutorialPAITimeoutRef.current) clearTimeout(tutorialPAITimeoutRef.current);
+        setActiveTutorialPAIDropdown(true);
     };
 
-    const handleProgramMouseLeave = () => {
-        programTimeoutRef.current = setTimeout(() => setActiveProgramDropdown(false), 200);
+    const handleTutorialPAIMouseLeave = () => {
+        tutorialPAITimeoutRef.current = setTimeout(() => setActiveTutorialPAIDropdown(false), 200);
+    };
+
+    // Tutorial SPAI dropdown handlers
+    const handleTutorialSPAIMouseEnter = () => {
+        if (tutorialSPAITimeoutRef.current) clearTimeout(tutorialSPAITimeoutRef.current);
+        setActiveTutorialSPAIDropdown(true);
+    };
+
+    const handleTutorialSPAIMouseLeave = () => {
+        tutorialSPAITimeoutRef.current = setTimeout(() => setActiveTutorialSPAIDropdown(false), 200);
     };
 
     useEffect(() => {
         return () => {
-            if (tentangTimeoutRef.current) clearTimeout(tentangTimeoutRef.current);
-            if (programTimeoutRef.current) clearTimeout(programTimeoutRef.current);
+            if (kepengurusanTimeoutRef.current) clearTimeout(kepengurusanTimeoutRef.current);
+            if (tutorialPAITimeoutRef.current) clearTimeout(tutorialPAITimeoutRef.current);
+            if (tutorialSPAITimeoutRef.current) clearTimeout(tutorialSPAITimeoutRef.current);
         };
     }, []);
 
@@ -137,48 +151,64 @@ const Header = () => {
                                     Home
                                 </Link>
 
-                                {/* Tentang Dropdown */}
+                                {/* Kepengurusan Dropdown */}
                                 <div
                                     className="relative"
-                                    onMouseEnter={handleTentangMouseEnter}
-                                    onMouseLeave={handleTentangMouseLeave}
+                                    onMouseEnter={handleKepengurusanMouseEnter}
+                                    onMouseLeave={handleKepengurusanMouseLeave}
                                 >
                                     <button className="px-4 py-2 text-sm font-medium hover:bg-white/10 rounded-md transition-colors flex items-center">
-                                        Tentang
+                                        Kepengurusan
                                         <ChevronDownIcon className="ml-1 w-4 h-4" />
                                     </button>
 
-                                    {activeTentangDropdown && (
+                                    {activeKepengurusanDropdown && (
                                         <div className="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-neutral-100 py-2 text-neutral-800 animate-fadeIn z-50">
-                                            <Link href="/tentang/struktur" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Struktur Kepengurusan</Link>
                                             <Link href="/tentang/kabinet" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Kabinet AL-FATH</Link>
+                                            <Link href="/tentang/struktur" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Struktur Kepengurusan</Link>
                                             <div className="border-t border-neutral-100 my-2"></div>
                                             <div className="px-4 py-2 text-xs font-semibold text-neutral-400 uppercase">Program Pengurus</div>
                                             <Link href="/tentang/program-pengurus/kajian-rutin" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Kajian Rutin</Link>
                                             <Link href="/tentang/program-pengurus/project-mini" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Project Mini Tutorial</Link>
-                                            <div className="border-t border-neutral-100 my-2"></div>
-                                            <Link href="/tentang/dosen" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Dosen Penyelenggara</Link>
                                         </div>
                                     )}
                                 </div>
 
-                                {/* Program Dropdown */}
+                                {/* Tutorial PAI Dropdown */}
                                 <div
                                     className="relative"
-                                    onMouseEnter={handleProgramMouseEnter}
-                                    onMouseLeave={handleProgramMouseLeave}
+                                    onMouseEnter={handleTutorialPAIMouseEnter}
+                                    onMouseLeave={handleTutorialPAIMouseLeave}
                                 >
                                     <button className="px-4 py-2 text-sm font-medium hover:bg-white/10 rounded-md transition-colors flex items-center">
-                                        Program
+                                        Tutorial PAI
                                         <ChevronDownIcon className="ml-1 w-4 h-4" />
                                     </button>
 
-                                    {activeProgramDropdown && (
+                                    {activeTutorialPAIDropdown && (
                                         <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-neutral-100 py-2 text-neutral-800 animate-fadeIn z-50">
                                             <Link href="/program/kuliah-dhuha" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Kuliah Dhuha</Link>
-                                            <Link href="/program/seminar-pai" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Seminar PAI</Link>
                                             <Link href="/program/mentoring" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Mentoring</Link>
                                             <Link href="/program/bina-kader" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Bina Kader</Link>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Tutorial SPAI Dropdown */}
+                                <div
+                                    className="relative"
+                                    onMouseEnter={handleTutorialSPAIMouseEnter}
+                                    onMouseLeave={handleTutorialSPAIMouseLeave}
+                                >
+                                    <button className="px-4 py-2 text-sm font-medium hover:bg-white/10 rounded-md transition-colors flex items-center">
+                                        Tutorial SPAI
+                                        <ChevronDownIcon className="ml-1 w-4 h-4" />
+                                    </button>
+
+                                    {activeTutorialSPAIDropdown && (
+                                        <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-neutral-100 py-2 text-neutral-800 animate-fadeIn z-50">
+                                            <Link href="/program/seminar-pai" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Seminar PAI</Link>
+                                            <Link href="/program/panitia-delegasi" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Panitia Delegasi</Link>
                                         </div>
                                     )}
                                 </div>
@@ -241,24 +271,22 @@ const Header = () => {
                             <span className="font-medium">Home</span>
                         </Link>
 
-                        <div className="px-6 py-3 mt-2 text-xs font-bold text-neutral-400 uppercase tracking-wider">Tentang</div>
-                        <Link href="/tentang/struktur" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                            <UsersIcon />
-                            <span>Struktur Kepengurusan</span>
-                        </Link>
+                        {/* Kepengurusan Section */}
+                        <div className="px-6 py-3 mt-2 text-xs font-bold text-neutral-400 uppercase tracking-wider">Kepengurusan</div>
                         <Link href="/tentang/kabinet" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
                             <BuildingIcon />
                             <span>Kabinet AL-FATH</span>
                         </Link>
+                        <Link href="/tentang/struktur" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <UsersIcon />
+                            <span>Struktur Kepengurusan</span>
+                        </Link>
 
-                        <div className="px-6 py-3 mt-4 text-xs font-bold text-neutral-400 uppercase tracking-wider">Program</div>
+                        {/* Tutorial PAI Section */}
+                        <div className="px-6 py-3 mt-4 text-xs font-bold text-neutral-400 uppercase tracking-wider">Tutorial PAI</div>
                         <Link href="/program/kuliah-dhuha" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
                             <BookIcon />
                             <span>Kuliah Dhuha</span>
-                        </Link>
-                        <Link href="/program/seminar-pai" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                            <NewspaperIcon />
-                            <span>Seminar PAI</span>
                         </Link>
                         <Link href="/program/mentoring" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
                             <UserGroupIcon />
@@ -267,6 +295,17 @@ const Header = () => {
                         <Link href="/program/bina-kader" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
                             <BadgeIcon />
                             <span>Bina Kader</span>
+                        </Link>
+
+                        {/* Tutorial SPAI Section */}
+                        <div className="px-6 py-3 mt-4 text-xs font-bold text-neutral-400 uppercase tracking-wider">Tutorial SPAI</div>
+                        <Link href="/program/seminar-pai" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <NewspaperIcon />
+                            <span>Seminar PAI</span>
+                        </Link>
+                        <Link href="/program/panitia-delegasi" className="flex items-center gap-3 px-6 py-2.5 text-neutral-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <UsersIcon />
+                            <span>Panitia Delegasi</span>
                         </Link>
 
                         <div className="border-t border-neutral-200 my-4"></div>

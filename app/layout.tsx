@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
-import { Inter, Source_Sans_3 } from "next/font/google";
+import { Plus_Jakarta_Sans, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ai/ChatWidget";
 
-const inter = Inter({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-plus-jakarta",
   display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
-const sourceSans = Source_Sans_3({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-source-sans",
+  variable: "--font-dm-sans",
   display: "swap",
-  weight: ["400", "600", "700"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -35,12 +36,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${inter.variable} ${sourceSans.variable}`}>
+    <html lang="id" className={`${plusJakarta.variable} ${dmSans.variable}`}>
       <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
       <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" />
       <link rel="apple-touch-icon" href="/favicon.png?v=2" />
       <link rel="shortcut icon" href="/favicon.ico?v=2" />
-      <body className="min-h-screen flex flex-col">
+      <body className="min-h-screen flex flex-col font-sans">
         <Header />
         <main className="flex-1">
           {children}

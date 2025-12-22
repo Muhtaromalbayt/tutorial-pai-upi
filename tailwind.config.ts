@@ -60,8 +60,8 @@ const config: Config = {
                 },
             },
             fontFamily: {
-                sans: ["Inter", "system-ui", "sans-serif"],
-                heading: ["Source Sans Pro", "Inter", "sans-serif"],
+                sans: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
+                heading: ["var(--font-plus-jakarta)", "var(--font-dm-sans)", "sans-serif"],
             },
             spacing: {
                 '128': '32rem',
