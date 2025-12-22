@@ -141,10 +141,10 @@ const DepartmentSection = ({ dept, isOpen, onToggle }: {
 
             <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                 <div className="px-4 sm:px-6 pb-6 pt-2">
-                    {/* Leaders Grid */}
+                    {/* Leaders Grid - Centered */}
                     {leaders.length > 0 && (
                         <div className="mb-6">
-                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
+                            <div className="flex flex-wrap justify-center gap-4 sm:gap-8">
                                 {leaders.map((member) => (
                                     <MemberCard
                                         key={member.id}
