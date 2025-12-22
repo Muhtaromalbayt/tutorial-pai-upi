@@ -87,8 +87,8 @@ const config: Config = {
                 },
             },
             fontFamily: {
-                sans: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
-                heading: ["var(--font-plus-jakarta)", "var(--font-dm-sans)", "sans-serif"],
+                sans: ["var(--font-plus-jakarta)", "system-ui", "sans-serif"],
+                heading: ["var(--font-outfit)", "var(--font-plus-jakarta)", "sans-serif"],
             },
             spacing: {
                 '128': '32rem',

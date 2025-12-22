@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, DM_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -12,11 +12,11 @@ const plusJakarta = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const dmSans = DM_Sans({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
+  variable: "--font-outfit",
   display: "swap",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${plusJakarta.variable} ${dmSans.variable}`}>
+    <html lang="id" className={`${plusJakarta.variable} ${outfit.variable}`}>
       <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
       <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" />
       <link rel="apple-touch-icon" href="/favicon.png?v=2" />
