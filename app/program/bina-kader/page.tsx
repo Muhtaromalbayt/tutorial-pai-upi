@@ -43,15 +43,15 @@ export default function BinaKaderPage() {
     return (
         <div>
             <Hero
-                title="Bina Kader XLI"
+                title="Bina Kader"
                 subtitle="BISA! BISA! BISA! YES! ALLAHUAKBAR!!"
                 variant="gradient"
             />
 
             {/* Quick Links Section */}
-            <section className="py-16 bg-gradient-to-b from-sky-900 to-sky-800">
+            <section className="py-16 bg-white">
                 <div className="container-upi max-w-4xl">
-                    <h2 className="text-2xl font-bold text-white text-center mb-8">
+                    <h2 className="text-2xl font-bold text-neutral-900 text-center mb-8">
                         Akses Cepat Binder XLI
                     </h2>
                     <div className="space-y-4">
@@ -74,7 +74,7 @@ export default function BinaKaderPage() {
             </section>
 
             {/* Contact Person Section */}
-            <section className="py-12 bg-sky-800">
+            <section className="py-12 bg-neutral-50">
                 <div className="container-upi max-w-4xl">
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         {contactPersons.map((cp, i) => (
