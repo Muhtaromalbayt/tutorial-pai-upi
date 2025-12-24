@@ -9,10 +9,13 @@ interface NewsItem {
     title: string;
     content: string;
     category: string;
+    imageUrl?: string;
     image_url?: string;
     author?: string;
+    publishedDate?: string;
     published_date?: string;
-    is_published: boolean;
+    isPublished: boolean | number;
+    is_published?: boolean | number;
 }
 
 interface FormData {
@@ -59,7 +62,7 @@ export default function KabarTutorialPage() {
     const fetchNews = async () => {
         try {
             const res = await fetch("/api/news");
-            const data = await res.json();
+            const data = await res.json() as { news: NewsItem[] };
             setNewsList(data.news || []);
         } catch (err) {
             console.error("Failed to fetch news:", err);
@@ -95,7 +98,7 @@ export default function KabarTutorialPage() {
                 resetForm();
                 fetchNews();
             } else {
-                const err = await res.json();
+                const err = await res.json() as { error?: string };
                 alert("Gagal menyimpan: " + (err.error || "Unknown error"));
             }
         } catch (err) {
@@ -110,10 +113,10 @@ export default function KabarTutorialPage() {
             title: news.title,
             content: news.content,
             category: news.category || "Kegiatan",
-            imageUrl: news.image_url || "",
+            imageUrl: news.imageUrl || news.image_url || "",
             author: news.author || "",
-            publishedDate: news.published_date || "",
-            isPublished: news.is_published,
+            publishedDate: news.publishedDate || news.published_date || "",
+            isPublished: (news.isPublished !== undefined ? !!news.isPublished : !!news.is_published),
         });
         setEditingId(news.id);
         setShowForm(true);
@@ -386,10 +389,10 @@ Contoh:
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                {news.published_date || "-"}
+                                                {news.publishedDate || news.published_date || "-"}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                {news.is_published ? (
+                                                {(news.isPublished !== undefined ? !!news.isPublished : !!news.is_published) ? (
                                                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                                         Published
                                                     </span>

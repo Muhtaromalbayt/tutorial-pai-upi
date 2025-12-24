@@ -12,9 +12,12 @@ interface NewsItem {
   title: string;
   content: string;
   category: string;
+  imageUrl?: string;
   image_url?: string;
+  publishedDate?: string;
   published_date?: string;
-  is_published: boolean | number;
+  isPublished: boolean | number;
+  is_published?: boolean | number;
 }
 
 interface SiteSettings {
@@ -36,9 +39,9 @@ function NewsGrid() {
     try {
       const response = await fetch("/api/news");
       const data = await response.json() as { news: NewsItem[] };
-      // Filter by is_published (database uses snake_case)
+      // Filter by is_published (database uses snake_case, Drizzle uses camelCase)
       const publishedNews = (data.news || [])
-        .filter((item: NewsItem) => item.is_published)
+        .filter((item: NewsItem) => item.isPublished !== undefined ? item.isPublished : item.is_published)
         .slice(0, 3); // Get only first 3 published news
       setNews(publishedNews);
     } catch (error) {
@@ -80,9 +83,9 @@ function NewsGrid() {
           key={item.id}
           title={item.title}
           description={item.content}
-          date={item.published_date || ""}
+          date={item.publishedDate || item.published_date || ""}
           category={item.category}
-          imageUrl={item.image_url || "/assets/kegiatan/default.png"}
+          imageUrl={item.imageUrl || item.image_url || "/assets/kegiatan/default.png"}
           href={`/news/${item.id}`}
         />
       ))}

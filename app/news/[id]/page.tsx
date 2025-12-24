@@ -12,10 +12,14 @@ interface NewsItem {
     title: string;
     content: string;
     category: string;
+    imageUrl?: string;
     image_url?: string;
     author?: string;
+    publishedDate?: string;
     published_date?: string;
-    is_published: boolean | number;
+    isPublished: boolean | number;
+    is_published?: boolean | number;
+    createdAt?: string;
     created_at?: string;
 }
 
@@ -49,7 +53,7 @@ export default function NewsDetailPage() {
     const fetchNews = async (id: string) => {
         try {
             const response = await fetch("/api/news");
-            const data = await response.json();
+            const data = await response.json() as { news: NewsItem[] };
             const newsItem = (data.news || []).find((n: NewsItem) => n.id === id);
 
             if (newsItem) {
@@ -119,9 +123,9 @@ export default function NewsDetailPage() {
                         <span className="px-3 py-1 bg-white/20 rounded-full text-sm">
                             {news.category}
                         </span>
-                        {news.published_date && (
+                        {(news.publishedDate || news.published_date) && (
                             <span className="text-primary-100 text-sm">
-                                {news.published_date}
+                                {news.publishedDate || news.published_date}
                             </span>
                         )}
                     </div>
@@ -140,10 +144,10 @@ export default function NewsDetailPage() {
             <div className="container-upi py-12">
                 <article className="max-w-4xl mx-auto">
                     {/* Featured Image */}
-                    {news.image_url && (
+                    {(news.imageUrl || news.image_url) && (
                         <div className="mb-8 rounded-xl overflow-hidden shadow-lg">
                             <img
-                                src={news.image_url}
+                                src={news.imageUrl || news.image_url}
                                 alt={news.title}
                                 className="w-full h-auto object-cover"
                             />

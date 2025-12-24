@@ -9,11 +9,15 @@ interface NewsItem {
     title: string;
     content: string;
     category: string;
-    image_url?: string;
+    imageUrl?: string;
+    image_url?: string; // Fallback
     author?: string;
-    published_date?: string;
-    is_published: boolean | number;
-    created_at?: string;
+    publishedDate?: string;
+    published_date?: string; // Fallback
+    isPublished: boolean | number;
+    is_published?: boolean | number; // Fallback
+    createdAt?: string;
+    created_at?: string; // Fallback
 }
 
 // Simple markdown to HTML converter
@@ -92,7 +96,11 @@ export default function NewsListPage() {
             const response = await fetch("/api/news");
             const data = await response.json() as { news: NewsItem[] };
             // Filter only published news
-            const publishedNews = (data.news || []).filter((item: NewsItem) => item.is_published);
+            const publishedNews = (data.news || []).filter((item: NewsItem) => {
+                // Check both camelCase (Drizzle) and snake_case (Raw DB)
+                const isPub = item.isPublished !== undefined ? item.isPublished : item.is_published;
+                return isPub;
+            });
             setNews(publishedNews);
             setFilteredNews(publishedNews);
         } catch (error) {
@@ -144,8 +152,8 @@ export default function NewsListPage() {
                                 key={cat.value}
                                 onClick={() => setSelectedCategory(cat.value)}
                                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${selectedCategory === cat.value
-                                        ? 'bg-primary-600 text-white shadow-md'
-                                        : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                                    ? 'bg-primary-600 text-white shadow-md'
+                                    : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                                     }`}
                             >
                                 {cat.label}
@@ -212,9 +220,9 @@ export default function NewsListPage() {
                                 >
                                     <div className="md:flex">
                                         <div className="md:w-1/2 relative h-64 md:h-[400px] overflow-hidden">
-                                            {featuredNews.image_url ? (
+                                            {featuredNews.imageUrl || featuredNews.image_url ? (
                                                 <img
-                                                    src={featuredNews.image_url}
+                                                    src={featuredNews.imageUrl || featuredNews.image_url}
                                                     alt={featuredNews.title}
                                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                 />
@@ -237,9 +245,9 @@ export default function NewsListPage() {
                                                 <span className="px-3 py-1 bg-ocean-100 text-ocean-700 text-sm font-medium rounded-full">
                                                     {featuredNews.category}
                                                 </span>
-                                                {featuredNews.published_date && (
+                                                {(featuredNews.publishedDate || featuredNews.published_date) && (
                                                     <span className="text-sm text-neutral-500">
-                                                        {formatDate(featuredNews.published_date)}
+                                                        {formatDate(featuredNews.publishedDate || featuredNews.published_date || '')}
                                                     </span>
                                                 )}
                                             </div>
@@ -282,9 +290,9 @@ export default function NewsListPage() {
                                                 className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group flex flex-col"
                                             >
                                                 <div className="relative h-48 overflow-hidden">
-                                                    {item.image_url ? (
+                                                    {item.imageUrl || item.image_url ? (
                                                         <img
-                                                            src={item.image_url}
+                                                            src={item.imageUrl || item.image_url}
                                                             alt={item.title}
                                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                         />
@@ -302,9 +310,9 @@ export default function NewsListPage() {
                                                     </div>
                                                 </div>
                                                 <div className="p-6 flex-1 flex flex-col">
-                                                    {item.published_date && (
+                                                    {(item.publishedDate || item.published_date) && (
                                                         <span className="text-sm text-neutral-500 mb-2">
-                                                            {formatDate(item.published_date)}
+                                                            {formatDate(item.publishedDate || item.published_date || '')}
                                                         </span>
                                                     )}
                                                     <h3 className="text-lg font-bold text-neutral-900 mb-3 group-hover:text-primary-700 transition-colors line-clamp-2 font-heading">
