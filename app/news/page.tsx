@@ -118,25 +118,33 @@ export default function NewsListPage() {
     return (
         <main className="min-h-screen bg-neutral-50">
             {/* Hero Section */}
-            <section className="bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900 text-white py-16 md:py-24 relative overflow-hidden">
-                {/* Decorative elements */}
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl -mr-64 -mt-64 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-ocean-500/10 rounded-full blur-3xl -ml-32 -mb-32 pointer-events-none" />
+            <section className="relative text-white py-24 md:py-32 overflow-hidden">
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0 bg-primary-900">
+                    <Image
+                        src="/assets/kuliah-dhuha-hero.jpg"
+                        alt="Hero Background"
+                        fill
+                        className="object-cover opacity-60 mix-blend-overlay"
+                        priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary-900 via-primary-900/60 to-primary-800/80 mix-blend-multiply"></div>
+                </div>
 
-                <div className="container-upi relative z-10">
+                <div className="container-upi relative z-10 flex flex-col items-center text-center">
                     <Link
                         href="/"
-                        className="inline-flex items-center text-primary-100 hover:text-white mb-6 transition-colors group"
+                        className="inline-flex items-center text-white/90 hover:text-white mb-8 transition-colors group px-5 py-2.5 rounded-full border border-white/20 hover:bg-white/10 backdrop-blur-sm bg-black/10 text-sm font-medium"
                     >
-                        <svg className="w-5 h-5 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                         Kembali ke Beranda
                     </Link>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 font-heading">
+                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-6 font-heading tracking-tight drop-shadow-lg">
                         Kabar Tutorial
                     </h1>
-                    <p className="text-xl text-primary-100 max-w-2xl">
+                    <p className="text-xl md:text-2xl text-white/95 max-w-3xl mx-auto leading-relaxed drop-shadow-md font-light">
                         Ikuti perkembangan terbaru kegiatan dan informasi seputar Tutorial PAI-SPAI UPI Kabinet AL-FATH.
                     </p>
                 </div>
