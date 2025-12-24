@@ -27,104 +27,139 @@ import {
 
 const Header = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [activeKepengurusanDropdown, setActiveKepengurusanDropdown] = useState(false);
-    const [activeTutorialPAIDropdown, setActiveTutorialPAIDropdown] = useState(false);
-    const [activeTutorialSPAIDropdown, setActiveTutorialSPAIDropdown] = useState(false);
+    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const pathname = usePathname();
 
-    const kepengurusanTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const tutorialPAITimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const tutorialSPAITimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // Close mobile menu when route changes
     useEffect(() => {
         setIsMobileMenuOpen(false);
     }, [pathname]);
 
-    // Kepengurusan dropdown handlers
-    const handleKepengurusanMouseEnter = () => {
-        if (kepengurusanTimeoutRef.current) clearTimeout(kepengurusanTimeoutRef.current);
-        setActiveKepengurusanDropdown(true);
+    // Generic dropdown handlers
+    const handleDropdownMouseEnter = (dropdown: string) => {
+        if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
+        setActiveDropdown(dropdown);
     };
 
-    const handleKepengurusanMouseLeave = () => {
-        kepengurusanTimeoutRef.current = setTimeout(() => setActiveKepengurusanDropdown(false), 200);
-    };
-
-    // Tutorial PAI dropdown handlers
-    const handleTutorialPAIMouseEnter = () => {
-        if (tutorialPAITimeoutRef.current) clearTimeout(tutorialPAITimeoutRef.current);
-        setActiveTutorialPAIDropdown(true);
-    };
-
-    const handleTutorialPAIMouseLeave = () => {
-        tutorialPAITimeoutRef.current = setTimeout(() => setActiveTutorialPAIDropdown(false), 200);
-    };
-
-    // Tutorial SPAI dropdown handlers
-    const handleTutorialSPAIMouseEnter = () => {
-        if (tutorialSPAITimeoutRef.current) clearTimeout(tutorialSPAITimeoutRef.current);
-        setActiveTutorialSPAIDropdown(true);
-    };
-
-    const handleTutorialSPAIMouseLeave = () => {
-        tutorialSPAITimeoutRef.current = setTimeout(() => setActiveTutorialSPAIDropdown(false), 200);
+    const handleDropdownMouseLeave = () => {
+        dropdownTimeoutRef.current = setTimeout(() => setActiveDropdown(null), 150);
     };
 
     useEffect(() => {
         return () => {
-            if (kepengurusanTimeoutRef.current) clearTimeout(kepengurusanTimeoutRef.current);
-            if (tutorialPAITimeoutRef.current) clearTimeout(tutorialPAITimeoutRef.current);
-            if (tutorialSPAITimeoutRef.current) clearTimeout(tutorialSPAITimeoutRef.current);
+            if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
         };
     }, []);
+
+    // Navigation items configuration
+    const navItems = [
+        { href: "/", label: "Home", icon: HomeIcon },
+        { href: "/news", label: "Kabar Tutorial", icon: NewspaperIcon },
+    ];
+
+    const dropdownMenus = {
+        kepengurusan: {
+            label: "Kepengurusan",
+            icon: BuildingIcon,
+            items: [
+                { href: "/tentang/kabinet", label: "Kabinet AL-FATH", icon: BuildingIcon },
+                { href: "/tentang/struktur", label: "Struktur Kepengurusan", icon: UsersIcon },
+                { divider: true, label: "Program Pengurus" },
+                { href: "/tentang/program-pengurus/kajian-rutin", label: "Kajian Rutin", icon: BookIcon },
+                { href: "/tentang/program-pengurus/project-mini", label: "Project Mini Tutorial", icon: BadgeIcon },
+            ],
+            isActive: pathname.startsWith('/tentang'),
+        },
+        tutorialPAI: {
+            label: "Tutorial PAI",
+            icon: BookIcon,
+            items: [
+                { href: "/program/kuliah-dhuha", label: "Kuliah Dhuha", icon: BookIcon },
+                { href: "/program/mentoring", label: "Mentoring", icon: UserGroupIcon },
+                { href: "/program/bina-kader", label: "Bina Kader", icon: BadgeIcon },
+            ],
+            isActive: pathname.startsWith('/program/kuliah-dhuha') || pathname.startsWith('/program/mentoring') || pathname.startsWith('/program/bina-kader'),
+        },
+        tutorialSPAI: {
+            label: "Tutorial SPAI",
+            icon: NewspaperIcon,
+            items: [
+                { href: "/program/seminar-pai", label: "Seminar PAI", icon: NewspaperIcon },
+                { href: "/program/panitia-delegasi", label: "Panitia Delegasi", icon: UsersIcon },
+            ],
+            isActive: pathname.startsWith('/program/seminar-pai') || pathname.startsWith('/program/panitia-delegasi'),
+        },
+    };
 
     return (
         <>
             <header className="sticky top-0 z-50 shadow-lg">
-                {/* Top Bar - Icons Only + Indonesia Flag */}
+                {/* Top Bar - Icons Only */}
                 <div className="bg-neutral-900 text-white py-2 px-4">
                     <div className="container-upi flex justify-between items-center">
-                        {/* Left Side: Contact Icons */}
-                        <div className="flex items-center space-x-2 sm:space-x-4">
-                            <Link href="mailto:programtutorial@upi.edu" className="hover:text-primary-400 transition-colors flex items-center gap-1.5" title="Email">
-                                <EmailIcon />
-                                <span className="hidden sm:inline text-xs">programtutorial@upi.edu</span>
+                        {/* Left Side: Contact Icons Only */}
+                        <div className="flex items-center space-x-3">
+                            <Link
+                                href="mailto:programtutorial@upi.edu"
+                                className="p-1.5 hover:bg-white/10 rounded-full transition-all hover:scale-110"
+                                title="Email: programtutorial@upi.edu"
+                            >
+                                <EmailIcon className="w-4 h-4" />
                             </Link>
-                            <div className="hidden sm:block w-px h-4 bg-neutral-700"></div>
-                            <Link href="https://wa.me/6285165888607" target="_blank" className="hover:text-primary-400 transition-colors flex items-center gap-1.5" title="WhatsApp">
-                                <WhatsAppIcon />
-                                <span className="hidden sm:inline text-xs">+62 851-6588-8607</span>
+                            <Link
+                                href="https://wa.me/6285165888607"
+                                target="_blank"
+                                className="p-1.5 hover:bg-white/10 rounded-full transition-all hover:scale-110"
+                                title="WhatsApp: +62 851-6588-8607"
+                            >
+                                <WhatsAppIcon className="w-4 h-4" />
                             </Link>
                         </div>
 
-                        {/* Right Side: Social Media & Flag */}
-                        <div className="flex items-center space-x-3 sm:space-x-4">
-                            <Link href="https://www.instagram.com/tutorialupi" target="_blank" className="hover:text-primary-400 transition-colors" title="Instagram">
+                        {/* Right Side: Social Media Icons & Flag */}
+                        <div className="flex items-center space-x-1">
+                            <Link
+                                href="https://www.instagram.com/tutorialupi"
+                                target="_blank"
+                                className="p-1.5 hover:bg-white/10 rounded-full transition-all hover:scale-110"
+                                title="Instagram @tutorialupi"
+                            >
                                 <InstagramIcon className="w-4 h-4" />
                             </Link>
-                            <Link href="https://www.tiktok.com/@tutorialupi" target="_blank" className="hover:text-primary-400 transition-colors" title="TikTok">
+                            <Link
+                                href="https://www.tiktok.com/@tutorialupi"
+                                target="_blank"
+                                className="p-1.5 hover:bg-white/10 rounded-full transition-all hover:scale-110"
+                                title="TikTok @tutorialupi"
+                            >
                                 <TikTokIcon className="w-4 h-4" />
                             </Link>
-                            <Link href="https://www.youtube.com/@tutorialupi7633" target="_blank" className="hover:text-primary-400 transition-colors" title="YouTube">
+                            <Link
+                                href="https://www.youtube.com/@tutorialupi7633"
+                                target="_blank"
+                                className="p-1.5 hover:bg-white/10 rounded-full transition-all hover:scale-110"
+                                title="YouTube Tutorial UPI"
+                            >
                                 <YouTubeIcon className="w-4 h-4" />
                             </Link>
-                            <div className="w-px h-4 bg-neutral-700"></div>
-                            <div className="flex items-center" title="Indonesia">
+                            <div className="w-px h-4 bg-neutral-700 mx-2"></div>
+                            <div className="p-1" title="Indonesia">
                                 <IndonesiaFlag />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Main Header - Red Background */}
-                <nav className="bg-[#dc2626] text-white relative">
+                {/* Main Header */}
+                <nav className="bg-gradient-to-r from-[#dc2626] via-[#b91c1c] to-[#dc2626] text-white relative">
                     <div className="container-upi">
-                        <div className="flex items-center justify-between h-20 sm:h-24 md:h-28 lg:h-32">
-                            {/* Logo Section - No Frame, Bigger */}
-                            <Link href="/" className="flex items-center space-x-3 md:space-x-4 group py-2">
+                        <div className="flex items-center justify-between h-16 md:h-20">
+                            {/* Logo Section - Compact */}
+                            <Link href="/" className="flex items-center space-x-2 md:space-x-3 group py-2">
                                 {/* UPI Logo */}
-                                <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 transition-transform hover:scale-105 flex-shrink-0">
+                                <div className="relative w-10 h-10 md:w-14 md:h-14 transition-transform hover:scale-105 flex-shrink-0">
                                     <Image
                                         src="/assets/logo-upi.png"
                                         alt="Logo UPI"
@@ -133,7 +168,7 @@ const Header = () => {
                                     />
                                 </div>
                                 {/* Tutorial Logo */}
-                                <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-24 md:h-24 lg:w-28 lg:h-28 transition-transform hover:scale-105 flex-shrink-0">
+                                <div className="relative w-8 h-8 md:w-12 md:h-12 transition-transform hover:scale-105 flex-shrink-0">
                                     <Image
                                         src="/assets/logo/tutorial-logo.png"
                                         alt="Logo Tutorial PAI"
@@ -141,92 +176,168 @@ const Header = () => {
                                         className="object-contain drop-shadow-lg"
                                     />
                                 </div>
-                                <div className="hidden sm:block ml-1 md:ml-2">
-                                    <div className="text-base sm:text-lg md:text-xl font-bold leading-tight tracking-wide">Tutorial PAI–SPAI</div>
-                                    <div className="text-xs sm:text-sm font-light opacity-90">Universitas Pendidikan Indonesia</div>
-                                    <div className="text-xs font-medium text-yellow-300 mt-0.5 md:mt-1 tracking-wider">Kabinet AL-FATH</div>
+                                <div className="hidden sm:block">
+                                    <div className="text-sm md:text-base font-bold leading-tight">Tutorial PAI–SPAI</div>
+                                    <div className="text-xs font-light opacity-90">Kabinet AL-FATH</div>
                                 </div>
                             </Link>
 
-                            {/* Desktop Navigation */}
-                            <div className="hidden lg:flex items-center space-x-1 xl:space-x-2">
-                                <Link href="/" className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors ${pathname === '/' ? 'bg-white/20' : 'hover:bg-white/10'}`}>
-                                    Home
-                                </Link>
-                                <Link href="/news" className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors ${pathname === '/news' || pathname.startsWith('/news/') ? 'bg-white/20' : 'hover:bg-white/10'}`}>
-                                    Kabar Tutorial
-                                </Link>
+                            {/* Desktop Navigation - Modern Design */}
+                            <div className="hidden lg:flex items-center">
+                                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-1 py-1">
+                                    {/* Home */}
+                                    <Link
+                                        href="/"
+                                        className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${pathname === '/'
+                                                ? 'bg-white text-red-600 shadow-md'
+                                                : 'hover:bg-white/20'
+                                            }`}
+                                    >
+                                        Home
+                                    </Link>
 
-                                {/* Kepengurusan Dropdown */}
-                                <div
-                                    className="relative"
-                                    onMouseEnter={handleKepengurusanMouseEnter}
-                                    onMouseLeave={handleKepengurusanMouseLeave}
-                                >
-                                    <button className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center ${pathname.startsWith('/tentang') ? 'bg-white/20' : 'hover:bg-white/10'}`}>
-                                        Kepengurusan
-                                        <ChevronDownIcon className="ml-1 w-4 h-4" />
-                                    </button>
+                                    {/* Kabar Tutorial */}
+                                    <Link
+                                        href="/news"
+                                        className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${pathname === '/news' || pathname.startsWith('/news/')
+                                                ? 'bg-white text-red-600 shadow-md'
+                                                : 'hover:bg-white/20'
+                                            }`}
+                                    >
+                                        Kabar
+                                    </Link>
 
-                                    {activeKepengurusanDropdown && (
-                                        <div className="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-neutral-100 py-2 text-neutral-800 animate-fadeIn z-50">
-                                            <Link href="/tentang/kabinet" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Kabinet AL-FATH</Link>
-                                            <Link href="/tentang/struktur" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Struktur Kepengurusan</Link>
-                                            <div className="border-t border-neutral-100 my-2"></div>
-                                            <div className="px-4 py-2 text-xs font-semibold text-neutral-400 uppercase">Program Pengurus</div>
-                                            <Link href="/tentang/program-pengurus/kajian-rutin" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Kajian Rutin</Link>
-                                            <Link href="/tentang/program-pengurus/project-mini" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Project Mini Tutorial</Link>
+                                    {/* Kepengurusan Dropdown */}
+                                    <div
+                                        className="relative"
+                                        onMouseEnter={() => handleDropdownMouseEnter('kepengurusan')}
+                                        onMouseLeave={handleDropdownMouseLeave}
+                                    >
+                                        <button
+                                            className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 flex items-center gap-1 ${dropdownMenus.kepengurusan.isActive
+                                                    ? 'bg-white text-red-600 shadow-md'
+                                                    : 'hover:bg-white/20'
+                                                }`}
+                                        >
+                                            Kepengurusan
+                                            <ChevronDownIcon className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'kepengurusan' ? 'rotate-180' : ''
+                                                }`} />
+                                        </button>
+
+                                        {/* Dropdown Menu */}
+                                        <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-200 ${activeDropdown === 'kepengurusan'
+                                                ? 'opacity-100 visible translate-y-0'
+                                                : 'opacity-0 invisible -translate-y-2'
+                                            }`}>
+                                            <div className="bg-white rounded-xl shadow-2xl border border-neutral-100 py-2 min-w-[220px] overflow-hidden">
+                                                {dropdownMenus.kepengurusan.items.map((item, idx) => (
+                                                    item.divider ? (
+                                                        <div key={idx} className="px-4 py-2 text-xs font-semibold text-neutral-400 uppercase border-t border-neutral-100 mt-1 pt-2">
+                                                            {item.label}
+                                                        </div>
+                                                    ) : (
+                                                        <Link
+                                                            key={idx}
+                                                            href={item.href || '#'}
+                                                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                                                        >
+                                                            {item.icon && <item.icon className="w-4 h-4 opacity-60" />}
+                                                            {item.label}
+                                                        </Link>
+                                                    )
+                                                ))}
+                                            </div>
                                         </div>
-                                    )}
-                                </div>
+                                    </div>
 
-                                {/* Tutorial PAI Dropdown */}
-                                <div
-                                    className="relative"
-                                    onMouseEnter={handleTutorialPAIMouseEnter}
-                                    onMouseLeave={handleTutorialPAIMouseLeave}
-                                >
-                                    <button className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center ${pathname.startsWith('/program/kuliah-dhuha') || pathname.startsWith('/program/mentoring') || pathname.startsWith('/program/bina-kader') ? 'bg-white/20' : 'hover:bg-white/10'}`}>
-                                        Tutorial PAI
-                                        <ChevronDownIcon className="ml-1 w-4 h-4" />
-                                    </button>
+                                    {/* Tutorial PAI Dropdown */}
+                                    <div
+                                        className="relative"
+                                        onMouseEnter={() => handleDropdownMouseEnter('tutorialPAI')}
+                                        onMouseLeave={handleDropdownMouseLeave}
+                                    >
+                                        <button
+                                            className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 flex items-center gap-1 ${dropdownMenus.tutorialPAI.isActive
+                                                    ? 'bg-white text-red-600 shadow-md'
+                                                    : 'hover:bg-white/20'
+                                                }`}
+                                        >
+                                            Tutorial PAI
+                                            <ChevronDownIcon className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'tutorialPAI' ? 'rotate-180' : ''
+                                                }`} />
+                                        </button>
 
-                                    {activeTutorialPAIDropdown && (
-                                        <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-neutral-100 py-2 text-neutral-800 animate-fadeIn z-50">
-                                            <Link href="/program/kuliah-dhuha" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Kuliah Dhuha</Link>
-                                            <Link href="/program/mentoring" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Mentoring</Link>
-                                            <Link href="/program/bina-kader" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Bina Kader</Link>
+                                        <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-200 ${activeDropdown === 'tutorialPAI'
+                                                ? 'opacity-100 visible translate-y-0'
+                                                : 'opacity-0 invisible -translate-y-2'
+                                            }`}>
+                                            <div className="bg-white rounded-xl shadow-2xl border border-neutral-100 py-2 min-w-[180px] overflow-hidden">
+                                                {dropdownMenus.tutorialPAI.items.map((item, idx) => (
+                                                    <Link
+                                                        key={idx}
+                                                        href={item.href || '#'}
+                                                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                                                    >
+                                                        {item.icon && <item.icon className="w-4 h-4 opacity-60" />}
+                                                        {item.label}
+                                                    </Link>
+                                                ))}
+                                            </div>
                                         </div>
-                                    )}
-                                </div>
+                                    </div>
 
-                                {/* Tutorial SPAI Dropdown */}
-                                <div
-                                    className="relative"
-                                    onMouseEnter={handleTutorialSPAIMouseEnter}
-                                    onMouseLeave={handleTutorialSPAIMouseLeave}
-                                >
-                                    <button className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center ${pathname.startsWith('/program/seminar-pai') || pathname.startsWith('/program/panitia-delegasi') ? 'bg-white/20' : 'hover:bg-white/10'}`}>
-                                        Tutorial SPAI
-                                        <ChevronDownIcon className="ml-1 w-4 h-4" />
-                                    </button>
+                                    {/* Tutorial SPAI Dropdown */}
+                                    <div
+                                        className="relative"
+                                        onMouseEnter={() => handleDropdownMouseEnter('tutorialSPAI')}
+                                        onMouseLeave={handleDropdownMouseLeave}
+                                    >
+                                        <button
+                                            className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 flex items-center gap-1 ${dropdownMenus.tutorialSPAI.isActive
+                                                    ? 'bg-white text-red-600 shadow-md'
+                                                    : 'hover:bg-white/20'
+                                                }`}
+                                        >
+                                            Tutorial SPAI
+                                            <ChevronDownIcon className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'tutorialSPAI' ? 'rotate-180' : ''
+                                                }`} />
+                                        </button>
 
-                                    {activeTutorialSPAIDropdown && (
-                                        <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-neutral-100 py-2 text-neutral-800 animate-fadeIn z-50">
-                                            <Link href="/program/seminar-pai" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Seminar PAI</Link>
-                                            <Link href="/program/panitia-delegasi" className="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-600">Panitia Delegasi</Link>
+                                        <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-200 ${activeDropdown === 'tutorialSPAI'
+                                                ? 'opacity-100 visible translate-y-0'
+                                                : 'opacity-0 invisible -translate-y-2'
+                                            }`}>
+                                            <div className="bg-white rounded-xl shadow-2xl border border-neutral-100 py-2 min-w-[180px] overflow-hidden">
+                                                {dropdownMenus.tutorialSPAI.items.map((item, idx) => (
+                                                    <Link
+                                                        key={idx}
+                                                        href={item.href || '#'}
+                                                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                                                    >
+                                                        {item.icon && <item.icon className="w-4 h-4 opacity-60" />}
+                                                        {item.label}
+                                                    </Link>
+                                                ))}
+                                            </div>
                                         </div>
-                                    )}
-                                </div>
+                                    </div>
 
-                                <Link href="/kalender" className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors ${pathname === '/kalender' ? 'bg-white/20' : 'hover:bg-white/10'}`}>
-                                    Kalender
-                                </Link>
+                                    {/* Kalender */}
+                                    <Link
+                                        href="/kalender"
+                                        className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${pathname === '/kalender'
+                                                ? 'bg-white text-red-600 shadow-md'
+                                                : 'hover:bg-white/20'
+                                            }`}
+                                    >
+                                        Kalender
+                                    </Link>
+                                </div>
                             </div>
 
                             {/* Mobile Menu Button */}
                             <button
-                                className="lg:hidden p-2 hover:bg-white/10 rounded-md transition-colors"
+                                className="lg:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
                                 onClick={() => setIsMobileMenuOpen(true)}
                             >
                                 <MenuIcon />
