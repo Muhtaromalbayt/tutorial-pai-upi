@@ -86,17 +86,20 @@ const Header = () => {
                 <div className="bg-neutral-900 text-white py-2 px-4">
                     <div className="container-upi flex justify-between items-center">
                         {/* Left Side: Contact Icons */}
-                        <div className="flex items-center space-x-4">
-                            <Link href="mailto:programtutorial@upi.edu" className="hover:text-primary-400 transition-colors" title="Email">
+                        <div className="flex items-center space-x-2 sm:space-x-4">
+                            <Link href="mailto:programtutorial@upi.edu" className="hover:text-primary-400 transition-colors flex items-center gap-1.5" title="Email">
                                 <EmailIcon />
+                                <span className="hidden sm:inline text-xs">programtutorial@upi.edu</span>
                             </Link>
-                            <Link href="https://wa.me/6285165888607" target="_blank" className="hover:text-primary-400 transition-colors" title="WhatsApp">
+                            <div className="hidden sm:block w-px h-4 bg-neutral-700"></div>
+                            <Link href="https://wa.me/6285165888607" target="_blank" className="hover:text-primary-400 transition-colors flex items-center gap-1.5" title="WhatsApp">
                                 <WhatsAppIcon />
+                                <span className="hidden sm:inline text-xs">+62 851-6588-8607</span>
                             </Link>
                         </div>
 
                         {/* Right Side: Social Media & Flag */}
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-3 sm:space-x-4">
                             <Link href="https://www.instagram.com/tutorialupi" target="_blank" className="hover:text-primary-400 transition-colors" title="Instagram">
                                 <InstagramIcon className="w-4 h-4" />
                             </Link>
@@ -106,7 +109,7 @@ const Header = () => {
                             <Link href="https://www.youtube.com/@tutorialupi7633" target="_blank" className="hover:text-primary-400 transition-colors" title="YouTube">
                                 <YouTubeIcon className="w-4 h-4" />
                             </Link>
-                            <div className="w-px h-4 bg-neutral-700 mx-2"></div>
+                            <div className="w-px h-4 bg-neutral-700"></div>
                             <div className="flex items-center" title="Indonesia">
                                 <IndonesiaFlag />
                             </div>
@@ -117,11 +120,11 @@ const Header = () => {
                 {/* Main Header - Red Background */}
                 <nav className="bg-[#dc2626] text-white relative">
                     <div className="container-upi">
-                        <div className="flex items-center justify-between h-32">
+                        <div className="flex items-center justify-between h-20 sm:h-24 md:h-28 lg:h-32">
                             {/* Logo Section - No Frame, Bigger */}
-                            <Link href="/" className="flex items-center space-x-4 group py-2">
+                            <Link href="/" className="flex items-center space-x-3 md:space-x-4 group py-2">
                                 {/* UPI Logo */}
-                                <div className="relative w-28 h-28 md:w-40 md:h-32 transition-transform hover:scale-105">
+                                <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 transition-transform hover:scale-105 flex-shrink-0">
                                     <Image
                                         src="/assets/logo-upi.png"
                                         alt="Logo UPI"
@@ -130,7 +133,7 @@ const Header = () => {
                                     />
                                 </div>
                                 {/* Tutorial Logo */}
-                                <div className="relative w-24 h-24 md:w-28 md:h-28 transition-transform hover:scale-105">
+                                <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-24 md:h-24 lg:w-28 lg:h-28 transition-transform hover:scale-105 flex-shrink-0">
                                     <Image
                                         src="/assets/logo/tutorial-logo.png"
                                         alt="Logo Tutorial PAI"
@@ -138,19 +141,19 @@ const Header = () => {
                                         className="object-contain drop-shadow-lg"
                                     />
                                 </div>
-                                <div className="hidden md:block ml-2">
-                                    <div className="text-xl font-bold leading-tight tracking-wide">Tutorial PAI–SPAI</div>
-                                    <div className="text-sm font-light opacity-90">Universitas Pendidikan Indonesia</div>
-                                    <div className="text-xs font-medium text-yellow-300 mt-1 tracking-wider">Kabinet AL-FATH</div>
+                                <div className="hidden sm:block ml-1 md:ml-2">
+                                    <div className="text-base sm:text-lg md:text-xl font-bold leading-tight tracking-wide">Tutorial PAI–SPAI</div>
+                                    <div className="text-xs sm:text-sm font-light opacity-90">Universitas Pendidikan Indonesia</div>
+                                    <div className="text-xs font-medium text-yellow-300 mt-0.5 md:mt-1 tracking-wider">Kabinet AL-FATH</div>
                                 </div>
                             </Link>
 
                             {/* Desktop Navigation */}
-                            <div className="hidden lg:flex items-center space-x-2">
-                                <Link href="/" className="px-4 py-2 text-sm font-medium hover:bg-white/10 rounded-md transition-colors">
+                            <div className="hidden lg:flex items-center space-x-1 xl:space-x-2">
+                                <Link href="/" className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors ${pathname === '/' ? 'bg-white/20' : 'hover:bg-white/10'}`}>
                                     Home
                                 </Link>
-                                <Link href="/news" className="px-4 py-2 text-sm font-medium hover:bg-white/10 rounded-md transition-colors">
+                                <Link href="/news" className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors ${pathname === '/news' || pathname.startsWith('/news/') ? 'bg-white/20' : 'hover:bg-white/10'}`}>
                                     Kabar Tutorial
                                 </Link>
 
@@ -160,7 +163,7 @@ const Header = () => {
                                     onMouseEnter={handleKepengurusanMouseEnter}
                                     onMouseLeave={handleKepengurusanMouseLeave}
                                 >
-                                    <button className="px-4 py-2 text-sm font-medium hover:bg-white/10 rounded-md transition-colors flex items-center">
+                                    <button className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center ${pathname.startsWith('/tentang') ? 'bg-white/20' : 'hover:bg-white/10'}`}>
                                         Kepengurusan
                                         <ChevronDownIcon className="ml-1 w-4 h-4" />
                                     </button>
@@ -183,7 +186,7 @@ const Header = () => {
                                     onMouseEnter={handleTutorialPAIMouseEnter}
                                     onMouseLeave={handleTutorialPAIMouseLeave}
                                 >
-                                    <button className="px-4 py-2 text-sm font-medium hover:bg-white/10 rounded-md transition-colors flex items-center">
+                                    <button className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center ${pathname.startsWith('/program/kuliah-dhuha') || pathname.startsWith('/program/mentoring') || pathname.startsWith('/program/bina-kader') ? 'bg-white/20' : 'hover:bg-white/10'}`}>
                                         Tutorial PAI
                                         <ChevronDownIcon className="ml-1 w-4 h-4" />
                                     </button>
@@ -203,7 +206,7 @@ const Header = () => {
                                     onMouseEnter={handleTutorialSPAIMouseEnter}
                                     onMouseLeave={handleTutorialSPAIMouseLeave}
                                 >
-                                    <button className="px-4 py-2 text-sm font-medium hover:bg-white/10 rounded-md transition-colors flex items-center">
+                                    <button className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center ${pathname.startsWith('/program/seminar-pai') || pathname.startsWith('/program/panitia-delegasi') ? 'bg-white/20' : 'hover:bg-white/10'}`}>
                                         Tutorial SPAI
                                         <ChevronDownIcon className="ml-1 w-4 h-4" />
                                     </button>
@@ -216,7 +219,7 @@ const Header = () => {
                                     )}
                                 </div>
 
-                                <Link href="/kalender" className="px-4 py-2 text-sm font-medium hover:bg-white/10 rounded-md transition-colors">
+                                <Link href="/kalender" className={`px-3 xl:px-4 py-2 text-sm font-medium rounded-md transition-colors ${pathname === '/kalender' ? 'bg-white/20' : 'hover:bg-white/10'}`}>
                                     Kalender
                                 </Link>
                             </div>
