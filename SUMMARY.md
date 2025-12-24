@@ -55,12 +55,6 @@ tutorial-pai-upi/
 |-------|-----------|
 | `/tentang/kabinet` | Profil Kabinet AL-FATH |
 | `/tentang/struktur` | Struktur kepengurusan (dari DB) |
-| `/tentang/visi` | Visi Tutorial |
-| `/tentang/misi` | Misi Tutorial |
-| `/tentang/tujuan` | Tujuan Tutorial |
-| `/tentang/sejarah` | Sejarah Tutorial |
-| `/tentang/dosen` | Dosen Tutorial |
-| `/tentang/program-pengurus/*` | Program internal pengurus |
 
 ### Program Tutorial
 | Route | Deskripsi |

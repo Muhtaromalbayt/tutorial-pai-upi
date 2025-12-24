@@ -66,9 +66,6 @@ const Header = () => {
             items: [
                 { href: "/tentang/kabinet", label: "Kabinet AL-FATH", icon: BuildingIcon },
                 { href: "/tentang/struktur", label: "Struktur Kepengurusan", icon: UsersIcon },
-                { divider: true, label: "Program Pengurus" },
-                { href: "/tentang/program-pengurus/kajian-rutin", label: "Kajian Rutin", icon: BookIcon },
-                { href: "/tentang/program-pengurus/project-mini", label: "Project Mini Tutorial", icon: BadgeIcon },
             ],
             isActive: pathname.startsWith('/tentang'),
         },
@@ -232,20 +229,14 @@ const Header = () => {
                                             }`}>
                                             <div className="bg-white rounded-xl shadow-2xl border border-neutral-100 py-2 min-w-[220px] overflow-hidden">
                                                 {dropdownMenus.kepengurusan.items.map((item, idx) => (
-                                                    item.divider ? (
-                                                        <div key={idx} className="px-4 py-2 text-xs font-semibold text-neutral-400 uppercase border-t border-neutral-100 mt-1 pt-2">
-                                                            {item.label}
-                                                        </div>
-                                                    ) : (
-                                                        <Link
-                                                            key={idx}
-                                                            href={item.href || '#'}
-                                                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-red-50 hover:text-red-600 transition-colors"
-                                                        >
-                                                            {item.icon && <item.icon className="w-4 h-4 opacity-60" />}
-                                                            {item.label}
-                                                        </Link>
-                                                    )
+                                                    <Link
+                                                        key={idx}
+                                                        href={item.href || '#'}
+                                                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                                                    >
+                                                        {item.icon && <item.icon className="w-4 h-4 opacity-60" />}
+                                                        {item.label}
+                                                    </Link>
                                                 ))}
                                             </div>
                                         </div>
