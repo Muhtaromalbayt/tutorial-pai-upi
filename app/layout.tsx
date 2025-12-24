@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   description: "Tutorial PAI–SPAI UPI — Kabinet AL-FATH. Menumbuhkan Adab, Menggerakkan Peradaban.",
   keywords: ["Tutorial PAI", "SPAI UPI", "Kabinet AL-FATH", "UPI", "Pendidikan Agama Islam"],
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/assets/logo/tutorial-logo.png",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
 };
 
@@ -37,10 +37,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${plusJakarta.variable} ${outfit.variable}`}>
-      <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
-      <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" />
-      <link rel="apple-touch-icon" href="/favicon.png?v=2" />
-      <link rel="shortcut icon" href="/favicon.ico?v=2" />
+      <link rel="icon" href="/favicon.png" sizes="any" />
+      <link rel="apple-touch-icon" href="/favicon.png" />
+      <link rel="shortcut icon" href="/favicon.png" />
       <body className="min-h-screen flex flex-col font-sans">
         <Header />
         <main className="flex-1">
