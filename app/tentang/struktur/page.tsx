@@ -298,7 +298,7 @@ export default function StrukturPage() {
     if (loading) {
         return (
             <main>
-                <Hero title="Struktur Kepengurusan" subtitle="Memuat data..." variant="gradient" />
+                <Hero title="Struktur Kepengurusan" subtitle="Memuat data..." backgroundImage="/assets/mentoring-hero.jpg" />
                 <div className="py-20 flex flex-col items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
                     <p className="text-neutral-500">Mengambil data pengurus...</p>
@@ -312,7 +312,7 @@ export default function StrukturPage() {
             <Hero
                 title="Struktur Kepengurusan"
                 subtitle="Kabinet AL-FATH Periode 2025/2026"
-                variant="gradient"
+                backgroundImage="/assets/mentoring-hero.jpg"
             />
 
             <section className="bg-white py-12 sm:py-16 lg:py-20">

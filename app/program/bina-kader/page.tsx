@@ -70,7 +70,7 @@ export default function BinaKaderPage() {
             <Hero
                 title="Bina Kader"
                 subtitle="BISA! BISA! BISA! YES! ALLAHUAKBAR!!"
-                variant="gradient"
+                backgroundImage="/assets/mentoring-hero.jpg"
             />
 
             {/* Quick Links Section */}

@@ -89,7 +89,7 @@ export default function KalenderPage() {
                 title="Kalender Hijriah 1447 H"
                 subtitle="Kalender Hijriah Global Tunggal Muhammadiyah"
                 height="normal"
-                variant="gradient"
+                backgroundImage="/assets/mentoring-hero.jpg"
             />
 
             <section className="section-academic">

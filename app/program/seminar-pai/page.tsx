@@ -190,7 +190,7 @@ export default function SeminarPAIPage() {
             <Hero
                 title="Seminar PAI"
                 subtitle="Program Tutorial SPAI untuk pengembangan spiritualitas mahasiswa UPI"
-                variant="gradient"
+                backgroundImage="/assets/mentoring-hero.jpg"
             />
 
             {/* Main Content */}
