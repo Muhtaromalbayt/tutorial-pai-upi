@@ -152,14 +152,14 @@ const Header = () => {
                     </div>
                 </div>
 
-                {/* Main Header */}
-                <nav className="bg-gradient-to-r from-[#dc2626] via-[#b91c1c] to-[#dc2626] text-white relative">
+                {/* Main Header - Red Background */}
+                <nav className="bg-[#dc2626] text-white relative">
                     <div className="container-upi">
-                        <div className="flex items-center justify-between h-16 md:h-20">
-                            {/* Logo Section - Compact */}
-                            <Link href="/" className="flex items-center space-x-2 md:space-x-3 group py-2">
+                        <div className="flex items-center justify-between h-20 sm:h-24 md:h-28 lg:h-32">
+                            {/* Logo Section - Bigger with Original Text */}
+                            <Link href="/" className="flex items-center space-x-3 md:space-x-4 group py-2">
                                 {/* UPI Logo */}
-                                <div className="relative w-10 h-10 md:w-14 md:h-14 transition-transform hover:scale-105 flex-shrink-0">
+                                <div className="relative w-14 h-14 sm:w-18 sm:h-18 md:w-24 md:h-24 lg:w-28 lg:h-28 transition-transform hover:scale-105 flex-shrink-0">
                                     <Image
                                         src="/assets/logo-upi.png"
                                         alt="Logo UPI"
@@ -168,7 +168,7 @@ const Header = () => {
                                     />
                                 </div>
                                 {/* Tutorial Logo */}
-                                <div className="relative w-8 h-8 md:w-12 md:h-12 transition-transform hover:scale-105 flex-shrink-0">
+                                <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 transition-transform hover:scale-105 flex-shrink-0">
                                     <Image
                                         src="/assets/logo/tutorial-logo.png"
                                         alt="Logo Tutorial PAI"
@@ -176,9 +176,10 @@ const Header = () => {
                                         className="object-contain drop-shadow-lg"
                                     />
                                 </div>
-                                <div className="hidden sm:block">
-                                    <div className="text-sm md:text-base font-bold leading-tight">Tutorial PAI–SPAI</div>
-                                    <div className="text-xs font-light opacity-90">Kabinet AL-FATH</div>
+                                <div className="hidden sm:block ml-1 md:ml-2">
+                                    <div className="text-base sm:text-lg md:text-xl font-bold leading-tight tracking-wide">Tutorial PAI–SPAI</div>
+                                    <div className="text-xs sm:text-sm font-light opacity-90">Universitas Pendidikan Indonesia</div>
+                                    <div className="text-xs font-medium text-yellow-300 mt-0.5 md:mt-1 tracking-wider">Kabinet AL-FATH</div>
                                 </div>
                             </Link>
 
@@ -189,8 +190,8 @@ const Header = () => {
                                     <Link
                                         href="/"
                                         className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${pathname === '/'
-                                                ? 'bg-white text-red-600 shadow-md'
-                                                : 'hover:bg-white/20'
+                                            ? 'bg-white text-red-600 shadow-md'
+                                            : 'hover:bg-white/20'
                                             }`}
                                     >
                                         Home
@@ -200,8 +201,8 @@ const Header = () => {
                                     <Link
                                         href="/news"
                                         className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${pathname === '/news' || pathname.startsWith('/news/')
-                                                ? 'bg-white text-red-600 shadow-md'
-                                                : 'hover:bg-white/20'
+                                            ? 'bg-white text-red-600 shadow-md'
+                                            : 'hover:bg-white/20'
                                             }`}
                                     >
                                         Kabar
@@ -215,8 +216,8 @@ const Header = () => {
                                     >
                                         <button
                                             className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 flex items-center gap-1 ${dropdownMenus.kepengurusan.isActive
-                                                    ? 'bg-white text-red-600 shadow-md'
-                                                    : 'hover:bg-white/20'
+                                                ? 'bg-white text-red-600 shadow-md'
+                                                : 'hover:bg-white/20'
                                                 }`}
                                         >
                                             Kepengurusan
@@ -226,8 +227,8 @@ const Header = () => {
 
                                         {/* Dropdown Menu */}
                                         <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-200 ${activeDropdown === 'kepengurusan'
-                                                ? 'opacity-100 visible translate-y-0'
-                                                : 'opacity-0 invisible -translate-y-2'
+                                            ? 'opacity-100 visible translate-y-0'
+                                            : 'opacity-0 invisible -translate-y-2'
                                             }`}>
                                             <div className="bg-white rounded-xl shadow-2xl border border-neutral-100 py-2 min-w-[220px] overflow-hidden">
                                                 {dropdownMenus.kepengurusan.items.map((item, idx) => (
@@ -258,8 +259,8 @@ const Header = () => {
                                     >
                                         <button
                                             className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 flex items-center gap-1 ${dropdownMenus.tutorialPAI.isActive
-                                                    ? 'bg-white text-red-600 shadow-md'
-                                                    : 'hover:bg-white/20'
+                                                ? 'bg-white text-red-600 shadow-md'
+                                                : 'hover:bg-white/20'
                                                 }`}
                                         >
                                             Tutorial PAI
@@ -268,8 +269,8 @@ const Header = () => {
                                         </button>
 
                                         <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-200 ${activeDropdown === 'tutorialPAI'
-                                                ? 'opacity-100 visible translate-y-0'
-                                                : 'opacity-0 invisible -translate-y-2'
+                                            ? 'opacity-100 visible translate-y-0'
+                                            : 'opacity-0 invisible -translate-y-2'
                                             }`}>
                                             <div className="bg-white rounded-xl shadow-2xl border border-neutral-100 py-2 min-w-[180px] overflow-hidden">
                                                 {dropdownMenus.tutorialPAI.items.map((item, idx) => (
@@ -294,8 +295,8 @@ const Header = () => {
                                     >
                                         <button
                                             className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 flex items-center gap-1 ${dropdownMenus.tutorialSPAI.isActive
-                                                    ? 'bg-white text-red-600 shadow-md'
-                                                    : 'hover:bg-white/20'
+                                                ? 'bg-white text-red-600 shadow-md'
+                                                : 'hover:bg-white/20'
                                                 }`}
                                         >
                                             Tutorial SPAI
@@ -304,8 +305,8 @@ const Header = () => {
                                         </button>
 
                                         <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-200 ${activeDropdown === 'tutorialSPAI'
-                                                ? 'opacity-100 visible translate-y-0'
-                                                : 'opacity-0 invisible -translate-y-2'
+                                            ? 'opacity-100 visible translate-y-0'
+                                            : 'opacity-0 invisible -translate-y-2'
                                             }`}>
                                             <div className="bg-white rounded-xl shadow-2xl border border-neutral-100 py-2 min-w-[180px] overflow-hidden">
                                                 {dropdownMenus.tutorialSPAI.items.map((item, idx) => (
@@ -326,8 +327,8 @@ const Header = () => {
                                     <Link
                                         href="/kalender"
                                         className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${pathname === '/kalender'
-                                                ? 'bg-white text-red-600 shadow-md'
-                                                : 'hover:bg-white/20'
+                                            ? 'bg-white text-red-600 shadow-md'
+                                            : 'hover:bg-white/20'
                                             }`}
                                     >
                                         Kalender

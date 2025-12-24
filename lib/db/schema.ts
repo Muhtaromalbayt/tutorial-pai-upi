@@ -194,6 +194,20 @@ export const knowledgeChunks = sqliteTable('knowledge_chunks', {
     createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
+// Panitia Delegasi Members
+export const panitiaDelegasi = sqliteTable('panitia_delegasi', {
+    id: text('id').primaryKey(),
+    dayType: text('day_type').notNull(), // 'rabu' or 'jumat'
+    role: text('role').notNull(), // 'Penyaji', 'MC', 'Operator', 'Notulensi', 'Time Keeper', 'Logistik', 'Keamanan', 'Dokumentasi'
+    weekNumber: integer('week_number'), // NULL for permanent roles, 1-8 for rotating roles (MC/Penyaji)
+    name: text('name').notNull(),
+    gender: text('gender').default('ikhwan'), // 'ikhwan' or 'akhwat'
+    phone: text('phone'), // WhatsApp number (optional)
+    orderIndex: integer('order_index').default(0),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -213,4 +227,6 @@ export type SiteSetting = typeof siteSettings.$inferSelect;
 export type Gallery = typeof gallery.$inferSelect;
 export type NewGallery = typeof gallery.$inferInsert;
 export type KnowledgeChunk = typeof knowledgeChunks.$inferSelect;
+export type PanitiaDelegasi = typeof panitiaDelegasi.$inferSelect;
+export type NewPanitiaDelegasi = typeof panitiaDelegasi.$inferInsert;
 
