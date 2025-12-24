@@ -32,8 +32,8 @@ const Footer = () => {
                         <h3 className="text-lg font-semibold mb-4">Tautan Cepat</h3>
                         <ul className="space-y-2 text-sm text-neutral-400">
                             <li>
-                                <Link href="/tentang/visi" className="hover:text-white transition-colors">
-                                    Visi & Misi
+                                <Link href="/tentang/kabinet" className="hover:text-white transition-colors">
+                                    Kabinet AL-FATH
                                 </Link>
                             </li>
                             <li>
@@ -42,23 +42,18 @@ const Footer = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/tentang/kabinet" className="hover:text-white transition-colors">
-                                    Kabinet AL-FATH
+                                <Link href="/program/kuliah-dhuha" className="hover:text-white transition-colors">
+                                    Kuliah Dhuha
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/program/kuliah-dhuha" className="hover:text-white transition-colors">
-                                    Program Unggulan
+                                <Link href="/program/seminar-pai" className="hover:text-white transition-colors">
+                                    Seminar PAI
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/kalender" className="hover:text-white transition-colors">
                                     Kalender Kegiatan
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/tentang/dosen" className="hover:text-white transition-colors">
-                                    Dosen Penyelenggara
                                 </Link>
                             </li>
                         </ul>
