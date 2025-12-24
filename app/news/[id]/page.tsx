@@ -93,10 +93,10 @@ export default function NewsDetailPage() {
                             {error || "Berita tidak ditemukan"}
                         </h1>
                         <Link
-                            href="/"
+                            href="/news"
                             className="text-primary-600 hover:text-primary-800 underline"
                         >
-                            ← Kembali ke Beranda
+                            ← Kembali ke Kabar Tutorial
                         </Link>
                     </div>
                 </div>
@@ -110,10 +110,10 @@ export default function NewsDetailPage() {
             <div className="bg-gradient-to-br from-primary-700 to-primary-900 text-white py-12">
                 <div className="container-upi">
                     <Link
-                        href="/"
+                        href="/news"
                         className="inline-flex items-center text-primary-100 hover:text-white mb-4 transition-colors"
                     >
-                        ← Kembali ke Beranda
+                        ← Kembali ke Kabar Tutorial
                     </Link>
                     <div className="flex items-center gap-3 mb-4">
                         <span className="px-3 py-1 bg-white/20 rounded-full text-sm">

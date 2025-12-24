@@ -150,6 +150,9 @@ const Header = () => {
                                 <Link href="/" className="px-4 py-2 text-sm font-medium hover:bg-white/10 rounded-md transition-colors">
                                     Home
                                 </Link>
+                                <Link href="/news" className="px-4 py-2 text-sm font-medium hover:bg-white/10 rounded-md transition-colors">
+                                    Kabar Tutorial
+                                </Link>
 
                                 {/* Kepengurusan Dropdown */}
                                 <div
@@ -269,6 +272,14 @@ const Header = () => {
                         >
                             <HomeIcon />
                             <span className="font-medium">Home</span>
+                        </Link>
+                        <Link
+                            href="/news"
+                            className={`flex items-center gap-3 px-6 py-3 text-neutral-800 hover:bg-primary-50 hover:text-primary-600 transition-colors border-l-4 ${pathname === '/news' || pathname.startsWith('/news/') ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-transparent'
+                                }`}
+                        >
+                            <NewspaperIcon />
+                            <span className="font-medium">Kabar Tutorial</span>
                         </Link>
 
                         {/* Kepengurusan Section */}
