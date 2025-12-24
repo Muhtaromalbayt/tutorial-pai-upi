@@ -153,7 +153,8 @@ export default function KuliahDhuhaPage() {
             <Hero
                 title="Kuliah Dhuha"
                 subtitle="Program Tutorial PAI untuk memperdalam pemahaman keislaman mahasiswa UPI"
-                variant="gradient"
+                backgroundImage="/assets/kuliah-dhuha-hero.jpg"
+                height="tall"
             />
 
             {/* Main Content */}
