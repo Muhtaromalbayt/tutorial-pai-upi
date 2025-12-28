@@ -144,6 +144,7 @@ export const news = sqliteTable('news', {
     author: text('author'),
     publishedDate: text('published_date'),
     isPublished: integer('is_published', { mode: 'boolean' }).default(false),
+    displayLocation: text('display_location').default('kabar_only'), // 'home', 'kabar_only', 'archived'
     createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 });

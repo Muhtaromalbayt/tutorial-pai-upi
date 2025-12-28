@@ -37,12 +37,11 @@ function NewsGrid() {
 
   const fetchNews = async () => {
     try {
-      const response = await fetch("/api/news");
+      // Fetch only news that should appear on home page
+      const response = await fetch("/api/news?location=home");
       const data = await response.json() as { news: NewsItem[] };
-      // Filter by is_published (database uses snake_case, Drizzle uses camelCase)
-      const publishedNews = (data.news || [])
-        .filter((item: NewsItem) => item.isPublished !== undefined ? item.isPublished : item.is_published)
-        .slice(0, 3); // Get only first 3 published news
+      // Get first 3 news (already filtered by API)
+      const publishedNews = (data.news || []).slice(0, 3);
       setNews(publishedNews);
     } catch (error) {
       console.error("Error fetching news:", error);

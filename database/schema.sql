@@ -117,6 +117,7 @@ CREATE TABLE IF NOT EXISTS news (
   author TEXT,
   published_date DATE,
   is_published BOOLEAN DEFAULT 0,
+  display_location TEXT DEFAULT 'kabar_only', -- 'home', 'kabar_only', 'archived'
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );

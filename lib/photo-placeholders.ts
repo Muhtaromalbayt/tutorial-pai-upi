@@ -84,6 +84,13 @@ export const PHOTO_PLACEHOLDERS: PlaceholderDefinition[] = [
         page: "/program/seminar-pai",
         aspectRatio: "16:9"
     },
+    {
+        id: "hero_panitia_delegasi",
+        name: "Hero Panitia Delegasi",
+        description: "Gambar header halaman Panitia Delegasi",
+        page: "/program/panitia-delegasi",
+        aspectRatio: "16:9"
+    },
 
     // KALENDER
     {

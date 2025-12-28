@@ -1,17 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { createDb, news } from "@/lib/db/client";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, ne } from "drizzle-orm";
 
 export const runtime = "edge";
 
-// GET all news
-export async function GET() {
+// GET all news - supports ?location=home|kabar filter
+export async function GET(req: NextRequest) {
     try {
         const { env } = getRequestContext();
         const db = createDb(env.DB);
 
-        const result = await db.select().from(news).orderBy(desc(news.createdAt));
+        const { searchParams } = new URL(req.url);
+        const location = searchParams.get("location");
+
+        let result;
+
+        if (location === "home") {
+            // Only news that should appear on home page
+            result = await db.select().from(news)
+                .where(and(
+                    eq(news.isPublished, true),
+                    eq(news.displayLocation, "home")
+                ))
+                .orderBy(desc(news.createdAt));
+        } else if (location === "kabar") {
+            // All published news except archived
+            result = await db.select().from(news)
+                .where(and(
+                    eq(news.isPublished, true),
+                    ne(news.displayLocation, "archived")
+                ))
+                .orderBy(desc(news.createdAt));
+        } else {
+            // All news (for CMS)
+            result = await db.select().from(news).orderBy(desc(news.createdAt));
+        }
 
         return NextResponse.json({ news: result });
     } catch (error: unknown) {
@@ -38,8 +62,9 @@ export async function POST(req: NextRequest) {
             author?: string;
             publishedDate?: string;
             isPublished?: boolean;
+            displayLocation?: string;
         };
-        const { title, content, category, imageUrl, author, publishedDate, isPublished } = body;
+        const { title, content, category, imageUrl, author, publishedDate, isPublished, displayLocation } = body;
 
         if (!title || !content) {
             return NextResponse.json(
@@ -60,6 +85,7 @@ export async function POST(req: NextRequest) {
             author: author || null,
             publishedDate: publishedDate || null,
             isPublished: isPublished || false,
+            displayLocation: displayLocation || "kabar_only",
             createdAt: now,
             updatedAt: now,
         });
@@ -90,8 +116,9 @@ export async function PUT(req: NextRequest) {
             author?: string;
             publishedDate?: string;
             isPublished?: boolean;
+            displayLocation?: string;
         };
-        const { id, title, content, category, imageUrl, author, publishedDate, isPublished } = body;
+        const { id, title, content, category, imageUrl, author, publishedDate, isPublished, displayLocation } = body;
 
         if (!id) {
             return NextResponse.json(
@@ -111,6 +138,7 @@ export async function PUT(req: NextRequest) {
                 author: author || null,
                 publishedDate: publishedDate || null,
                 isPublished: isPublished || false,
+                displayLocation: displayLocation || "kabar_only",
                 updatedAt: now,
             })
             .where(eq(news.id, id));

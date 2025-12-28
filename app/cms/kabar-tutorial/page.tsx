@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { convertGoogleDriveUrl, isGoogleDriveUrl } from "@/lib/google-drive-helper";
 
 interface NewsItem {
     id: string;
@@ -16,6 +17,8 @@ interface NewsItem {
     published_date?: string;
     isPublished: boolean | number;
     is_published?: boolean | number;
+    displayLocation?: string;
+    display_location?: string;
 }
 
 interface FormData {
@@ -26,6 +29,7 @@ interface FormData {
     author: string;
     publishedDate: string;
     isPublished: boolean;
+    displayLocation: string;
 }
 
 export default function KabarTutorialPage() {
@@ -44,6 +48,7 @@ export default function KabarTutorialPage() {
         author: "",
         publishedDate: "",
         isPublished: false,
+        displayLocation: "kabar_only",
     });
 
     useEffect(() => {
@@ -85,6 +90,7 @@ export default function KabarTutorialPage() {
                 author: formData.author || null,
                 publishedDate: formData.publishedDate || null,
                 isPublished: formData.isPublished,
+                displayLocation: formData.displayLocation,
             };
 
             const res = await fetch("/api/news", {
@@ -117,6 +123,7 @@ export default function KabarTutorialPage() {
             author: news.author || "",
             publishedDate: news.publishedDate || news.published_date || "",
             isPublished: (news.isPublished !== undefined ? !!news.isPublished : !!news.is_published),
+            displayLocation: news.displayLocation || news.display_location || "kabar_only",
         });
         setEditingId(news.id);
         setShowForm(true);
@@ -148,6 +155,7 @@ export default function KabarTutorialPage() {
             author: "",
             publishedDate: "",
             isPublished: false,
+            displayLocation: "kabar_only",
         });
         setEditingId(null);
         setShowForm(false);
@@ -166,6 +174,35 @@ export default function KabarTutorialPage() {
             .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-[#055E5B] underline">$1</a>')
             .replace(/^- (.*)$/gim, '<li class="ml-4">• $1</li>')
             .replace(/\n/g, '<br/>');
+    };
+
+    // Get display location label
+    const getDisplayLocationLabel = (location: string) => {
+        switch (location) {
+            case "home": return "Home + Kabar";
+            case "kabar_only": return "Hanya Kabar";
+            case "archived": return "Arsip";
+            default: return location;
+        }
+    };
+
+    // Get display location badge color
+    const getDisplayLocationColor = (location: string) => {
+        switch (location) {
+            case "home": return "bg-green-100 text-green-800";
+            case "kabar_only": return "bg-blue-100 text-blue-800";
+            case "archived": return "bg-gray-100 text-gray-600";
+            default: return "bg-gray-100 text-gray-600";
+        }
+    };
+
+    // Get preview URL for image (converts Google Drive if needed)
+    const getPreviewUrl = (url: string) => {
+        if (!url) return "";
+        if (isGoogleDriveUrl(url)) {
+            return convertGoogleDriveUrl(url);
+        }
+        return url;
     };
 
     if (isLoading) {
@@ -274,7 +311,7 @@ Contoh:
                                 <p className="text-xs text-gray-500 mt-1">Mendukung Markdown: **bold**, *italic*, # heading, - list, [link](url)</p>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
                                     <select
@@ -298,6 +335,18 @@ Contoh:
                                         placeholder="Nama Penulis"
                                     />
                                 </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Tampilkan Di</label>
+                                    <select
+                                        value={formData.displayLocation}
+                                        onChange={(e) => setFormData({ ...formData, displayLocation: e.target.value })}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#055E5B] focus:border-[#055E5B]"
+                                    >
+                                        <option value="home">🏠 Home + Kabar Tutorial</option>
+                                        <option value="kabar_only">📰 Hanya Kabar Tutorial</option>
+                                        <option value="archived">📦 Arsip (Tidak Ditampilkan)</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -308,8 +357,25 @@ Contoh:
                                         value={formData.imageUrl}
                                         onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#055E5B] focus:border-[#055E5B]"
-                                        placeholder="/assets/kegiatan/..."
+                                        placeholder="https://drive.google.com/file/d/.../view"
                                     />
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        💡 Bisa menggunakan link Google Drive. Contoh: https://drive.google.com/file/d/FILE_ID/view
+                                    </p>
+                                    {/* Image Preview */}
+                                    {formData.imageUrl && (
+                                        <div className="mt-2">
+                                            <p className="text-xs text-gray-500 mb-1">Preview:</p>
+                                            <img
+                                                src={getPreviewUrl(formData.imageUrl)}
+                                                alt="Preview"
+                                                className="w-32 h-20 object-cover rounded border border-gray-200"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).style.display = 'none';
+                                                }}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Tanggal Publish</label>
@@ -374,47 +440,52 @@ Contoh:
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tampil Di</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                         <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
-                                    {newsList.map((news) => (
-                                        <tr key={news.id} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4 text-sm font-medium text-gray-900">{news.title}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                    {news.category}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                {news.publishedDate || news.published_date || "-"}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                {(news.isPublished !== undefined ? !!news.isPublished : !!news.is_published) ? (
-                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                        Published
+                                    {newsList.map((news) => {
+                                        const displayLoc = news.displayLocation || news.display_location || "kabar_only";
+                                        return (
+                                            <tr key={news.id} className="hover:bg-gray-50">
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">{news.title}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                        {news.category}
                                                     </span>
-                                                ) : (
-                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                        Draft
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getDisplayLocationColor(displayLoc)}`}>
+                                                        {getDisplayLocationLabel(displayLoc)}
                                                     </span>
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <button onClick={() => handleEdit(news)} className="text-[#055E5B] hover:text-[#044947] mr-4">
-                                                    Edit
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(news.id)}
-                                                    className="text-red-600 hover:text-red-900"
-                                                >
-                                                    Hapus
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                                    {(news.isPublished !== undefined ? !!news.isPublished : !!news.is_published) ? (
+                                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                            Published
+                                                        </span>
+                                                    ) : (
+                                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                            Draft
+                                                        </span>
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <button onClick={() => handleEdit(news)} className="text-[#055E5B] hover:text-[#044947] mr-4">
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(news.id)}
+                                                        className="text-red-600 hover:text-red-900"
+                                                    >
+                                                        Hapus
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
