@@ -152,11 +152,11 @@ const Header = () => {
                 {/* Main Header - Red Background */}
                 <nav className="bg-[#dc2626] text-white relative">
                     <div className="container-upi">
-                        <div className="flex items-center justify-between h-20 sm:h-24 md:h-28 lg:h-32">
+                        <div className="flex items-center justify-between h-24 sm:h-28 md:h-32 lg:h-36 xl:h-40">
                             {/* Logo Section - Bigger with Original Text */}
-                            <Link href="/" className="flex items-center space-x-3 md:space-x-4 group py-2">
+                            <Link href="/" className="flex items-center space-x-3 md:space-x-4 lg:space-x-5 group py-3">
                                 {/* UPI Logo */}
-                                <div className="relative w-14 h-14 sm:w-18 sm:h-18 md:w-24 md:h-24 lg:w-28 lg:h-28 transition-transform hover:scale-105 flex-shrink-0">
+                                <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 xl:w-32 xl:h-32 transition-transform hover:scale-105 flex-shrink-0">
                                     <Image
                                         src="/assets/logo-upi.png"
                                         alt="Logo UPI"
@@ -165,7 +165,7 @@ const Header = () => {
                                     />
                                 </div>
                                 {/* Tutorial Logo */}
-                                <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 transition-transform hover:scale-105 flex-shrink-0">
+                                <div className="relative w-14 h-14 sm:w-18 sm:h-18 md:w-22 md:h-22 lg:w-26 lg:h-26 xl:w-28 xl:h-28 transition-transform hover:scale-105 flex-shrink-0">
                                     <Image
                                         src="/assets/logo/tutorial-logo.png"
                                         alt="Logo Tutorial PAI"
@@ -173,16 +173,16 @@ const Header = () => {
                                         className="object-contain drop-shadow-lg"
                                     />
                                 </div>
-                                <div className="hidden sm:block ml-1 md:ml-2">
-                                    <div className="text-base sm:text-lg md:text-xl font-bold leading-tight tracking-wide">Tutorial PAI–SPAI</div>
-                                    <div className="text-xs sm:text-sm font-light opacity-90">Universitas Pendidikan Indonesia</div>
-                                    <div className="text-xs font-medium text-yellow-300 mt-0.5 md:mt-1 tracking-wider">Kabinet AL-FATH</div>
+                                <div className="hidden sm:block ml-2 md:ml-3 lg:ml-4">
+                                    <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight tracking-wide">Tutorial PAI–SPAI</div>
+                                    <div className="text-xs sm:text-sm md:text-base font-light opacity-90">Universitas Pendidikan Indonesia</div>
+                                    <div className="text-xs md:text-sm font-medium text-yellow-300 mt-0.5 md:mt-1 tracking-wider">Kabinet AL-FATH</div>
                                 </div>
                             </Link>
 
                             {/* Desktop Navigation - Modern Design */}
-                            <div className="hidden lg:flex items-center">
-                                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-1 py-1">
+                            <div className="hidden lg:flex items-center flex-shrink-0 ml-4">
+                                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-1.5 py-1.5 lg:px-2 lg:py-2">
                                     {/* Home */}
                                     <Link
                                         href="/"

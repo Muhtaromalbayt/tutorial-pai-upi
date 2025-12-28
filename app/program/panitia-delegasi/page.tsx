@@ -243,8 +243,8 @@ export default function PanitiaDelegasiPage() {
             <Hero
                 title={`Panitia Delegasi — ${dayName}`}
                 subtitle={`Tutorial SPAI — ${FAKULTAS[authenticatedDay]}`}
-                height="normal"
-                variant="gradient"
+                backgroundImage="/assets/kegiatan/seminar-pai.png"
+                height="tall"
             />
 
             <section className="py-8 px-4">
@@ -252,8 +252,8 @@ export default function PanitiaDelegasiPage() {
                     {/* Day Badge & Logout */}
                     <div className="flex items-center justify-between mb-6">
                         <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${dayColor === "blue"
-                                ? "bg-blue-100 text-blue-700"
-                                : "bg-emerald-100 text-emerald-700"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-emerald-100 text-emerald-700"
                             }`}>
                             <span className="w-2 h-2 rounded-full bg-current animate-pulse"></span>
                             {dayName} — {FAKULTAS[authenticatedDay]}
@@ -283,10 +283,10 @@ export default function PanitiaDelegasiPage() {
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id as typeof activeTab)}
                                     className={`flex-1 min-w-[140px] px-4 py-4 text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.id
-                                            ? dayColor === "blue"
-                                                ? "bg-blue-50 text-blue-700 border-b-2 border-blue-500"
-                                                : "bg-emerald-50 text-emerald-700 border-b-2 border-emerald-500"
-                                            : "text-neutral-500 hover:bg-neutral-50"
+                                        ? dayColor === "blue"
+                                            ? "bg-blue-50 text-blue-700 border-b-2 border-blue-500"
+                                            : "bg-emerald-50 text-emerald-700 border-b-2 border-emerald-500"
+                                        : "text-neutral-500 hover:bg-neutral-50"
                                         }`}
                                 >
                                     {tab.label}
@@ -315,8 +315,8 @@ export default function PanitiaDelegasiPage() {
                                             value={selectedWeek}
                                             onChange={(e) => setSelectedWeek(Number(e.target.value))}
                                             className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${dayColor === "blue"
-                                                    ? "border-blue-200 text-blue-700 bg-blue-50"
-                                                    : "border-emerald-200 text-emerald-700 bg-emerald-50"
+                                                ? "border-blue-200 text-blue-700 bg-blue-50"
+                                                : "border-emerald-200 text-emerald-700 bg-emerald-50"
                                                 }`}
                                         >
                                             {[1, 2, 3, 4, 5, 6, 7, 8].map(w => (
@@ -340,8 +340,8 @@ export default function PanitiaDelegasiPage() {
                                                 <div
                                                     key={config.role}
                                                     className={`rounded-xl border transition-all cursor-pointer ${dayColor === "blue"
-                                                            ? "bg-gradient-to-br from-blue-50 to-white border-blue-100 hover:border-blue-300"
-                                                            : "bg-gradient-to-br from-emerald-50 to-white border-emerald-100 hover:border-emerald-300"
+                                                        ? "bg-gradient-to-br from-blue-50 to-white border-blue-100 hover:border-blue-300"
+                                                        : "bg-gradient-to-br from-emerald-50 to-white border-emerald-100 hover:border-emerald-300"
                                                         } ${isExpanded ? "ring-2 " + (dayColor === "blue" ? "ring-blue-400" : "ring-emerald-400") : ""}`}
                                                     onClick={() => setExpandedRole(isExpanded ? null : config.role)}
                                                 >
@@ -458,12 +458,12 @@ export default function PanitiaDelegasiPage() {
                                                     {item.time}
                                                 </div>
                                                 <div className={`absolute left-[68px] top-4 w-3 h-3 rounded-full border-2 ${dayColor === "blue"
-                                                        ? "bg-blue-500 border-blue-200"
-                                                        : "bg-emerald-500 border-emerald-200"
+                                                    ? "bg-blue-500 border-blue-200"
+                                                    : "bg-emerald-500 border-emerald-200"
                                                     }`}></div>
                                                 <div className={`flex-1 rounded-xl p-4 border transition-all hover:shadow-md ${dayColor === "blue"
-                                                        ? "bg-gradient-to-r from-blue-50 to-white border-blue-100"
-                                                        : "bg-gradient-to-r from-emerald-50 to-white border-emerald-100"
+                                                    ? "bg-gradient-to-r from-blue-50 to-white border-blue-100"
+                                                    : "bg-gradient-to-r from-emerald-50 to-white border-emerald-100"
                                                     }`}>
                                                     <h4 className="font-medium text-neutral-900">{item.activity}</h4>
                                                     <p className="text-xs text-neutral-500 mt-1">PIC: {item.pic}</p>
@@ -523,8 +523,8 @@ export default function PanitiaDelegasiPage() {
                                         <div
                                             key={index}
                                             className={`rounded-xl p-6 border transition-all hover:shadow-md ${dayColor === "blue"
-                                                    ? "bg-gradient-to-br from-blue-50 to-white border-blue-100"
-                                                    : "bg-gradient-to-br from-emerald-50 to-white border-emerald-100"
+                                                ? "bg-gradient-to-br from-blue-50 to-white border-blue-100"
+                                                : "bg-gradient-to-br from-emerald-50 to-white border-emerald-100"
                                                 }`}
                                         >
                                             <div className="flex items-start gap-4">
@@ -540,8 +540,8 @@ export default function PanitiaDelegasiPage() {
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className={`inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors ${dayColor === "blue"
-                                                                ? "bg-blue-600 hover:bg-blue-700"
-                                                                : "bg-emerald-600 hover:bg-emerald-700"
+                                                            ? "bg-blue-600 hover:bg-blue-700"
+                                                            : "bg-emerald-600 hover:bg-emerald-700"
                                                             }`}
                                                     >
                                                         WhatsApp
@@ -638,8 +638,8 @@ export default function PanitiaDelegasiPage() {
                                                 type="submit"
                                                 disabled={!userName || !newMessage.trim()}
                                                 className={`px-4 py-2 rounded-lg text-sm font-medium text-white disabled:opacity-50 ${dayColor === "blue"
-                                                        ? "bg-blue-600 hover:bg-blue-700"
-                                                        : "bg-emerald-600 hover:bg-emerald-700"
+                                                    ? "bg-blue-600 hover:bg-blue-700"
+                                                    : "bg-emerald-600 hover:bg-emerald-700"
                                                     }`}
                                             >
                                                 Kirim
