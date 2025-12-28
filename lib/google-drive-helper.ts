@@ -2,10 +2,12 @@
  * Google Drive URL Helper
  * 
  * Converts Google Drive share URLs to direct image URLs that can be displayed.
+ * Uses thumbnail format which is more reliable than uc?export=view due to CORS.
  */
 
 /**
- * Convert Google Drive share URL to direct view URL
+ * Convert Google Drive share URL to HIGH RESOLUTION thumbnail URL
+ * Using thumbnail?sz=w2000 for reliable loading (uc?export=view has CORS issues)
  * 
  * Supports formats:
  * - https://drive.google.com/file/d/FILE_ID/view?usp=sharing
@@ -14,26 +16,30 @@
  * 
  * Returns the original URL if no Google Drive pattern is detected.
  */
-export function convertGoogleDriveUrl(url: string): string {
+export function convertGoogleDriveUrl(url: string, size: number = 2000): string {
     if (!url) return url;
 
-    // Already in direct format
-    if (url.includes('/uc?') && url.includes('export=view')) {
-        return url;
-    }
+    // Extract file ID
+    let fileId = "";
 
     // Format: /file/d/FILE_ID/view
     const filePattern = /\/file\/d\/([a-zA-Z0-9_-]+)/;
     const fileMatch = url.match(filePattern);
     if (fileMatch) {
-        return `https://drive.google.com/uc?export=view&id=${fileMatch[1]}`;
+        fileId = fileMatch[1];
+    } else {
+        // Format: open?id=FILE_ID or uc?id=FILE_ID
+        const idPattern = /[?&]id=([a-zA-Z0-9_-]+)/;
+        const idMatch = url.match(idPattern);
+        if (idMatch) {
+            fileId = idMatch[1];
+        }
     }
 
-    // Format: open?id=FILE_ID or uc?id=FILE_ID
-    const idPattern = /[?&]id=([a-zA-Z0-9_-]+)/;
-    const idMatch = url.match(idPattern);
-    if (idMatch) {
-        return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+    if (fileId) {
+        // Use thumbnail with sz=w2000 for high resolution (max supported)
+        // This format is more reliable than uc?export=view which has CORS issues
+        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w${size}`;
     }
 
     // Not a Google Drive URL, return as-is
@@ -55,27 +61,5 @@ export function isGoogleDriveUrl(url: string): boolean {
  * @param size - Size in pixels (default 400)
  */
 export function getGoogleDriveThumbnail(url: string, size: number = 400): string {
-    if (!isGoogleDriveUrl(url)) return url;
-
-    // Extract file ID
-    const filePattern = /\/file\/d\/([a-zA-Z0-9_-]+)/;
-    const idPattern = /[?&]id=([a-zA-Z0-9_-]+)/;
-
-    let fileId: string | null = null;
-
-    const fileMatch = url.match(filePattern);
-    if (fileMatch) {
-        fileId = fileMatch[1];
-    } else {
-        const idMatch = url.match(idPattern);
-        if (idMatch) {
-            fileId = idMatch[1];
-        }
-    }
-
-    if (fileId) {
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w${size}`;
-    }
-
-    return convertGoogleDriveUrl(url);
+    return convertGoogleDriveUrl(url, size);
 }
