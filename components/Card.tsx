@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { convertGoogleDriveUrl } from "@/lib/google-drive-helper";
 
 interface CardProps {
     title: string;
@@ -27,15 +28,21 @@ const Card = ({ title, description, imageUrl, date, category, href }: CardProps)
     // Strip markdown for clean preview
     const cleanDescription = stripMarkdown(description);
 
+    // Convert Google Drive URL if needed
+    const displayImageUrl = imageUrl ? convertGoogleDriveUrl(imageUrl) : undefined;
+
     const content = (
         <div className="card-academic h-full overflow-hidden group cursor-pointer">
-            {imageUrl && (
+            {displayImageUrl && (
                 <div className="relative h-48 w-full overflow-hidden bg-neutral-100">
-                    <Image
-                        src={imageUrl}
+                    {/* Use img tag for external URLs like Google Drive */}
+                    <img
+                        src={displayImageUrl}
                         alt={title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/assets/kegiatan/default.png";
+                        }}
                     />
                 </div>
             )}

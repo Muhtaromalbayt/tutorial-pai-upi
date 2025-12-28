@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { convertGoogleDriveUrl } from "@/lib/google-drive-helper";
 
 const HeroActivities = ({
     title,
@@ -15,8 +15,11 @@ const HeroActivities = ({
 }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+    // Convert Google Drive URL if provided
+    const convertedHeroImage = heroImage ? convertGoogleDriveUrl(heroImage) : null;
+
     // Placeholder images for activities
-    const activityImages = heroImage ? [heroImage] : [
+    const activityImages = convertedHeroImage ? [convertedHeroImage] : [
         "/assets/isola.jpg",
         "/assets/alfurqan.jpg",
         "/assets/kegiatan/kuliah-dhuha.png",
@@ -33,19 +36,20 @@ const HeroActivities = ({
 
     return (
         <div className="relative bg-neutral-900 h-[600px] overflow-hidden">
-            {/* Background Slider */}
+            {/* Background Slider - using img for external URLs */}
             {activityImages.map((src, index) => (
                 <div
                     key={index}
                     className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${activityImages.length === 1 || index === currentImageIndex ? "opacity-60" : "opacity-0"
                         }`}
                 >
-                    <Image
+                    <img
                         src={src}
                         alt={`Kegiatan Tutorial ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        priority={index === 0}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/assets/isola.jpg";
+                        }}
                     />
                 </div>
             ))}
