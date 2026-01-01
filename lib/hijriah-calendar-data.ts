@@ -277,6 +277,8 @@ export const ORGANIZATION_ACTIVITIES: OrganizationActivity[] = [
     { date: "2026-03-07", title: "Tutorial PAI Pekan Ke-tiga", time: "08.45 - 13.00 WIB", location: "Aula ITC", category: "Tutorial PAI" },
     { date: "2026-03-08", title: "Tutorial PAI Pekan Ke-tiga", time: "08.45 - 13.00 WIB", location: "Aula ITC", category: "Tutorial PAI" },
     { date: "2026-03-08", title: "Bina Kader", time: "08.30 - 12.00 WIB", location: "Masjid Al Furqan", category: "Bina Kader" },
+    { date: "2026-03-11", title: "Pekan Keempat Seminar PAI", time: "15.30 - 17.30 WIB", location: "Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-03-13", title: "Pekan Keempat Seminar PAI", time: "15.30 - 17.30 WIB", location: "Masjid Al Furqan", category: "Tutorial SPAI" },
 
     // April 2026
     { date: "2026-04-04", title: "Tutorial PAI Pekan Ke-empat", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
@@ -286,11 +288,11 @@ export const ORGANIZATION_ACTIVITIES: OrganizationActivity[] = [
     { date: "2026-04-05", title: "Bina Kader", time: "08.30 - 12.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Bina Kader" },
     { date: "2026-04-08", title: "Pekan Kelima Seminar PAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
     { date: "2026-04-10", title: "Pekan Kelima Seminar PAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
-    { date: "2026-04-11", title: "Pekan Keempat Seminar PAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-04-11", title: "Shine on Saturday (SoS) - Pekan Kelima", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
     { date: "2026-04-12", title: "Shine on Sunday (SoS) - Pekan Kelima", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
     { date: "2026-04-12", title: "Bina Kader", time: "08.30 - 12.00 WIB", location: "-", category: "Bina Kader" },
-    { date: "2026-04-13", title: "Pekan Keempat Seminar PAI", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
-    { date: "2026-04-15", title: "Wonderful of Warriors (WoW)", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-04-15", title: "Wonderful of Warriors (WoW) - Pekan Keenam", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
+    { date: "2026-04-17", title: "Wonderful of Warriors (WoW) - Pekan Keenam", time: "15.30 - 17.30 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial SPAI" },
     { date: "2026-04-18", title: "Tutorial PAI Pekan Ke-enam", time: "08.45 - 13.00 WIB", location: "Aula ITC dan Masjid Al Furqan", category: "Tutorial PAI" },
     { date: "2026-04-18", title: "Bina Mentor", time: "08.00 - 10.30 WIB", location: "-", category: "Bina Mentor" },
     { date: "2026-04-18", title: "Kajian Rutin 2", location: "Aula ITC", category: "Kajian" },
