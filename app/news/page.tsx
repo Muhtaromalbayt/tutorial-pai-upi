@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { convertGoogleDriveUrl } from "@/lib/google-drive-helper";
 
 interface NewsItem {
     id: string;
@@ -230,7 +231,7 @@ export default function NewsListPage() {
                                         <div className="md:w-1/2 relative h-64 md:h-[400px] overflow-hidden">
                                             {featuredNews.imageUrl || featuredNews.image_url ? (
                                                 <img
-                                                    src={featuredNews.imageUrl || featuredNews.image_url}
+                                                    src={convertGoogleDriveUrl(featuredNews.imageUrl || featuredNews.image_url || '')}
                                                     alt={featuredNews.title}
                                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                 />
@@ -300,7 +301,7 @@ export default function NewsListPage() {
                                                 <div className="relative h-48 overflow-hidden">
                                                     {item.imageUrl || item.image_url ? (
                                                         <img
-                                                            src={item.imageUrl || item.image_url}
+                                                            src={convertGoogleDriveUrl(item.imageUrl || item.image_url || '')}
                                                             alt={item.title}
                                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                         />
