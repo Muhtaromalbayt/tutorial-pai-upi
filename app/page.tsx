@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import HeroActivities from "@/components/HeroActivities";
 import Card from "@/components/Card";
+import DocumentationCarousel from "@/components/DocumentationCarousel";
 import Link from "next/link";
 import Image from "next/image";
-import { usePlaceholderPhoto } from "@/lib/use-placeholder-photo";
 
 interface NewsItem {
   id: string;
@@ -94,12 +94,6 @@ function NewsGrid() {
 
 export default function Home() {
   const [settings, setSettings] = useState<SiteSettings>({});
-
-  // Fetch photo from gallery by placeholder
-  const { previewUrl: programUnggulanPhoto, loading: photoLoading } = usePlaceholderPhoto(
-    "program_unggulan",
-    "/assets/kegiatan/program-unggulan.png" // fallback
-  );
 
   useEffect(() => {
     fetchSettings();
@@ -203,25 +197,7 @@ export default function Home() {
             </div>
 
             <div className="w-full lg:w-1/2 order-1 lg:order-2">
-              <div className="relative">
-                {/* Image Border/Effect */}
-                <div className="absolute inset-0 bg-gradient-ocean rounded-3xl transform rotate-3 scale-105 opacity-20 blur-lg"></div>
-                <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
-                  {/* Dynamic photo from gallery or fallback */}
-                  <img
-                    src={programUnggulanPhoto || "/assets/kegiatan/program-unggulan.png"}
-                    alt="Program Tutorial"
-                    className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-10">
-                    <div>
-                      <div className="inline-block px-3 py-1 bg-primary-600 text-white text-xs font-bold uppercase tracking-wider rounded-full mb-3">Featured</div>
-                      <h3 className="text-3xl font-bold text-white mb-2 font-heading">Program Pembinaan Karakter</h3>
-                      <p className="text-gray-200 text-lg">Membentuk mahasiswa yang cerdas intelektual dan mulia akhlaknya.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DocumentationCarousel />
             </div>
           </div>
         </div>

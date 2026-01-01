@@ -112,6 +112,13 @@ export const PHOTO_PLACEHOLDERS: PlaceholderDefinition[] = [
 
     // DOKUMENTASI / GALLERY UMUM
     {
+        id: "gallery_home_carousel",
+        name: "Galeri Home (Carousel)",
+        description: "Foto dokumentasi kegiatan untuk carousel di homepage (bisa multiple)",
+        page: "/",
+        aspectRatio: "16:9"
+    },
+    {
         id: "gallery_dokumentasi",
         name: "Dokumentasi Kegiatan",
         description: "Foto dokumentasi kegiatan umum (bisa multiple)",

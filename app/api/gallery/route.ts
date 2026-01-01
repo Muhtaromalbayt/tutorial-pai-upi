@@ -30,17 +30,32 @@ function getGoogleDriveDirectUrl(url: string): string {
     return url;
 }
 
-// GET all gallery items
-export async function GET() {
+// GET all gallery items - supports ?placeholder= filter
+export async function GET(req: NextRequest) {
     try {
         const { env } = getRequestContext();
 
-        // Use raw SQL to avoid DrizzleORM schema mismatch issues
-        const result = await env.DB.prepare(`
-            SELECT id, title, description, image_url, category, placeholder, order_index, is_published, created_at, updated_at 
-            FROM gallery 
-            ORDER BY created_at DESC
-        `).all();
+        const { searchParams } = new URL(req.url);
+        const placeholder = searchParams.get("placeholder");
+
+        let result;
+
+        if (placeholder) {
+            // Filter by placeholder
+            result = await env.DB.prepare(`
+                SELECT id, title, description, image_url, category, placeholder, order_index, is_published, created_at, updated_at 
+                FROM gallery 
+                WHERE placeholder = ? AND is_published = 1
+                ORDER BY created_at DESC
+            `).bind(placeholder).all();
+        } else {
+            // Get all gallery items
+            result = await env.DB.prepare(`
+                SELECT id, title, description, image_url, category, placeholder, order_index, is_published, created_at, updated_at 
+                FROM gallery 
+                ORDER BY created_at DESC
+            `).all();
+        }
 
         return NextResponse.json({ gallery: result.results || [] });
     } catch (error: unknown) {
