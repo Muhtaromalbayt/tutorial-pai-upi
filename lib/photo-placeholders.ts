@@ -110,11 +110,39 @@ export const PHOTO_PLACEHOLDERS: PlaceholderDefinition[] = [
         aspectRatio: "16:9"
     },
 
-    // DOKUMENTASI / GALLERY UMUM
+    // KATALOG DOKUMENTASI HOME PAGE (per kategori)
     {
-        id: "gallery_home_carousel",
-        name: "Galeri Home (Carousel)",
-        description: "Foto dokumentasi kegiatan untuk carousel di homepage (bisa multiple)",
+        id: "gallery_kuliah_dhuha",
+        name: "Katalog: Kuliah Dhuha",
+        description: "Foto dokumentasi kegiatan Kuliah Dhuha untuk katalog homepage",
+        page: "/",
+        aspectRatio: "16:9"
+    },
+    {
+        id: "gallery_mentoring",
+        name: "Katalog: Mentoring",
+        description: "Foto dokumentasi kegiatan Mentoring untuk katalog homepage",
+        page: "/",
+        aspectRatio: "16:9"
+    },
+    {
+        id: "gallery_bina_kader",
+        name: "Katalog: Bina Kader",
+        description: "Foto dokumentasi kegiatan Bina Kader untuk katalog homepage",
+        page: "/",
+        aspectRatio: "16:9"
+    },
+    {
+        id: "gallery_seminar_spai",
+        name: "Katalog: Seminar SPAI",
+        description: "Foto dokumentasi kegiatan Seminar SPAI untuk katalog homepage",
+        page: "/",
+        aspectRatio: "16:9"
+    },
+    {
+        id: "gallery_kepengurusan",
+        name: "Katalog: Kepengurusan",
+        description: "Foto dokumentasi kegiatan Kepengurusan untuk katalog homepage",
         page: "/",
         aspectRatio: "16:9"
     },
