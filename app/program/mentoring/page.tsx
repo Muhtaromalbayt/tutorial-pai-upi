@@ -47,7 +47,7 @@ const mentorLinks = [
         title: "DATA MENTOR",
         subtitle: "Lihat Data Mentor",
         url: "#", // Placeholder - will be updated
-        color: "from-purple-500 to-purple-600",
+        color: "from-secondary-600 to-secondary-700",
         icon: (
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -102,8 +102,8 @@ export default function MentoringPage() {
                         <button
                             onClick={() => setActiveTab("peserta")}
                             className={`px-8 py-4 font-semibold text-lg transition-all border-b-4 ${activeTab === "peserta"
-                                    ? "border-primary-600 text-primary-700 bg-primary-50/50"
-                                    : "border-transparent text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
+                                ? "border-primary-600 text-primary-700 bg-primary-50/50"
+                                : "border-transparent text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
                                 }`}
                         >
                             👤 Untuk Peserta
@@ -111,8 +111,8 @@ export default function MentoringPage() {
                         <button
                             onClick={() => setActiveTab("mentor")}
                             className={`px-8 py-4 font-semibold text-lg transition-all border-b-4 ${activeTab === "mentor"
-                                    ? "border-ocean-600 text-ocean-700 bg-ocean-50/50"
-                                    : "border-transparent text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
+                                ? "border-ocean-600 text-ocean-700 bg-ocean-50/50"
+                                : "border-transparent text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
                                 }`}
                         >
                             🎓 Untuk Mentor

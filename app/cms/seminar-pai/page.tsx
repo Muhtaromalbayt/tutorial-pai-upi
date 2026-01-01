@@ -288,9 +288,9 @@ export default function CMSSeminarPAI() {
                                                 <td className="px-4 py-4">
                                                     {(schedule.presenter1 || schedule.presenter2 || schedule.presenter3) ? (
                                                         <div className="space-y-1">
-                                                            {schedule.presenter1 && <div className="text-xs text-purple-700">1. {schedule.presenter1}</div>}
-                                                            {schedule.presenter2 && <div className="text-xs text-purple-700">2. {schedule.presenter2}</div>}
-                                                            {schedule.presenter3 && <div className="text-xs text-purple-700">3. {schedule.presenter3}</div>}
+                                                            {schedule.presenter1 && <div className="text-xs text-secondary-700">1. {schedule.presenter1}</div>}
+                                                            {schedule.presenter2 && <div className="text-xs text-secondary-700">2. {schedule.presenter2}</div>}
+                                                            {schedule.presenter3 && <div className="text-xs text-secondary-700">3. {schedule.presenter3}</div>}
                                                         </div>
                                                     ) : (
                                                         <span className="text-sm text-gray-400 italic">-</span>
@@ -419,8 +419,8 @@ export default function CMSSeminarPAI() {
                                 />
                             </div>
 
-                            <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
-                                <label className="block text-sm font-medium text-purple-700 mb-3">Penyaji (3 Mahasiswa)</label>
+                            <div className="bg-secondary-50 rounded-xl p-4 border border-secondary-100">
+                                <label className="block text-sm font-medium text-secondary-700 mb-3">Penyaji (3 Mahasiswa)</label>
                                 <div className="space-y-3">
                                     <div>
                                         <label className="block text-xs text-gray-500 mb-1">Penyaji 1</label>
@@ -429,7 +429,7 @@ export default function CMSSeminarPAI() {
                                             value={formData.presenter1}
                                             onChange={(e) => setFormData({ ...formData, presenter1: e.target.value })}
                                             placeholder="Nama Mahasiswa 1"
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-transparent"
                                         />
                                     </div>
                                     <div>
@@ -439,7 +439,7 @@ export default function CMSSeminarPAI() {
                                             value={formData.presenter2}
                                             onChange={(e) => setFormData({ ...formData, presenter2: e.target.value })}
                                             placeholder="Nama Mahasiswa 2"
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-transparent"
                                         />
                                     </div>
                                     <div>
@@ -449,7 +449,7 @@ export default function CMSSeminarPAI() {
                                             value={formData.presenter3}
                                             onChange={(e) => setFormData({ ...formData, presenter3: e.target.value })}
                                             placeholder="Nama Mahasiswa 3"
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-transparent"
                                         />
                                     </div>
                                 </div>

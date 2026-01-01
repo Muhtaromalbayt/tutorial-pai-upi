@@ -414,11 +414,11 @@ export default function StrukturPage() {
                                 </div>
                                 <div className="text-sm text-amber-700 mt-1">TriCore</div>
                             </div>
-                            <div className="bg-gradient-to-br from-violet-50 to-violet-100 rounded-xl p-4 text-center">
-                                <div className="text-2xl sm:text-3xl font-bold text-violet-600">
+                            <div className="bg-gradient-to-br from-secondary-100 to-secondary-200 rounded-xl p-4 text-center">
+                                <div className="text-2xl sm:text-3xl font-bold text-secondary-600">
                                     2025/2026
                                 </div>
-                                <div className="text-sm text-violet-700 mt-1">Periode</div>
+                                <div className="text-sm text-secondary-700 mt-1">Periode</div>
                             </div>
                         </div>
                     )}

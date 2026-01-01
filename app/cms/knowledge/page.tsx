@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -14,12 +14,16 @@ export default function KnowledgeCMSPage() {
     const [sources, setSources] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
+    const [showPdfUpload, setShowPdfUpload] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState("");
     const [formData, setFormData] = useState({
         sourceFile: "",
         content: "",
     });
     const [charCount, setCharCount] = useState(0);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const userStr = localStorage.getItem("cms_user");
@@ -102,10 +106,60 @@ export default function KnowledgeCMSPage() {
         setCharCount(value.length);
     };
 
+    const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (!file.name.toLowerCase().endsWith('.pdf')) {
+            alert("Hanya file PDF yang diperbolehkan!");
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert("Ukuran file maksimal 5MB!");
+            return;
+        }
+
+        setUploading(true);
+        setUploadProgress(`Mengupload ${file.name}...`);
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            setUploadProgress("Mengekstrak teks dari PDF...");
+
+            const res = await fetch("/api/knowledge/pdf", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setUploadProgress("");
+                alert(`✅ Berhasil! ${data.message}`);
+                fetchSources();
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                }
+                setShowPdfUpload(false);
+            } else {
+                alert("❌ Gagal: " + (data.error || "Unknown error"));
+            }
+        } catch (err) {
+            alert("❌ Gagal mengupload PDF");
+        } finally {
+            setUploading(false);
+            setUploadProgress("");
+        }
+    };
+
     const resetForm = () => {
         setFormData({ sourceFile: "", content: "" });
         setCharCount(0);
         setShowForm(false);
+        setShowPdfUpload(false);
     };
 
     if (isLoading) {
@@ -128,17 +182,74 @@ export default function KnowledgeCMSPage() {
                             <h1 className="text-2xl font-bold text-gray-900">Kelola Knowledge Base (Minral AI)</h1>
                             <p className="text-sm text-gray-500 mt-1">Upload dokumen untuk melatih Minral menjawab pertanyaan</p>
                         </div>
-                        <button
-                            onClick={() => setShowForm(!showForm)}
-                            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-                        >
-                            {showForm ? "Tutup Form" : "+ Tambah Dokumen"}
-                        </button>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => { setShowPdfUpload(!showPdfUpload); setShowForm(false); }}
+                                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
+                            >
+                                📄 {showPdfUpload ? "Tutup" : "Upload PDF"}
+                            </button>
+                            <button
+                                onClick={() => { setShowForm(!showForm); setShowPdfUpload(false); }}
+                                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                            >
+                                {showForm ? "Tutup Form" : "✏️ Input Teks"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </header>
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* PDF Upload Section */}
+                {showPdfUpload && (
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+                        <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
+                            📄 Upload File PDF
+                        </h2>
+                        <p className="text-sm text-gray-500 mb-6">
+                            Upload file PDF dan sistem akan otomatis mengekstrak teksnya untuk knowledge base Minral.
+                        </p>
+
+                        <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-emerald-400 transition-colors">
+                            {uploading ? (
+                                <div className="space-y-3">
+                                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mx-auto"></div>
+                                    <p className="text-emerald-600 font-medium">{uploadProgress}</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="text-4xl mb-3">📤</div>
+                                    <p className="text-gray-600 mb-4">Pilih file PDF untuk diupload</p>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept=".pdf"
+                                        onChange={handlePdfUpload}
+                                        className="hidden"
+                                        id="pdf-upload"
+                                    />
+                                    <label
+                                        htmlFor="pdf-upload"
+                                        className="inline-block px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 cursor-pointer transition-colors"
+                                    >
+                                        Pilih File PDF
+                                    </label>
+                                    <p className="text-xs text-gray-400 mt-3">Maksimal 5MB • Hanya file PDF</p>
+                                </>
+                            )}
+                        </div>
+
+                        <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                            <p className="text-sm text-amber-800">
+                                ⚠️ <strong>Catatan:</strong> Ekstraksi PDF bekerja optimal untuk PDF berbasis teks.
+                                PDF hasil scan/gambar mungkin tidak dapat diekstrak dengan baik.
+                                Untuk PDF scan, gunakan opsi "Input Teks" dengan copy-paste manual.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 {showForm && (
                     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
                         <h2 className="text-xl font-semibold mb-2">Tambah Dokumen Baru</h2>

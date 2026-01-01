@@ -3,6 +3,7 @@ import { getRequestContext } from "@cloudflare/next-on-pages";
 import { createDb, news, kuliahDhuhaSchedule, cabinetMembers } from "@/lib/db/client";
 import { desc, asc, eq, sql } from "drizzle-orm";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getFormattedKnowledge } from "@/lib/chatbot-knowledge";
 
 export const runtime = "edge";
 
@@ -92,13 +93,17 @@ export async function POST(req: NextRequest) {
             console.log("FTS search skipped (table may not exist yet):", ftsError);
         }
 
+        // 5. Static Website Knowledge
+        const websiteKnowledge = getFormattedKnowledge();
+
         const contextData = {
             berita_terbaru: recentNews,
             jadwal_kuliah_dhuha: schedules,
             pengurus_kabinet_inti: cabinet,
             pengetahuan_dari_dokumen: relevantKnowledge.length > 0
                 ? relevantKnowledge.map(k => `[${k.sourceFile}]: ${k.content}`).join('\n\n')
-                : "Belum ada dokumen yang diupload."
+                : "Belum ada dokumen yang diupload.",
+            pengetahuan_website: websiteKnowledge
         };
 
         // --- AI Configuration ---
@@ -119,11 +124,16 @@ Kamu adalah "Minral" (Media Info Ramah AL-Fath), asisten virtual dari organisasi
 ${JSON.stringify(contextData, null, 2)}
 
 **Rules:**
-1. Jawab pertanyaan berdasarkan data di atas (berita, jadwal, kabinet, dan dokumen).
-2. **JANGAN MENGARANG DATA.** Jika informasi tidak ada di context, katakan jujur dengan bahasa yang enak (Contoh: "Wah, data itu mah belum ada di catatan Minral euy, coba tanya pengurus langsung ya!").
-3. Jawab dengan ringkas namun ramah.
-4. Jika disapa "Assalamualaikum", wajib jawab "Waalaikumussalam".
-5. Jika ada info dari "pengetahuan_dari_dokumen", prioritaskan data tersebut untuk menjawab.
+1. Jawab pertanyaan berdasarkan data di atas (berita, jadwal, kabinet, dokumen, dan pengetahuan website).
+2. **PRIORITAS SUMBER DATA:**
+   - Untuk pertanyaan tentang program, kabinet, timeline, FAQ → gunakan "pengetahuan_website"
+   - Untuk pertanyaan tentang berita terbaru → gunakan "berita_terbaru"
+   - Untuk pertanyaan detail jadwal kuliah dhuha → gunakan "jadwal_kuliah_dhuha"
+   - Untuk pertanyaan tentang isi dokumen/PDF → gunakan "pengetahuan_dari_dokumen"
+3. **JANGAN MENGARANG DATA.** Jika informasi tidak ada di context, katakan jujur dengan bahasa yang enak (Contoh: "Wah, data itu mah belum ada di catatan Minral euy, coba tanya pengurus langsung ya!").
+4. Jawab dengan ringkas namun ramah dan informatif.
+5. Jika disapa "Assalamualaikum", wajib jawab "Waalaikumussalam".
+6. Untuk pertanyaan seperti "Apa itu Tutorial PAI?", "Apa kepanjangan FATH?", "Ada program apa saja?" → SELALU ada jawabannya di pengetahuan_website.
 
 **Contoh Gaya Bicara:**
 - "Siap Akang, mangga dicek jadwalnya!"
