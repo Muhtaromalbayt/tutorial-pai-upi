@@ -6,7 +6,7 @@ interface HeroProps {
     backgroundImage?: string;
     children?: ReactNode;
     height?: "normal" | "tall" | "full";
-    variant?: "default" | "gradient"; // New: gradient variant for colorful hero without image
+    variant?: "default" | "gradient";
 }
 
 const Hero = ({ title, subtitle, backgroundImage, children, height = "normal", variant = "default" }: HeroProps) => {
@@ -16,7 +16,6 @@ const Hero = ({ title, subtitle, backgroundImage, children, height = "normal", v
         full: "h-screen",
     };
 
-    // Default placeholder if no background provided and not gradient variant
     const bgImage = backgroundImage || "/assets/kegiatan/placeholder-1.svg";
     const useGradient = variant === "gradient" || !backgroundImage;
 
@@ -25,11 +24,11 @@ const Hero = ({ title, subtitle, backgroundImage, children, height = "normal", v
             {/* Background - Either Image or Gradient */}
             {useGradient ? (
                 <>
-                    {/* Beautiful gradient background matching website theme - Updated to Ocean/Blue */}
-                    <div className="absolute inset-0 bg-gradient-ocean" />
+                    {/* UPI Red Gradient Background */}
+                    <div className="absolute inset-0 bg-gradient-upi" />
                     {/* Decorative elements */}
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-ocean-400/20 rounded-full blur-3xl -mr-48 -mt-48" />
-                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-warm-500/20 rounded-full blur-3xl -ml-48 -mb-48" />
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-primary-400/20 rounded-full blur-3xl -mr-48 -mt-48" />
+                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent-500/20 rounded-full blur-3xl -ml-48 -mb-48" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl" />
                     {/* Subtle pattern overlay */}
                     <div className="absolute inset-0 opacity-10 bg-pattern-academic" />
@@ -43,7 +42,7 @@ const Hero = ({ title, subtitle, backgroundImage, children, height = "normal", v
                             backgroundImage: `url('${bgImage}')`
                         }}
                     />
-                    {/* Overlay Gradient - Red tinted for brand consistency but showing image */}
+                    {/* Overlay Gradient - Red tinted for brand consistency */}
                     <div className="absolute inset-0 bg-gradient-to-r from-primary-900/80 to-primary-800/60 mix-blend-multiply" />
                     <div className="absolute inset-0 bg-black/30" />
                 </>
@@ -70,4 +69,3 @@ const Hero = ({ title, subtitle, backgroundImage, children, height = "normal", v
 };
 
 export default Hero;
-

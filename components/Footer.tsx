@@ -8,7 +8,7 @@ import {
 
 const Footer = () => {
     return (
-        <footer className="bg-gradient-to-b from-neutral-900 to-ocean-950 text-white border-t border-ocean-900/30">
+        <footer className="bg-gradient-to-b from-neutral-900 to-neutral-950 text-white border-t border-neutral-800">
             {/* Main Footer */}
             <div className="container-upi py-12">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -95,7 +95,7 @@ const Footer = () => {
             </div>
 
             {/* Bottom Footer */}
-            <div className="footer-divider">
+            <div className="footer-divider border-neutral-800">
                 <div className="container-upi py-6">
                     <div className="flex flex-col md:flex-row justify-between items-center text-sm text-neutral-400">
                         <p>© 2025 Tutorial PAI–SPAI UPI. Kabinet AL-FATH. All rights reserved.</p>

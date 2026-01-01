@@ -9,33 +9,21 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
-                // UPI color palette - Red as primary (matching upi.edu)
+                // Official UPI Red Palette
                 primary: {
-                    50: "#fef2f2",
-                    100: "#fee2e2",
-                    200: "#fecaca",
-                    300: "#fca5a5",
-                    400: "#f87171",
-                    500: "#ef4444",
-                    600: "#dc2626",
-                    700: "#b91c1c",
-                    800: "#991b1b",
-                    900: "#7f1d1d",
+                    50: "#fef2f4",
+                    100: "#fde6ea",
+                    200: "#fad1d9",
+                    300: "#f5acba",
+                    400: "#ee7d94",
+                    500: "#e34d70",
+                    600: "#C41230", // Official UPI Red
+                    700: "#a30f29",
+                    800: "#881027",
+                    900: "#741225",
+                    950: "#400510",
                 },
-                // Ocean palette (sky/blue) - inspired by Bina Kader page
-                ocean: {
-                    50: "#f0f9ff",
-                    100: "#e0f2fe",
-                    200: "#bae6fd",
-                    300: "#7dd3fc",
-                    400: "#38bdf8",
-                    500: "#0ea5e9",
-                    600: "#0284c7",
-                    700: "#0369a1",
-                    800: "#075985",
-                    900: "#0c4a6e",
-                    950: "#082f49",
-                },
+                // Professional Slate Secondary
                 secondary: {
                     50: "#f8fafc",
                     100: "#f1f5f9",
@@ -47,32 +35,23 @@ const config: Config = {
                     700: "#334155",
                     800: "#1e293b",
                     900: "#0f172a",
+                    950: "#020617",
                 },
+                // Elegant Gold Accent
                 accent: {
                     50: "#fefce8",
                     100: "#fef9c3",
                     200: "#fef08a",
                     300: "#fde047",
                     400: "#facc15",
-                    500: "#eab308",
-                    600: "#ca8a04",
-                    700: "#a16207",
-                    800: "#854d0e",
-                    900: "#713f12",
+                    500: "#C9A227", // Elegant Gold
+                    600: "#a68512",
+                    700: "#856a0f",
+                    800: "#6b5412",
+                    900: "#5a4516",
+                    950: "#332508",
                 },
-                // Warm amber for highlights (used in Bina Kader)
-                warm: {
-                    50: "#fffbeb",
-                    100: "#fef3c7",
-                    200: "#fde68a",
-                    300: "#fcd34d",
-                    400: "#fbbf24",
-                    500: "#f59e0b",
-                    600: "#d97706",
-                    700: "#b45309",
-                    800: "#92400e",
-                    900: "#78350f",
-                },
+                // Neutral Gray
                 neutral: {
                     50: "#fafafa",
                     100: "#f5f5f5",
@@ -84,6 +63,7 @@ const config: Config = {
                     700: "#404040",
                     800: "#262626",
                     900: "#171717",
+                    950: "#0a0a0a",
                 },
             },
             fontFamily: {

@@ -132,14 +132,14 @@ export default function GalleryCatalog() {
     const activeData = categories.find((c) => c.id === activeCategory);
 
     return (
-        <section className="py-24 bg-gradient-to-b from-white to-ocean-50">
+        <section className="py-24 bg-gradient-to-b from-white to-neutral-50">
             <div className="container-upi">
                 {/* Header */}
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4 font-heading">
-                        Dokumentasi <span className="text-gradient-ocean">Kegiatan</span>
+                        Dokumentasi <span className="text-gradient-upi">Kegiatan</span>
                     </h2>
-                    <div className="w-24 h-1.5 bg-gradient-to-r from-primary-600 to-ocean-500 mx-auto rounded-full" />
+                    <div className="w-24 h-1.5 bg-gradient-to-r from-primary-600 to-primary-400 mx-auto rounded-full" />
                     <p className="mt-4 text-lg text-neutral-600 max-w-2xl mx-auto">
                         Momen berharga dari berbagai kegiatan Tutorial PAI-SPAI UPI
                     </p>
@@ -152,8 +152,8 @@ export default function GalleryCatalog() {
                             key={cat.id}
                             onClick={() => setActiveCategory(cat.id)}
                             className={`flex items-center gap-2 px-5 py-3 rounded-full font-medium transition-all duration-300 ${activeCategory === cat.id
-                                    ? "bg-primary-600 text-white shadow-lg shadow-primary-600/30"
-                                    : "bg-white text-neutral-600 hover:bg-neutral-100 border border-neutral-200"
+                                ? "bg-primary-600 text-white shadow-lg shadow-primary-600/30"
+                                : "bg-white text-neutral-600 hover:bg-neutral-100 border border-neutral-200"
                                 }`}
                         >
                             {cat.icon}
@@ -166,7 +166,7 @@ export default function GalleryCatalog() {
                 <div className="max-w-4xl mx-auto">
                     <div className="relative">
                         {/* Border Effect */}
-                        <div className="absolute inset-0 bg-gradient-ocean rounded-3xl transform rotate-2 scale-[1.02] opacity-20 blur-xl" />
+                        <div className="absolute inset-0 bg-gradient-upi rounded-3xl transform rotate-2 scale-[1.02] opacity-20 blur-xl" />
 
                         <div className="relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-neutral-200">
                             {loading ? (
@@ -215,8 +215,8 @@ export default function GalleryCatalog() {
                                                     key={index}
                                                     onClick={() => setCurrentIndex(index)}
                                                     className={`w-2.5 h-2.5 rounded-full transition-all ${index === currentIndex
-                                                            ? "bg-white w-8"
-                                                            : "bg-white/50 hover:bg-white/80"
+                                                        ? "bg-white w-8"
+                                                        : "bg-white/50 hover:bg-white/80"
                                                         }`}
                                                     aria-label={`Go to slide ${index + 1}`}
                                                 />

@@ -119,16 +119,16 @@ export default function Home() {
         heroImage={settings.hero_image_url}
       />
 
-      {/* News Section with Ocean Tint */}
+      {/* News Section */}
       <section className="section-academic relative overflow-hidden">
         {/* Decorative background element */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-ocean-100/50 rounded-full blur-3xl -mr-64 -mt-64 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-100/50 rounded-full blur-3xl -mr-64 -mt-64 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary-50/50 rounded-full blur-3xl -ml-64 -mb-64 pointer-events-none" />
 
         <div className="container-upi relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4 font-heading">Kabar Tutorial</h2>
-            <div className="w-24 h-1.5 bg-gradient-to-r from-primary-600 to-ocean-500 mx-auto rounded-full"></div>
+            <div className="w-24 h-1.5 bg-gradient-to-r from-primary-600 to-primary-400 mx-auto rounded-full"></div>
             <p className="mt-4 text-lg text-neutral-600 max-w-2xl mx-auto">
               Ikuti perkembangan terbaru kegiatan dan informasi seputar Tutorial PAI-SPAI UPI.
             </p>
@@ -139,7 +139,7 @@ export default function Home() {
           <div className="text-center mt-12">
             <Link
               href="/news"
-              className="inline-flex items-center px-6 py-3 rounded-full bg-ocean-50 text-ocean-700 font-semibold hover:bg-ocean-100 transition-colors duration-300"
+              className="inline-flex items-center px-6 py-3 rounded-full bg-primary-50 text-primary-700 font-semibold hover:bg-primary-100 transition-colors duration-300"
             >
               Lihat Semua Berita
               <svg className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
